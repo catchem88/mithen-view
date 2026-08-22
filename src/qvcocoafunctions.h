@@ -27,7 +27,9 @@ public:
 
     static int getObscuredHeight(QWindow *window);
 
+#if defined COCOA_LOADED && QT_VERSION < QT_VERSION_CHECK(6, 11, 3)
     static bool startWindowDrag(QWindow *window);
+#endif
 
     static void setWindowMenu(QMenu *menu);
 

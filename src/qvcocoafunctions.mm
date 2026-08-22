@@ -57,9 +57,9 @@ void QVCocoaFunctions::registerWillPowerOffObserver()
         }];
 }
 
-// This function should only be enabled once because it sets observers
 void QVCocoaFunctions::setFullSizeContentView(QWidget *window, const bool enable)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 12, 0)
     auto *view = reinterpret_cast<NSView*>(window->winId());
 
     // Make sure the requested state isn't already in effect
@@ -72,6 +72,7 @@ void QVCocoaFunctions::setFullSizeContentView(QWidget *window, const bool enable
 
     // Changing the style mask causes the window to resize, so snapshot the original size
     NSRect originalFrame = view.window.frame;
+#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
     Qv::alterWindowFlags(window, [&](Qt::WindowFlags f) { return f.setFlag(Qt::ExpandedClientAreaHint, enable); });
@@ -82,8 +83,10 @@ void QVCocoaFunctions::setFullSizeContentView(QWidget *window, const bool enable
         view.window.styleMask &= ~NSWindowStyleMaskFullSizeContentView;
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 12, 0)
     // Restore original size after style mask change
     [view.window setFrame:originalFrame display:YES];
+#endif
 }
 
 bool QVCocoaFunctions::getTitlebarHidden(const QWidget *window)
@@ -145,6 +148,7 @@ int QVCocoaFunctions::getObscuredHeight(QWindow *window)
     return totalHeight - visibleHeight;
 }
 
+#if defined COCOA_LOADED && QT_VERSION < QT_VERSION_CHECK(6, 11, 3)
 bool QVCocoaFunctions::startWindowDrag(QWindow *window)
 {
     if ((NSEvent.pressedMouseButtons & 1) == 0)
@@ -156,6 +160,7 @@ bool QVCocoaFunctions::startWindowDrag(QWindow *window)
     [view.window performWindowDragWithEvent:event];
     return true;
 }
+#endif
 
 void QVCocoaFunctions::setWindowMenu(QMenu *menu)
 {

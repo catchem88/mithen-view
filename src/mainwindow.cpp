@@ -77,7 +77,6 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     sessionStateToLoad = windowSessionState;
     lastActivated.start();
 
-    // Initialize graphicsviewkDefaultBufferAlignment
     graphicsView = new QVGraphicsView(this);
     centralWidget()->layout()->addWidget(graphicsView);
 
@@ -265,6 +264,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 void MainWindow::showEvent(QShowEvent *event)
 {
 #ifdef COCOA_LOADED
+    // Defer full size content view until after geometry restoration (see comment in closeEvent)
     QTimer::singleShot(0, this, [this]() {
         QVCocoaFunctions::setFullSizeContentView(this, true);
     });
@@ -298,6 +298,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
     isClosing = true;
 
 #ifdef COCOA_LOADED
+    // restoreGeometry tries to restore the client-area geometry captured by saveGeometry, but its
+    // validation logic clamps the restored height under the assumption that additional vertical
+    // space must be reserved for the titlebar. That assumption is not valid with full size content
+    // view, where the titlebar overlaps the client area. To properly round-trip the geometry of a
+    // full-height window, disable full size content view before saving the geometry, and when
+    // creating a window, restore its geometry before enabling full size content view.
     QVCocoaFunctions::setFullSizeContentView(this, false);
 #endif
 
