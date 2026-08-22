@@ -26,24 +26,24 @@ QT_BEGIN_NAMESPACE
 class QFrameInfo
 {
 public:
-    QPixmap pixmap;
+    QImage image;
     int delay;
     bool endMark;
     inline QFrameInfo(bool endMark)
-        : pixmap(QPixmap()), delay(QMOVIE_INVALID_DELAY), endMark(endMark)
+        : image(QImage()), delay(QMOVIE_INVALID_DELAY), endMark(endMark)
     { }
 
     inline QFrameInfo()
-        : pixmap(QPixmap()), delay(QMOVIE_INVALID_DELAY), endMark(false)
+        : image(QImage()), delay(QMOVIE_INVALID_DELAY), endMark(false)
     { }
 
-    inline QFrameInfo(QPixmap &&pixmap, int delay)
-        : pixmap(std::move(pixmap)), delay(delay), endMark(false)
+    inline QFrameInfo(QImage &&image, int delay)
+        : image(std::move(image)), delay(delay), endMark(false)
     { }
 
     inline bool isValid()
     {
-        return endMark || !(pixmap.isNull() && (delay == QMOVIE_INVALID_DELAY));
+        return endMark || !(image.isNull() && (delay == QMOVIE_INVALID_DELAY));
     }
 
     inline bool isEndMarker()
@@ -88,7 +88,7 @@ public:
 
     QVMovie::MovieState movieState = QVMovie::NotRunning;
     QRect frameRect;
-    QPixmap currentPixmap;
+    QImage currentImage;
     int currentFrameNumber = -1;
     int nextFrameNumber = 0;
     int greatestFrameNumber = -1;
@@ -218,7 +218,7 @@ QFrameInfo QVMoviePrivate::infoForFrame(int frameNumber)
             }
             if (frameNumber > greatestFrameNumber)
                 greatestFrameNumber = frameNumber;
-            return QFrameInfo(QPixmap::fromImage(std::move(anImage)), nextFrameDelay());
+            return QFrameInfo(std::move(anImage), nextFrameDelay());
         } else if (frameNumber != 0) {
             // We've read all frames now. Return an end marker
             haveReadAll = true;
@@ -245,7 +245,7 @@ QFrameInfo QVMoviePrivate::infoForFrame(int frameNumber)
                     return QFrameInfo(); // Invalid
                 }
                 greatestFrameNumber = i;
-                QFrameInfo info(QPixmap::fromImage(std::move(anImage)), nextFrameDelay());
+                QFrameInfo info(std::move(anImage), nextFrameDelay());
                 // Cache it!
                 auto &e = frameMap[i] = std::move(info);
                 if (i == frameNumber) {
@@ -291,7 +291,7 @@ bool QVMoviePrivate::next()
     }
     // Image and delay OK, update internal state
     currentFrameNumber = nextFrameNumber++;
-    currentPixmap = info.pixmap;
+    currentImage = std::move(info.image);
 
     if (!speed)
         return true;
@@ -315,8 +315,8 @@ void QVMoviePrivate::_q_loadNextFrame(bool starting)
             emit q->started();
         }
 
-        if (frameRect.size() != currentPixmap.rect().size()) {
-            frameRect = currentPixmap.rect();
+        if (frameRect.size() != currentImage.rect().size()) {
+            frameRect = currentImage.rect();
             emit q->resized(frameRect.size());
         }
 
@@ -493,13 +493,13 @@ QRect QVMovie::frameRect() const
 QPixmap QVMovie::currentPixmap() const
 {
     Q_D(const QVMovie);
-    return d->currentPixmap;
+    return QPixmap::fromImage(d->currentImage);
 }
 
 QImage QVMovie::currentImage() const
 {
     Q_D(const QVMovie);
-    return d->currentPixmap.toImage();
+    return d->currentImage;
 }
 
 bool QVMovie::isValid() const
