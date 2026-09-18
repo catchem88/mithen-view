@@ -5,7 +5,6 @@
 #include "settingsmanager.h"
 #include "shortcutmanager.h"
 #include "actionmanager.h"
-#include "updatechecker.h"
 #include "qvoptionsdialog.h"
 #include "qvaboutdialog.h"
 
@@ -52,8 +51,6 @@ public:
     static MainWindow *newWindow(const QJsonObject &windowSessionState = {});
 
     MainWindow *getMainWindow(bool shouldBeEmpty);
-
-    void checkedUpdates();
 
     void recentsMenuUpdated();
 

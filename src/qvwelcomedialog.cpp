@@ -3,8 +3,6 @@
 
 #include "qvapplication.h"
 
-#include <QSettings>
-
 QVWelcomeDialog::QVWelcomeDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QVWelcomeDialog)
@@ -41,14 +39,6 @@ QVWelcomeDialog::QVWelcomeDialog(QWidget *parent) :
 
     ui->infoLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     ui->infoLabel->setOpenExternalLinks(true);
-
-    ui->updateCheckBox->setChecked(qvApp->getSettingsManager().getBoolean("updatenotifications"));
-    connect(ui->updateCheckBox, &QCheckBox::checkStateChanged, qvApp, [](Qt::CheckState state){
-        QSettings settings;
-        settings.beginGroup("options");
-        settings.setValue("updatenotifications", static_cast<bool>(state));
-        qvApp->getSettingsManager().loadSettings();
-    });
 }
 
 QVWelcomeDialog::~QVWelcomeDialog()

@@ -610,11 +610,6 @@ No write permission or file is read-only.</source>
         <translation>О wView</translation>
     </message>
     <message>
-        <location filename="../src/qvaboutdialog.ui" line="91"/>
-        <source>Check for Updates</source>
-        <translation>Проверить обновления</translation>
-    </message>
-    <message>
         <source>Unofficial Fork (jdpurcell)</source>
         <translation type="vanished">Неофициальный форк (jdpurcell)</translation>
     </message>
@@ -629,11 +624,6 @@ No write permission or file is read-only.</source>
     <message>
         <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Derivative of official qView: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Icon glyph created by Guilhem from the Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and qView contributors</source>
         <translation type="vanished">Создано с Qt %1 (%2)&lt;br&gt;Лицензировано под GNU GPLv3&lt;br&gt;Производная от официального qView: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Сайт&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Значок создан Guilhem из Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell и участники qView</translation>
-    </message>
-    <message>
-        <location filename="../src/qvaboutdialog.cpp" line="33"/>
-        <source>Unofficial Fork (catchem88)</source>
-        <translation>Неофициальный форк (catchem88)</translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="34"/>
@@ -1143,11 +1133,6 @@ No write permission or file is read-only.</source>
     <message>
         <source>Save &amp;recent files</source>
         <translation type="vanished">Сохранять недавние файлы</translation>
-    </message>
-    <message>
-        <source>&amp;Update notifications on startup</source>
-        <extracomment>The notifications are for new qView releases</extracomment>
-        <translation type="vanished">Сообщать о новой версии при запуске</translation>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="128"/>
@@ -1721,10 +1706,6 @@ No write permission or file is read-only.</source>
         <translation type="vanished">Добро пожаловать</translation>
     </message>
     <message>
-        <source>&amp;Enable update notifications on startup</source>
-        <translation type="vanished">Включить уведомления об обновлении при запуске</translation>
-    </message>
-    <message>
         <source>Thank you for downloading qView.&lt;br&gt;Here&apos;s a few tips to get you started:</source>
         <translation type="vanished">Благодарим за загрузку qView.&lt;br&gt;Вот несколько советов, которые помогут начать работу:</translation>
     </message>
@@ -1995,64 +1976,6 @@ No write permission or file is read-only.</source>
         <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Exit</source>
         <translation>Выход</translation>
-    </message>
-</context>
-<context>
-    <name>UpdateChecker</name>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="23"/>
-        <source>This build is not configured for update checking.</source>
-        <translation>Эта сборка не настроена для проверки обновлений.</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="56"/>
-        <source>Received null JSON.</source>
-        <translation>Получен пустой JSON.</translation>
-    </message>
-    <message>
-        <source>qView Update Available</source>
-        <translation type="vanished">Доступно обновление qView</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="135"/>
-        <source>wView Update Available</source>
-        <translation>Доступно обновление wView</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="136"/>
-        <source>A newer version is available to download.</source>
-        <translation>Доступна новая версия для загрузки.</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="142"/>
-        <source>Skip Version</source>
-        <translation>Пропустить версию</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="148"/>
-        <source>Download</source>
-        <translation>Загрузка</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="155"/>
-        <source>&amp;Disable Checking</source>
-        <translation>Отключить проверку</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>wView Update Checking Disabled</source>
-        <translation>Проверка обновлений wView отключена</translation>
-    </message>
-    <message>
-        <source>qView Update Checking Disabled</source>
-        <translation type="vanished">Проверка обновлений qView отключена</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>Update notifications on startup have been disabled.
-You can reenable them in the options dialog.</source>
-        <translation>Уведомления о наличии новой версии при запуске отключены.
-Их можно повторно включить в окне настроек.</translation>
     </message>
 </context>
 </TS>

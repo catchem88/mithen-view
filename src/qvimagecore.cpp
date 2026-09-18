@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QRandomGenerator>
 
 QVImageCore::QVImageCore(QObject *parent) : QObject(parent)
 {

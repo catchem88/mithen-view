@@ -609,11 +609,6 @@ No write permission or file is read-only.</source>
         <translation>关于 wView</translation>
     </message>
     <message>
-        <location filename="../src/qvaboutdialog.ui" line="91"/>
-        <source>Check for Updates</source>
-        <translation>检查更新</translation>
-    </message>
-    <message>
         <source>Unofficial Fork (jdpurcell)</source>
         <translation type="vanished">非官方分支（jdpurcell）</translation>
     </message>
@@ -628,11 +623,6 @@ No write permission or file is read-only.</source>
     <message>
         <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Derivative of official qView: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Icon glyph created by Guilhem from the Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and qView contributors</source>
         <translation type="vanished">基于 Qt %1 (%2) 构建&lt;br&gt;采用 GNU GPLv3 许可&lt;br&gt;官方 qView 的衍生版本：&lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;网站&lt;/a&gt;，&lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;图标由 Noun Project 的 Guilhem 设计&lt;br&gt;版权所有 © %3 jurplel、jdpurcell 和 qView 贡献者</translation>
-    </message>
-    <message>
-        <location filename="../src/qvaboutdialog.cpp" line="33"/>
-        <source>Unofficial Fork (catchem88)</source>
-        <translation>非官方分支 (catchem88)</translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="34"/>
@@ -1142,11 +1132,6 @@ No write permission or file is read-only.</source>
     <message>
         <source>Save &amp;recent files</source>
         <translation type="vanished">保存最近的文件</translation>
-    </message>
-    <message>
-        <source>&amp;Update notifications on startup</source>
-        <extracomment>The notifications are for new qView releases</extracomment>
-        <translation type="vanished">启动时更新通知</translation>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="128"/>
@@ -1720,10 +1705,6 @@ No write permission or file is read-only.</source>
         <translation type="vanished">欢迎</translation>
     </message>
     <message>
-        <source>&amp;Enable update notifications on startup</source>
-        <translation type="vanished">启动时更新通知</translation>
-    </message>
-    <message>
         <source>Thank you for downloading qView.&lt;br&gt;Here&apos;s a few tips to get you started:</source>
         <translation type="vanished">感谢您下载qView.&lt;br&gt;以下是一些入门提示:</translation>
     </message>
@@ -1994,64 +1975,6 @@ No write permission or file is read-only.</source>
         <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Exit</source>
         <translation>退出</translation>
-    </message>
-</context>
-<context>
-    <name>UpdateChecker</name>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="23"/>
-        <source>This build is not configured for update checking.</source>
-        <translation>此版本未配置更新检查。</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="56"/>
-        <source>Received null JSON.</source>
-        <translation>收到空 JSON。</translation>
-    </message>
-    <message>
-        <source>qView Update Available</source>
-        <translation type="vanished">qView更新可用</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="135"/>
-        <source>wView Update Available</source>
-        <translation>wView 更新可用</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="136"/>
-        <source>A newer version is available to download.</source>
-        <translation>有新版本可供下载。</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="142"/>
-        <source>Skip Version</source>
-        <translation>跳过此版本</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="148"/>
-        <source>Download</source>
-        <translation>下载</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="155"/>
-        <source>&amp;Disable Checking</source>
-        <translation>禁用检查</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>wView Update Checking Disabled</source>
-        <translation>wView 更新检查已禁用</translation>
-    </message>
-    <message>
-        <source>qView Update Checking Disabled</source>
-        <translation type="vanished">qView更新检查失败</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>Update notifications on startup have been disabled.
-You can reenable them in the options dialog.</source>
-        <translation>已禁用更新通知.
-你可以在选项中重新启用它们.</translation>
     </message>
 </context>
 </TS>

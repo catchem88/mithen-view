@@ -5,6 +5,7 @@
 #include <QWheelEvent>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QJsonArray>
 #include <QSettings>
 #include <QMessageBox>
 #include <QtMath>

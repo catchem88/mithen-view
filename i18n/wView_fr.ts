@@ -610,11 +610,6 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
         <translation>À propos de wView</translation>
     </message>
     <message>
-        <location filename="../src/qvaboutdialog.ui" line="91"/>
-        <source>Check for Updates</source>
-        <translation>Vérifier les mises à jour</translation>
-    </message>
-    <message>
         <source>Unofficial Fork (jdpurcell)</source>
         <translation type="vanished">Fork non officiel (jdpurcell)</translation>
     </message>
@@ -629,11 +624,6 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
     <message>
         <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Derivative of official qView: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Icon glyph created by Guilhem from the Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and qView contributors</source>
         <translation type="vanished">Construit avec Qt %1 (%2)&lt;br&gt;Licencié sous la GNU GPLv3&lt;br&gt;Dérivé de qView officiel : &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Site web&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Icône créée par Guilhem du Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell et les contributeurs de qView</translation>
-    </message>
-    <message>
-        <location filename="../src/qvaboutdialog.cpp" line="33"/>
-        <source>Unofficial Fork (catchem88)</source>
-        <translation>Fork non officiel (catchem88)</translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="34"/>
@@ -1143,11 +1133,6 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
     <message>
         <source>Save &amp;recent files</source>
         <translation type="vanished">Enregistrer les fichiers récents</translation>
-    </message>
-    <message>
-        <source>&amp;Update notifications on startup</source>
-        <extracomment>The notifications are for new qView releases</extracomment>
-        <translation type="vanished">Afficher les notifications de mise à jour au démarrage</translation>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="128"/>
@@ -1721,10 +1706,6 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
         <translation type="vanished">Bienvenue</translation>
     </message>
     <message>
-        <source>&amp;Enable update notifications on startup</source>
-        <translation type="vanished">Activer les notifications de mise à jour au démarrage</translation>
-    </message>
-    <message>
         <source>Thank you for downloading qView.&lt;br&gt;Here&apos;s a few tips to get you started:</source>
         <translation type="vanished">Merci d&apos;avoir téléchargé qView.&lt;br&gt;Voici quelques conseils pour vous aider à démarrer :</translation>
     </message>
@@ -1995,64 +1976,6 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
         <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Exit</source>
         <translation>Sortir</translation>
-    </message>
-</context>
-<context>
-    <name>UpdateChecker</name>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="23"/>
-        <source>This build is not configured for update checking.</source>
-        <translation>Cette version n&apos;est pas configurée pour la vérification des mises à jour.</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="56"/>
-        <source>Received null JSON.</source>
-        <translation>JSON nul reçu.</translation>
-    </message>
-    <message>
-        <source>qView Update Available</source>
-        <translation type="vanished">Mise à jour qView disponible</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="135"/>
-        <source>wView Update Available</source>
-        <translation>Mise à jour de wView disponible</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="136"/>
-        <source>A newer version is available to download.</source>
-        <translation>Une nouvelle version est disponible au téléchargement.</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="142"/>
-        <source>Skip Version</source>
-        <translation>Ignorer la version</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="148"/>
-        <source>Download</source>
-        <translation>Télécharger</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="155"/>
-        <source>&amp;Disable Checking</source>
-        <translation>Désactiver la vérification</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>wView Update Checking Disabled</source>
-        <translation>Vérification des mises à jour de wView désactivée</translation>
-    </message>
-    <message>
-        <source>qView Update Checking Disabled</source>
-        <translation type="vanished">Vérification de la mise à jour qView désactivée</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>Update notifications on startup have been disabled.
-You can reenable them in the options dialog.</source>
-        <translation>Les notifications de mise à jour au démarrage ont été désactivées.
-Vous pouvez les réactiver dans la boîte de dialogue des options.</translation>
     </message>
 </context>
 </TS>

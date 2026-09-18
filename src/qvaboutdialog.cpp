@@ -3,8 +3,6 @@
 
 #include "qvapplication.h"
 
-#include <QJsonDocument>
-
 QVAboutDialog::QVAboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QVAboutDialog)
@@ -13,8 +11,6 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
 
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(windowFlags() & (~Qt::WindowContextHelpButtonHint | Qt::CustomizeWindowHint));
-
-    connect(ui->checkForUpdatesButton, &QPushButton::clicked, this, &QVAboutDialog::checkForUpdatesButtonClicked);
 
     // Application modal
     setWindowModality(Qt::WindowModal);
@@ -30,8 +26,7 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
     //set subtitle font & text
     QFont font2 = QFont("Lato", 18 + modifier);
     font2.setStyleName("Regular");
-    QString subtitleText = tr("Unofficial Fork (catchem88)") + "<br>";
-    subtitleText += tr("Version 1.0.0");
+    QString subtitleText = tr("Version 1.0.0");
     ui->subtitleLabel->setFont(font2);
     ui->subtitleLabel->setText(subtitleText);
 
@@ -50,21 +45,9 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
 
     ui->infoLabel2->setTextInteractionFlags(Qt::TextBrowserInteraction);
     ui->infoLabel2->setOpenExternalLinks(true);
-
-    updateCheckForUpdatesButtonState();
 }
 
 QVAboutDialog::~QVAboutDialog()
 {
     delete ui;
-}
-
-void QVAboutDialog::updateCheckForUpdatesButtonState()
-{
-    // Update checker removed
-}
-
-void QVAboutDialog::checkForUpdatesButtonClicked()
-{
-    // Update checker removed
 }

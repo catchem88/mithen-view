@@ -610,11 +610,6 @@ Keine Schreibberechtigung oder Datei ist schreibgeschützt.</translation>
         <translation>Über wView</translation>
     </message>
     <message>
-        <location filename="../src/qvaboutdialog.ui" line="91"/>
-        <source>Check for Updates</source>
-        <translation>Nach Aktualisierungen suchen</translation>
-    </message>
-    <message>
         <source>Unofficial Fork (jdpurcell)</source>
         <translation type="vanished">Inoffizieller Fork (jdpurcell)</translation>
     </message>
@@ -629,11 +624,6 @@ Keine Schreibberechtigung oder Datei ist schreibgeschützt.</translation>
     <message>
         <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Derivative of official qView: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Icon glyph created by Guilhem from the Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and qView contributors</source>
         <translation type="vanished">Erstellt mit Qt %1 (%2)&lt;br&gt;Lizenziert unter der GNU GPLv3&lt;br&gt;Ableitung der offiziellen qView: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Programmsymbol erstellt von Guilhem vom Noun Project&lt;br&gt;Copyright © %3 jurplel, jdpurcell und zu qView Beitragende</translation>
-    </message>
-    <message>
-        <location filename="../src/qvaboutdialog.cpp" line="33"/>
-        <source>Unofficial Fork (catchem88)</source>
-        <translation>Inoffizieller Fork (catchem88)</translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="34"/>
@@ -1143,11 +1133,6 @@ Keine Schreibberechtigung oder Datei ist schreibgeschützt.</translation>
     <message>
         <source>Save &amp;recent files</source>
         <translation type="vanished">Zuletzt geöffnete Dateien speichern</translation>
-    </message>
-    <message>
-        <source>&amp;Update notifications on startup</source>
-        <extracomment>The notifications are for new qView releases</extracomment>
-        <translation type="vanished">Benachrichtige über Aktualisierungen beim Programmstart</translation>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="128"/>
@@ -1721,10 +1706,6 @@ Keine Schreibberechtigung oder Datei ist schreibgeschützt.</translation>
         <translation type="vanished">Willkommen</translation>
     </message>
     <message>
-        <source>&amp;Enable update notifications on startup</source>
-        <translation type="vanished">Benachrichtigungen über verfügbare Aktualisierungen beim Programmstart zulassen</translation>
-    </message>
-    <message>
         <source>Thank you for downloading qView.&lt;br&gt;Here&apos;s a few tips to get you started:</source>
         <translation type="vanished">Danke, dass du qView heruntergeladen hast.&lt;br&gt; Hier ein paar Tipps für den Anfang:</translation>
     </message>
@@ -1995,64 +1976,6 @@ Keine Schreibberechtigung oder Datei ist schreibgeschützt.</translation>
         <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Exit</source>
         <translation>Beenden</translation>
-    </message>
-</context>
-<context>
-    <name>UpdateChecker</name>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="23"/>
-        <source>This build is not configured for update checking.</source>
-        <translation>Dieser Build ist nicht für die Aktualisierungsprüfung konfiguriert.</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="56"/>
-        <source>Received null JSON.</source>
-        <translation>Null JSON empfangen.</translation>
-    </message>
-    <message>
-        <source>qView Update Available</source>
-        <translation type="vanished">Aktualisierung für qView verfügbar</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="135"/>
-        <source>wView Update Available</source>
-        <translation>wView-Aktualisierung verfügbar</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="136"/>
-        <source>A newer version is available to download.</source>
-        <translation>Eine neuere Version steht zum Download bereit.</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="142"/>
-        <source>Skip Version</source>
-        <translation>Version überspringen</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="148"/>
-        <source>Download</source>
-        <translation>Herunterladen</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="155"/>
-        <source>&amp;Disable Checking</source>
-        <translation>Prüfung deaktivieren</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>wView Update Checking Disabled</source>
-        <translation>wView-Updateprüfung deaktiviert</translation>
-    </message>
-    <message>
-        <source>qView Update Checking Disabled</source>
-        <translation type="vanished">Prüfe nicht auf qView-Aktualisierungen</translation>
-    </message>
-    <message>
-        <location filename="../src/updatechecker.cpp" line="161"/>
-        <source>Update notifications on startup have been disabled.
-You can reenable them in the options dialog.</source>
-        <translation>Benachrichtigungen über Aktualisierungen beim Programmstart sind deaktiviert.
-Du kannst sie in den Einstellungen wieder aktvieren.</translation>
     </message>
 </context>
 </TS>

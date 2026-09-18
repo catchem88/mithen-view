@@ -73,14 +73,7 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="updateCheckBox">
-     <property name="text">
-      <string>&amp;Enable update notifications on startup</string>
-     </property>
-    </widget>
-   </item>
+    </item>
   </layout>
  </widget>
  <resources/>

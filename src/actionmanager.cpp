@@ -5,6 +5,7 @@
 
 #include <QSettings>
 #include <QActionGroup>
+#include <QCache>
 #include <QMimeDatabase>
 #include <QFileIconProvider>
 #include <QKeyEvent>

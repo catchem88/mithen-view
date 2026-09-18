@@ -9,6 +9,7 @@
 #include <QFontDatabase>
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QOperatingSystemVersion>
 
 int main(int argc, char *argv[])
 {

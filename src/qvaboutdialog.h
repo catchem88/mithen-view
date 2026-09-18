@@ -2,7 +2,6 @@
 #define QVABOUTDIALOG_H
 
 #include <QDialog>
-#include <QtNetwork>
 
 namespace Ui {
 class QVAboutDialog;
@@ -15,11 +14,6 @@ class QVAboutDialog : public QDialog
 public:
     explicit QVAboutDialog(QWidget *parent = nullptr);
     ~QVAboutDialog() override;
-
-    void updateCheckForUpdatesButtonState();
-
-private slots:
-    void checkForUpdatesButtonClicked();
 
 private:
     Ui::QVAboutDialog *ui;

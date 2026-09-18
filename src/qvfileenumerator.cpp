@@ -3,6 +3,7 @@
 #ifdef WIN32_LOADED
 #include "qvwin32functions.h"
 #endif
+#include <QMimeDatabase>
 #if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 #include <QDirIterator>
 #endif

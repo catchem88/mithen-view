@@ -1,9 +1,10 @@
 #include "qvapplication.h"
 #include "qvoptionsdialog.h"
 #include "simplefonticonengine.h"
-#include "updatechecker.h"
 
 #include <QFileOpenEvent>
+#include <QJsonArray>
+#include <QOperatingSystemVersion>
 #include <QSettings>
 #include <QTimer>
 #include <QFileDialog>

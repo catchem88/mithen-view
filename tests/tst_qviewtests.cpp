@@ -740,7 +740,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("qViewTests");
     QCoreApplication::setApplicationName("qViewTests");
     QSettings().setValue("options/colorspaceconversion", static_cast<int>(Qv::ColorSpaceConversion::SRgb));
-    QSettings().setValue("options/updatenotifications", false);
     QVApplication app(argc, argv);
     qRegisterMetaType<QVImageLoader::Result>();
 
