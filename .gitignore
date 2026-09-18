@@ -45,6 +45,8 @@ CMakeLists.txt.user*
 .vscode
 .ai/
 .qm/
+.kilo/
+.commandcode/
 
 bin/*
 build/*
