@@ -1,6 +1,5 @@
 #include "actionmanager.h"
 #include "qvapplication.h"
-#include "qvcocoafunctions.h"
 #include "openwith.h"
 #include "qvmenu.h"
 
@@ -24,11 +23,6 @@ ActionManager::ActionManager(QObject *parent) : QObject(parent)
     connect(recentsSaveTimer, &QTimer::timeout, this, &ActionManager::saveRecentsList);
 
     loadRecentsList();
-
-#ifdef COCOA_LOADED
-    windowMenu = new QMenu(tr("Window"));
-    QVCocoaFunctions::setWindowMenu(windowMenu);
-#endif
 }
 
 ActionManager::~ActionManager()
@@ -188,27 +182,13 @@ QMenuBar *ActionManager::buildMenuBar(QWidget *parent)
     // Beginning of file menu
     auto *fileMenu = new QVMenu(tr("&File"), menuBar);
 
-#ifdef Q_OS_MACOS
-    addCloneOfAction(fileMenu, "newwindow");
-#endif
     addCloneOfAction(fileMenu, "open");
     addCloneOfAction(fileMenu, "openurl");
     fileMenu->addMenu(buildRecentsMenu(fileMenu));
     addCloneOfAction(fileMenu, "reloadfile");
     fileMenu->addSeparator();
-#ifdef Q_OS_MACOS
-    fileMenu->addSeparator();
-    addCloneOfAction(fileMenu, "closewindow");
-    addCloneOfAction(fileMenu, "closeallwindows");
-#endif
-#ifdef COCOA_LOADED
-    QVCocoaFunctions::setAlternate(fileMenu, fileMenu->actions().length()-1);
-#endif
     fileMenu->addSeparator();
     fileMenu->addMenu(buildOpenWithMenu(fileMenu));
-#ifdef Q_OS_MACOS
-    addCloneOfAction(fileMenu, "openwithplaceholder");
-#endif
     addCloneOfAction(fileMenu, "opencontainingfolder");
     addCloneOfAction(fileMenu, "showfileinfo");
     fileMenu->addSeparator();
@@ -228,9 +208,6 @@ QMenuBar *ActionManager::buildMenuBar(QWidget *parent)
     editMenu->addSeparator();
     addCloneOfAction(editMenu, "delete");
     addCloneOfAction(editMenu, "deletepermanent");
-#ifdef COCOA_LOADED
-    QVCocoaFunctions::setAlternate(editMenu, editMenu->actions().length()-1);
-#endif
 
     menuBar->addMenu(editMenu);
     // End of edit menu
@@ -254,12 +231,6 @@ QMenuBar *ActionManager::buildMenuBar(QWidget *parent)
     // Beginning of tools menu
     menuBar->addMenu(buildToolsMenu(menuBar));
     // End of tools menu
-
-    // Beginning of window menu
-#ifdef COCOA_LOADED
-    menuBar->addMenu(windowMenu);
-#endif
-    // End of window menu
 
     // Beginning of help menu
     menuBar->addMenu(buildHelpMenu(menuBar));
@@ -338,8 +309,6 @@ QMenu *ActionManager::buildHelpMenu(QWidget *parent)
         helpMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::HelpOutline));
 
     addCloneOfAction(helpMenu, "about");
-    addCloneOfAction(helpMenu, "welcome");
-
     menuCloneLibrary.insert(helpMenu->menuAction()->data().toString(), helpMenu);
     return helpMenu;
 }
@@ -491,23 +460,11 @@ void ActionManager::updateRecentsMenu()
                 if (!qvApp->getShowSubmenuIcons())
                     continue;
 
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-                // set icons for linux users
-                QMimeDatabase mimedb;
-                QMimeType type = mimedb.mimeTypeForFile(recent.filePath);
-                action->setIcon(QIcon::fromTheme(type.iconName(), QIcon::fromTheme(type.genericIconName())));
-#else
-                // set icons for mac/windows users
+                // set icons for windows users
                 QFileInfo fileInfo(recent.filePath);
                 QFileIconProvider provider;
                 QIcon icon = provider.icon(fileInfo);
-#ifdef Q_OS_MACOS
-                // Workaround for native menu slowness
-                if (!fileInfo.suffix().isEmpty())
-                    icon = getCacheableIcon("filetype:" + fileInfo.suffix(), icon);
-#endif
                 action->setIcon(icon);
-#endif
                 action->setIconVisibleInMenu(true);
             }
             else
@@ -565,58 +522,12 @@ QMenu *ActionManager::buildOpenWithMenu(QWidget *parent)
     return openWithMenu;
 }
 
-QMenu *ActionManager::buildSortMenu(QWidget *parent)
-{
-    const bool isContextMenu = parent->property("isContextMenu").toBool();
-    auto *sortMenu = new QVMenu(tr("Sort Files By"), parent);
-    sortMenu->menuAction()->setData("sortmenu");
-    if (isContextMenu)
-        sortMenu->setProperty("isContextMenu", true);
-    if (isContextMenu ? qvApp->getShowContextMenuIcons() : qvApp->getShowMainMenuIcons())
-        sortMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::Sort));
-
-    auto *sortModeGroup = new QActionGroup(sortMenu);
-    const auto addMode = [&](const QString &text, const Qv::SortMode mode) {
-        auto *action = new QAction(text, sortMenu);
-        action->setData(QStringList{"sortmode" + QString::number(static_cast<int>(mode))});
-        action->setCheckable(true);
-        sortModeGroup->addAction(action);
-        sortMenu->addAction(action);
-        actionCloneLibrary.insert(action->data().toStringList().first(), action);
-    };
-    addMode(tr("Name"), Qv::SortMode::Name);
-    addMode(tr("Date Modified"), Qv::SortMode::DateModified);
-    addMode(tr("Date Created"), Qv::SortMode::DateCreated);
-    addMode(tr("Size"), Qv::SortMode::Size);
-    addMode(tr("Type"), Qv::SortMode::Type);
-    addMode(tr("Random"), Qv::SortMode::Random);
-
-    sortMenu->addSeparator();
-
-    auto *sortDirectionGroup = new QActionGroup(sortMenu);
-    const auto addDirection = [&](const QString &text, const bool descending) {
-        auto *action = new QAction(text, sortMenu);
-        action->setData(QStringList{"sortdirection" + QString::number(static_cast<int>(descending))});
-        action->setCheckable(true);
-        sortDirectionGroup->addAction(action);
-        sortMenu->addAction(action);
-        actionCloneLibrary.insert(action->data().toStringList().first(), action);
-    };
-    addDirection(tr("Ascending"), false);
-    addDirection(tr("Descending"), true);
-
-    return sortMenu;
-}
-
 void ActionManager::actionTriggered(QAction *triggeredAction)
 {
     auto key = triggeredAction->data().toStringList().first();
 
     // For some actions, do not look for a relevant window
-    QStringList windowlessActions = {"newwindow", "quit", "clearrecents", "open"};
-#ifdef Q_OS_MACOS
-    windowlessActions << "about" << "welcome" << "options";
-#endif
+    QStringList windowlessActions = {"newwindow", "quit", "clearrecents", "open", "about", "options"};
     for (const auto &actionName : std::as_const(windowlessActions))
     {
         if (key == actionName)
@@ -658,8 +569,6 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         qvApp->openOptionsDialog(relevantWindow);
     } else if (key == "about") {
         qvApp->openAboutDialog(relevantWindow);
-    } else if (key == "welcome") {
-        qvApp->openWelcomeDialog(relevantWindow);
     } else if (key == "clearrecents") {
         qvApp->getActionManager().clearRecentsList();
     }
@@ -725,6 +634,10 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         relevantWindow->resetTransformation();
     } else if (key == "matchimagesize") {
         relevantWindow->setWindowSize(true, true);
+    } else if (key == "scrollup") {
+        relevantWindow->scrollImage(0, -120);
+    } else if (key == "scrolldown") {
+        relevantWindow->scrollImage(0, 120);
     } else if (key == "windowontop") {
         relevantWindow->toggleWindowOnTop();
     } else if (key == "toggletitlebar") {
@@ -757,10 +670,6 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         relevantWindow->increaseSpeed();
     } else if (key == "slideshow") {
         relevantWindow->toggleSlideshow();
-    } else if (key.startsWith("sortmode")) {
-        relevantWindow->setSortMode(static_cast<Qv::SortMode>(key.mid(QString("sortmode").length()).toInt()));
-    } else if (key.startsWith("sortdirection")) {
-        relevantWindow->setSortDescending(key.endsWith("1"));
     }
 }
 
@@ -801,13 +710,8 @@ void ActionManager::initializeActionLibrary()
     actionLibrary.insert("closeallwindows", closeAllWindowsAction);
 
     auto *openContainingFolderAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::FolderOpen), tr("Open Containing &Folder"));
-#ifdef Q_OS_WIN
     //: Open containing folder on windows
     openContainingFolderAction->setText(tr("Show in E&xplorer"));
-#elif defined Q_OS_MACOS
-    //: Open containing folder on macOS
-    openContainingFolderAction->setText(tr("Show in &Finder"));
-#endif
     openContainingFolderAction->setData({"disable"});
     actionLibrary.insert("opencontainingfolder", openContainingFolderAction);
 
@@ -899,6 +803,14 @@ void ActionManager::initializeActionLibrary()
     matchImageSizeAction->setData({"disable"});
     actionLibrary.insert("matchimagesize", matchImageSizeAction);
 
+    auto *scrollUpAction = new QAction(tr("Scroll &Up"));
+    scrollUpAction->setData({"disable"});
+    actionLibrary.insert("scrollup", scrollUpAction);
+
+    auto *scrollDownAction = new QAction(tr("Scroll &Down"));
+    scrollDownAction->setData({"disable"});
+    actionLibrary.insert("scrolldown", scrollDownAction);
+
     auto *windowOnTopAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::KeyboardDoubleArrowUp), tr("Window On To&p"));
     windowOnTopAction->setData({"windowdisable"});
     windowOnTopAction->setCheckable(true);
@@ -942,11 +854,11 @@ void ActionManager::initializeActionLibrary()
     actionLibrary.insert("pause", pauseAction);
 
     auto *nextFrameAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::SkipNext), tr("&Next Frame"));
-    nextFrameAction->setData({"gifdisable"});
+    nextFrameAction->setData({"framedisable"});
     actionLibrary.insert("nextframe", nextFrameAction);
 
     auto *previousFrameAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::SkipPrevious), tr("&Previous Frame"));
-    previousFrameAction->setData({"gifdisable"});
+    previousFrameAction->setData({"framedisable"});
     actionLibrary.insert("previousframe", previousFrameAction);
 
     auto *decreaseSpeedAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::FastRewind), tr("&Decrease Speed"));
@@ -967,50 +879,21 @@ void ActionManager::initializeActionLibrary()
 
     //: This is for the options dialog on windows
     auto *optionsAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Settings), tr("&Settings"));
-#ifdef Q_OS_MACOS
-    if (QOperatingSystemVersion::current() < QOperatingSystemVersion(QOperatingSystemVersion::MacOS, 13)) {
-        //: This is for the options dialog on older mac versions
-        optionsAction->setText(tr("Preference&s..."));
-    } else {
-        optionsAction->setText(tr("Setting&s..."));
-    }
-#endif
     optionsAction->setMenuRole(QAction::PreferencesRole);
     actionLibrary.insert("options", optionsAction);
 
     auto *aboutAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Info), tr("&About"));
-#ifdef Q_OS_MACOS
-    //: This is for the about dialog on mac
-    aboutAction->setText(tr("&About qView"));
-#endif
     aboutAction->setMenuRole(QAction::AboutRole);
     actionLibrary.insert("about", aboutAction);
-
-    auto *welcomeAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Start), tr("&Welcome"));
-    actionLibrary.insert("welcome", welcomeAction);
 
     //: This is for clearing the recents menu
     auto *clearRecentsAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::PlaylistRemove), tr("Clear &Menu"));
     actionLibrary.insert("clearrecents", clearRecentsAction);
 
-    //: Open with other program for unix non-mac
-    auto *openWithOtherAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Launch), tr("Other Application..."));
-#ifdef Q_OS_WIN
     //: Open with other program for windows
+    auto *openWithOtherAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Launch), tr("Other Application..."));
     openWithOtherAction->setText(tr("Choose another app"));
-#elif defined Q_OS_MACOS
-    //: Open with other program for macos
-    openWithOtherAction->setText(tr("Other..."));
-#endif
     actionLibrary.insert("openwithother", openWithOtherAction);
-
-#ifdef Q_OS_MACOS
-    // Qt's QCocoaMenu doesn't support disabling submenus (probably a bug) so we'll just use
-    // a disabled menu item as a placeholder and swap it out with the real submenu later
-    auto *openWithPlaceholderAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Launch), tr("Open With"));
-    openWithPlaceholderAction->setEnabled(false);
-    actionLibrary.insert("openwithplaceholder", openWithPlaceholderAction);
-#endif
 
     // Set data values and disable actions
     const auto keys = actionLibrary.keys();

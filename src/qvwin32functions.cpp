@@ -1,11 +1,12 @@
 #include "qvwin32functions.h"
 
 #include "ShlObj_core.h"
-#include "winuser.h"
-#include "wingdi.h"
+#include "shobjidl.h"
+#include "shlwapi.h"
 #include "Objbase.h"
 #include "appmodel.h"
-#include "Shlwapi.h"
+#include "servprov.h"
+#include "shlguid.h"
 
 #include <QFileInfo>
 #include <QFile>
@@ -71,8 +72,8 @@ QList<OpenWith::OpenWithItem> QVWin32Functions::getOpenWithItems(const QString &
         QString iconLocation = QString::fromWCharArray(icon);
         bool isAppx = iconLocation.contains("ms-resource");
 
-        // Don't include qView in open with menu
-        if (openWithItem.name == "qView")
+        // Don't include wView in open with menu
+        if (openWithItem.name == "wView")
             continue;
 
         // Validity check
@@ -215,4 +216,159 @@ QByteArray QVWin32Functions::getIccProfileForWindow(const QWindow *window)
         }
     }
     return result;
+}
+
+QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
+{
+    QStringList sortOrder;
+
+    // Initialize COM - S_FALSE means already initialized on this thread
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    bool comInitialized = SUCCEEDED(hr);
+
+    // Get IShellWindows
+    IShellWindows *pShellWindows = nullptr;
+    hr = CoCreateInstance(CLSID_ShellWindows, nullptr, CLSCTX_ALL, IID_IShellWindows, (void**)&pShellWindows);
+    if (FAILED(hr) || !pShellWindows)
+    {
+        if (comInitialized)
+            CoUninitialize();
+        return sortOrder;
+    }
+
+    // Get count of windows
+    long count = 0;
+    pShellWindows->get_Count(&count);
+
+    // Normalize the target folder path for comparison
+    const QString normalizedFolderPath = QDir::toNativeSeparators(folderPath).toLower();
+
+    // Iterate through windows to find one showing our folder
+    for (long i = 0; i < count; i++)
+    {
+        VARIANT vIndex;
+        VariantInit(&vIndex);
+        vIndex.vt = VT_I4;
+        vIndex.lVal = i;
+
+        IDispatch *pDispatch = nullptr;
+        hr = pShellWindows->Item(vIndex, &pDispatch);
+        VariantClear(&vIndex);
+
+        if (FAILED(hr) || !pDispatch)
+            continue;
+
+        // Query for IWebBrowser2
+        IWebBrowser2 *pBrowser = nullptr;
+        hr = pDispatch->QueryInterface(IID_IWebBrowser2, (void**)&pBrowser);
+        if (FAILED(hr) || !pBrowser)
+        {
+            pDispatch->Release();
+            continue;
+        }
+
+        // Get the document
+        IDispatch *pDocDispatch = nullptr;
+        hr = pBrowser->get_Document(&pDocDispatch);
+        if (FAILED(hr) || !pDocDispatch)
+        {
+            pBrowser->Release();
+            pDispatch->Release();
+            continue;
+        }
+
+        // Get the shell browser via IServiceProvider; the document does not expose IShellBrowser directly
+        IServiceProvider *pServiceProvider = nullptr;
+        hr = pDocDispatch->QueryInterface(IID_IServiceProvider, (void**)&pServiceProvider);
+        IShellBrowser *pShellBrowser = nullptr;
+        if (SUCCEEDED(hr) && pServiceProvider)
+        {
+            hr = pServiceProvider->QueryService(SID_STopLevelBrowser, IID_IShellBrowser, (void**)&pShellBrowser);
+            pServiceProvider->Release();
+        }
+        if (SUCCEEDED(hr) && pShellBrowser)
+        {
+            // Get the current folder view from the active shell view; the top-level browser
+            // itself does not expose IFolderView on Windows 11
+            IShellView *pShellView = nullptr;
+            hr = pShellBrowser->QueryActiveShellView(&pShellView);
+            IFolderView *pFolderView = nullptr;
+            if (SUCCEEDED(hr) && pShellView)
+            {
+                hr = pShellView->QueryInterface(IID_IFolderView, (void**)&pFolderView);
+                pShellView->Release();
+            }
+            if (SUCCEEDED(hr) && pFolderView)
+            {
+                // Get the current folder
+                IPersistFolder2 *pPersistFolder = nullptr;
+                hr = pFolderView->GetFolder(IID_IPersistFolder2, (void**)&pPersistFolder);
+                if (SUCCEEDED(hr) && pPersistFolder)
+                {
+                    LPITEMIDLIST pidl = nullptr;
+                    hr = pPersistFolder->GetCurFolder(&pidl);
+                    if (SUCCEEDED(hr) && pidl)
+                    {
+                        // Get the folder path
+                        WCHAR folderPathBuf[MAX_PATH];
+                        if (SHGetPathFromIDListW(pidl, folderPathBuf))
+                        {
+                            QString explorerPath = QString::fromWCharArray(folderPathBuf);
+                            // Normalize paths for comparison
+                            QString normalizedExplorerPath = QDir::toNativeSeparators(explorerPath).toLower();
+
+                            if (normalizedExplorerPath == normalizedFolderPath)
+                            {
+                                // Found the matching window, get the sort order. IFolderView::Items()
+                                // can report a stale order (items added while the view is open are
+                                // appended until it re-sorts), so query items by index instead, which
+                                // reflects the order actually shown in Explorer.
+                                int itemCount = 0;
+                                hr = pFolderView->ItemCount(SVGIO_ALLVIEW, &itemCount);
+                                if (SUCCEEDED(hr))
+                                {
+                                    for (int index = 0; index < itemCount; index++)
+                                    {
+                                        LPITEMIDLIST pidlItem = nullptr;
+                                        if (FAILED(pFolderView->Item(index, &pidlItem)) || !pidlItem)
+                                            continue;
+
+                                        //Combine with the folder PIDL since the view may return simple item PIDLs
+                                        //which would otherwise be misresolved against the desktop namespace
+                                        LPITEMIDLIST pidlFull = ILCombine(pidl, pidlItem);
+                                        const LPITEMIDLIST pidlToResolve = pidlFull ? pidlFull : pidlItem;
+                                        WCHAR filePath[MAX_PATH];
+                                        if (SHGetPathFromIDListW(pidlToResolve, filePath))
+                                        {
+                                            sortOrder.append(QString::fromWCharArray(filePath));
+                                        }
+                                        if (pidlFull)
+                                            CoTaskMemFree(pidlFull);
+                                        CoTaskMemFree(pidlItem);
+                                    }
+                                }
+                            }
+                        }
+                        CoTaskMemFree(pidl);
+                    }
+                    pPersistFolder->Release();
+                }
+                pFolderView->Release();
+            }
+            pShellBrowser->Release();
+        }
+
+        pDocDispatch->Release();
+        pBrowser->Release();
+        pDispatch->Release();
+
+        if (!sortOrder.isEmpty())
+            break;
+    }
+
+    pShellWindows->Release();
+    if (comInitialized)
+        CoUninitialize();
+
+    return sortOrder;
 }

@@ -1,6 +1,5 @@
 #include "qvapplication.h"
 #include "qvoptionsdialog.h"
-#include "qvcocoafunctions.h"
 #include "simplefonticonengine.h"
 #include "updatechecker.h"
 
@@ -15,34 +14,13 @@
 
 QVApplication::QVApplication(int &argc, char **argv) : QApplication(argc, argv)
 {
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    setDesktopFileName("com.interversehq.qView");
-
-    QIcon appIcon;
-    appIcon.addFile(":/icons/qView-16.png");
-    appIcon.addFile(":/icons/qView-32.png");
-    appIcon.addFile(":/icons/qView-64.png");
-    appIcon.addFile(":/icons/qView-128.png");
-    appIcon.addFile(":/icons/qView-256.png");
-    QApplication::setWindowIcon(appIcon);
-
-    // Add fallback fromTheme icon search
-    QIcon::setFallbackSearchPaths(QIcon::fallbackSearchPaths() << "/usr/share/pixmaps");
-#endif
-
     // Connections
     connect(this, &QGuiApplication::commitDataRequest, this, &QVApplication::onCommitDataRequest, Qt::DirectConnection);
     connect(this, &QCoreApplication::aboutToQuit, this, &QVApplication::onAboutToQuit);
     connect(&settingsManager, &SettingsManager::settingsUpdated, this, &QVApplication::settingsUpdated);
     connect(&actionManager, &ActionManager::recentsMenuUpdated, this, &QVApplication::recentsMenuUpdated);
-    connect(&updateChecker, &UpdateChecker::checkedUpdates, this, &QVApplication::checkedUpdates);
 
     settingsUpdated();
-
-    // Check for updates
-    // TODO: move this to after first window show event
-    if (getSettingsManager().getBoolean("updatenotifications"))
-        updateChecker.check();
 
     showMainMenuIcons = getSettingsManager().getBoolean("mainmenuicons");
     showContextMenuIcons = getSettingsManager().getBoolean("contextmenuicons");
@@ -57,19 +35,7 @@ QVApplication::QVApplication(int &argc, char **argv) : QApplication(argc, argv)
     // Ask Qt to show menu icons - the action clone logic decides whether to actually set icons
     setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
-    // Setup macOS dock menu
-    dockMenu = new QMenu();
-    connect(dockMenu, &QMenu::triggered, this, [](QAction *triggeredAction){
-        ActionManager::actionTriggered(triggeredAction);
-    });
-
     actionManager.loadRecentsList();
-
-#ifdef Q_OS_MACOS
-    actionManager.addCloneOfAction(dockMenu, "newwindow");
-    actionManager.addCloneOfAction(dockMenu, "open");
-    dockMenu->setAsDockMenu();
-#endif
 
     // Build menu bar
     menuBar = actionManager.buildMenuBar();
@@ -77,18 +43,11 @@ QVApplication::QVApplication(int &argc, char **argv) : QApplication(argc, argv)
         ActionManager::actionTriggered(triggeredAction);
     });
 
-    // Set mac-specific application settings
-#ifdef COCOA_LOADED
-    QVCocoaFunctions::setUserDefaults();
-    QVCocoaFunctions::registerWillPowerOffObserver();
-#endif
-
     hideIncompatibleActions();
 }
 
 QVApplication::~QVApplication()
 {
-    dockMenu->deleteLater();
     menuBar->deleteLater();
 }
 
@@ -97,8 +56,8 @@ bool QVApplication::event(QEvent *event)
     if (event->type() == QEvent::FileOpen)
     {
         auto *openEvent = static_cast<QFileOpenEvent *>(event);
-        bool reuseWindow = getSettingsManager().getBoolean("reusewindow");
-        openFile(getMainWindow(!reuseWindow), openEvent->file());
+        bool allowMultiple = qvApp->getSettingsManager().getBoolean("allowmultiplewindows");
+        openFile(getMainWindow(!allowMultiple ? false : true), openEvent->file());
     }
     else if (event->type() == QEvent::ApplicationStateChange)
     {
@@ -129,7 +88,10 @@ void QVApplication::openFile(MainWindow *window, const QString &file, bool resiz
 
 void QVApplication::openFile(const QString &file, bool resize)
 {
-    auto *window = qvApp->getMainWindow(true);
+    const bool allowMultiple = qvApp->getSettingsManager().getBoolean("allowmultiplewindows");
+    // When multiple windows are NOT allowed, always reuse the most recent window
+    // When multiple windows ARE allowed, find an empty window or create a new one
+    auto *window = qvApp->getMainWindow(!allowMultiple ? false : true);
 
     QVApplication::openFile(window, file, resize);
 }
@@ -194,38 +156,8 @@ MainWindow *QVApplication::getMainWindow(bool shouldBeEmpty)
     return foundWindow ? foundWindow : newWindow();
 }
 
-void QVApplication::checkedUpdates()
-{
-    const UpdateChecker::CheckResult checkResult = updateChecker.getCheckResult();
-
-    QWidget *dialogParent = aboutDialog ? aboutDialog : nullptr;
-
-    if (checkResult.wasSuccessful && checkResult.isConsideredUpdate())
-    {
-        updateChecker.openDialog(dialogParent, !aboutDialog);
-    }
-    else if (aboutDialog)
-    {
-        if (!checkResult.wasSuccessful)
-            QMessageBox::critical(dialogParent, tr("Error"), tr("Error checking for updates:\n%1").arg(checkResult.errorMessage));
-        else
-            QMessageBox::information(dialogParent, tr("No Updates"), tr("You already have the latest version."));
-    }
-
-    if (aboutDialog)
-        aboutDialog->updateCheckForUpdatesButtonState();
-}
-
 void QVApplication::recentsMenuUpdated()
 {
-#ifdef COCOA_LOADED
-    QStringList recentsPathList;
-    for (const auto &recent : actionManager.getRecentsList())
-    {
-        recentsPathList << recent.filePath;
-    }
-    QVCocoaFunctions::setDockRecents(recentsPathList);
-#endif
 }
 
 void QVApplication::addToActiveWindows(MainWindow *window)
@@ -266,11 +198,6 @@ bool QVApplication::foundOnTopWindow() const
 
 void QVApplication::openOptionsDialog(QWidget *parent)
 {
-#ifdef Q_OS_MACOS
-    // On macOS, the dialog should not be dependent on any window
-    parent = nullptr;
-#endif
-
     if (optionsDialog)
     {
         optionsDialog->raise();
@@ -282,31 +209,8 @@ void QVApplication::openOptionsDialog(QWidget *parent)
     optionsDialog->show();
 }
 
-void QVApplication::openWelcomeDialog(QWidget *parent)
-{
-#ifdef Q_OS_MACOS
-    // On macOS, the dialog should not be dependent on any window
-    parent = nullptr;
-#endif
-
-    if (welcomeDialog)
-    {
-        welcomeDialog->raise();
-        welcomeDialog->activateWindow();
-        return;
-    }
-
-    welcomeDialog = new QVWelcomeDialog(parent);
-    welcomeDialog->show();
-}
-
 void QVApplication::openAboutDialog(QWidget *parent)
 {
-#ifdef Q_OS_MACOS
-    // On macOS, the dialog should not be dependent on any window
-    parent = nullptr;
-#endif
-
     if (aboutDialog)
     {
         aboutDialog->raise();
@@ -328,10 +232,6 @@ void QVApplication::settingsUpdated()
 
     QString disabledFileExtensionsStr = settingsManager.getString("disabledfileextensions");
     disabledFileExtensions = Qv::listToSet(!disabledFileExtensionsStr.isEmpty() ? disabledFileExtensionsStr.split(';') : QStringList());
-
-#ifdef Q_OS_MACOS
-    setQuitOnLastWindowClosed(settingsManager.getBoolean("quitonlastwindow"));
-#endif
 
     defineFilterLists();
 }
@@ -358,7 +258,7 @@ void QVApplication::defineFilterLists()
     {
         const auto fileExtension = "." + QString::fromUtf8(byteArray);
 
-        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in qView
+        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in wView
         if (fileExtension == ".pdf")
             continue;
 
@@ -392,7 +292,7 @@ void QVApplication::defineFilterLists()
     {
         const QString mimeType = QString::fromUtf8(byteArray);
 
-        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in qView
+        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in wView
         if (mimeType == "application/pdf")
             continue;
 
@@ -447,11 +347,7 @@ bool QVApplication::isMouseEventSynthesized(const QMouseEvent *event)
 
 bool QVApplication::supportsSessionPersistence()
 {
-#ifdef COCOA_LOADED
-    return true;
-#else
     return false;
-#endif
 }
 
 bool QVApplication::tryRestoreLastSession()

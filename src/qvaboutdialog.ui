@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>About qView</string>
+   <string>About wView</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -36,7 +36,7 @@
         </font>
        </property>
        <property name="text">
-        <string notr="true">qView</string>
+        <string notr="true">wView</string>
        </property>
        <property name="scaledContents">
         <bool>false</bool>

@@ -51,7 +51,6 @@ protected:
     void restartNotifyForCheckbox(const QString &key, const Qt::CheckState state);
     void customizePalette();
     void populateCategories(int selectedRow);
-    void populateLanguages();
     void populateComboBoxes();
 
     const Ui::ComboBoxItems<Qv::AfterDelete> mapAfterDelete();
@@ -63,7 +62,10 @@ protected:
     const Ui::ComboBoxItems<Qv::SmoothScalingMode> mapSmoothScalingMode();
     const Ui::ComboBoxItems<Qv::SortMode> mapSortMode();
     const Ui::ComboBoxItems<Qv::TitleBarText> mapTitleBarText();
-    const Ui::ComboBoxItems<Qv::WindowResizeMode> mapWindowResizeMode();
+    const Ui::ComboBoxItems<Qv::WindowSizeMode> mapWindowSizeMode();
+    const Ui::ComboBoxItems<Qv::WindowPositionMode> mapWindowPositionMode();
+    const Ui::ComboBoxItems<Qv::InitialViewMode> mapInitialViewMode();
+    const Ui::ComboBoxItems<Qv::HorizontalPortraitPadding> mapHorizontalPortraitPadding();
     const Ui::ComboBoxItems<Qv::ViewportClickAction> mapViewportClickAction();
     const Ui::ComboBoxItems<Qv::ViewportDragAction> mapViewportDragAction();
     const Ui::ComboBoxItems<Qv::ViewportScrollAction> mapViewportScrollAction();
@@ -81,13 +83,9 @@ private slots:
 
     void smoothScalingLimitCheckboxCheckStateChanged(Qt::CheckState state);
 
-    void fitZoomLimitCheckboxCheckStateChanged(Qt::CheckState state);
-
     void constrainImagePositionCheckboxCheckStateChanged(Qt::CheckState state);
 
     void cursorAutoHideFullscreenCheckboxCheckStateChanged(Qt::CheckState state);
-
-    void languageComboBoxCurrentIndexChanged(int index);
 
     void formatsItemChanged(QTableWidgetItem *item);
 
@@ -103,8 +101,6 @@ private:
     QSet<QString> transientDisabledFileExtensions;
 
     bool isInitialLoad {true};
-
-    bool languageRestartMessageShown {false};
 
     bool isLoadingFormats {false};
 };

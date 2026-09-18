@@ -108,10 +108,6 @@ public:
 
     void setNavigationResetsZoom(const bool value);
 
-    void setSortMode(const Qv::SortMode mode);
-
-    void setSortDescending(const bool descending);
-
     void rotateRight();
 
     void rotateLeft();
@@ -121,6 +117,8 @@ public:
     void flip();
 
     void resetTransformation();
+
+    void scrollImage(int deltaX, int deltaY);
 
     void firstFile();
 
@@ -158,6 +156,8 @@ public:
 
     const QVImageCore::FileDetails& getCurrentFileDetails() const { return graphicsView->getCurrentFileDetails(); }
 
+    QVGraphicsView* getGraphicsView() const { return graphicsView; }
+
     bool hasFileOrPendingLoad() const { return graphicsView->hasFileOrPendingLoad(); }
 
     bool getIsPixmapLoaded() const { return getCurrentFileDetails().isPixmapLoaded; }
@@ -169,7 +169,7 @@ public:
     bool getIsClosing() const { return isClosing; }
 
 public slots:
-    void openFile(const QString &fileName, const QString &baseDir = "");
+    void openFile(const QString &fileName, const QString &baseDir = "", std::optional<int> initialFrameNumber = {});
 
     void toggleSlideshow();
 
@@ -177,7 +177,7 @@ public slots:
 
     void cancelSlideshow();
 
-    void fileChanged(const bool isRestoringState);
+    void fileChanged(bool isRestoringState);
 
     void zoomLevelChanged();
 

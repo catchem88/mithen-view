@@ -13,29 +13,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - runner: 'ubuntu-22.04'
-            qtVersion: '6.11.1'
-            qtModules: 'qtimageformats'
-            osSuffix: '_x86_64'
-            buildArch: 'X64'
-            zipArtifact: false
-          - runner: 'ubuntu-24.04-arm'
-            qtVersion: '6.11.1'
-            qtModules: 'qtimageformats'
-            osSuffix: '_aarch64'
-            buildArch: 'Arm64'
-            zipArtifact: false
-          - runner: 'macos-26'
-            qtVersion: '6.11.1'
-            qtModules: 'qtimageformats'
-            buildArch: 'Universal'
-            zipArtifact: false
-          - runner: 'macos-15'
-            qtVersion: '6.7.3'
-            osSuffix: '_legacy'
-            qtModules: 'qtimageformats'
-            buildArch: 'Universal'
-            zipArtifact: false
           - runner: 'windows-2022'
             qtVersion: '6.11.1'
             qtArch: 'win64_msvc2022_64'
@@ -53,7 +30,6 @@ jobs:
     runs-on: ${{ matrix.runner }}
     env:
       AUTOSIGN_REQUESTED: ${{ github.ref == 'refs/heads/master' }}
-      CAN_AUTOSIGN_MACOS: ${{ secrets.APPLE_DEVID_APP_CERT_DATA != '' }}
       CAN_AUTOSIGN_WINDOWS: ${{ vars.AZURE_SIGNING_CERTIFICATE != '' }}
     steps:
       - name: Set environment variables
@@ -82,7 +58,7 @@ jobs:
         run: dist/scripts/build.ps1
 
       - name: Signing (Windows)
-        if: runner.os == 'Windows' && (inputs.codeSign || (env.AUTOSIGN_REQUESTED == 'true' && env.CAN_AUTOSIGN_WINDOWS == 'true'))
+        if: inputs.codeSign || (env.AUTOSIGN_REQUESTED == 'true' && env.CAN_AUTOSIGN_WINDOWS == 'true')
         uses: azure/artifact-signing-action@v2
         with:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -104,22 +80,8 @@ jobs:
         run: dist/scripts/download-plugins.ps1
 
       - name: Deploy qView
-        env:
-          APPLE_NOTARIZE_REQUESTED: ${{ inputs.codeSign || (env.AUTOSIGN_REQUESTED == 'true' && env.CAN_AUTOSIGN_MACOS == 'true') }}
-          APPLE_DEVID_APP_CERT_DATA: ${{ secrets.APPLE_DEVID_APP_CERT_DATA }}
-          APPLE_DEVID_APP_CERT_PASS: ${{ secrets.APPLE_DEVID_APP_CERT_PASS }}
-          APPLE_ID_USER: ${{ secrets.APPLE_ID_USER }}
-          APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
         shell: pwsh
-        run: |
-          if ($IsWindows) {
-            & dist/scripts/windeployqt.ps1 ${{ env.buildNumString }}
-          } elseif ($IsMacOS) {
-            & dist/scripts/macinstallcert.ps1
-            bash dist/scripts/macdeploy.sh ${{ env.buildNumString }} ${{ matrix.osSuffix }}
-          } else {
-            bash dist/scripts/linuxdeployqt.sh ${{ env.buildNumString }}
-          }
+        run: dist/scripts/windeployqt.ps1 ${{ env.buildNumString }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v7

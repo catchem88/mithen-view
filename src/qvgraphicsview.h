@@ -31,7 +31,7 @@ public:
 
     QMimeData* getMimeData() const;
     void loadMimeData(const QMimeData *mimeData);
-    void loadFile(const QString &fileName, const QString &baseDir = "");
+    void loadFile(const QString &fileName, const QString &baseDir = "", std::optional<int> initialFrameNumber = {});
 
     void reloadFile();
 
@@ -61,6 +61,8 @@ public:
 
     void centerImage();
 
+    void scrollImage(int deltaX, int deltaY);
+
     void setCursorVisible(const bool visible);
 
     const QJsonObject getSessionState() const;
@@ -68,6 +70,10 @@ public:
     void loadSessionState(const QJsonObject &state);
 
     void setLoadIsFromSessionRestore(const bool value);
+
+    void setPendingMaximize(const bool value) { isPendingMaximize = value; }
+
+    void setSmallImageMode(const bool value) { isSmallImageMode = value; }
 
     void goToFile(const Qv::GoToFileMode mode, const int index = 0);
 
@@ -89,8 +95,13 @@ public:
 
     LogicalPixelFitter getPixelFitter() const;
 
+    QRect getContentRect() const;
+
+    QRect getImageViewportRect() const;
+
     const QVImageCore::FileDetails& getCurrentFileDetails() const { return imageCore.getCurrentFileDetails(); }
     const QVMovie& getLoadedMovie() const { return imageCore.getLoadedMovie(); }
+    const QPixmap& getLoadedPixmap() const { return imageCore.getLoadedPixmap(); }
     bool hasFileOrPendingLoad() const { return imageCore.hasFileOrPendingLoad(); }
     qreal getZoomLevel() const { return zoomLevel; }
 
@@ -159,8 +170,6 @@ protected:
     void matchContentCenter(const QRect target);
 
     std::optional<Qv::GoToFileMode> getNavigationRegion(const QPoint mousePos) const;
-
-    QRect getContentRect() const;
 
     QRect getUsableViewportRect(const bool addOverscan = false) const;
 
@@ -235,6 +244,17 @@ private:
     bool isCursorAutoHideFullscreenEnabled {true};
     bool isCursorVisible {true};
     QRect lastImageContentRect;
+
+    // State for toggle original size - save previous zoom before switching to 100%
+    std::optional<Qv::CalculatedZoomMode> previousCalculatedZoomMode;
+    qreal previousZoomLevel {1.0};
+    bool isOriginalSizeMode {false};
+    QPoint previousScrollPos;
+
+    // Flag to prevent postLoad from calculating zoom before window state change
+    bool isPendingMaximize {false};
+    // Flag for small images: window was sized to image, keep at 100% zoom
+    bool isSmallImageMode {false};
 
     QVImageCore imageCore {this};
 

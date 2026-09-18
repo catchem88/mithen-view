@@ -43,6 +43,11 @@ CMakeLists.txt.user*
 # Custom
 *.exe
 .vscode
+.ai/
+.qm/
 
 bin/*
 build/*
+res/*
+builder/*
+dist/win/translations/

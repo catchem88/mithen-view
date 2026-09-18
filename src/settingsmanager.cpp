@@ -9,6 +9,15 @@
 
 #include <QDebug>
 
+namespace
+{
+// Translations shipped by the installer live next to the executable
+QString translationsPath()
+{
+    return QCoreApplication::applicationDirPath() + "/translations";
+}
+}
+
 SettingsManager::SettingsManager(QObject *parent) : QObject(parent)
 {
     initializeSettingsLibrary();
@@ -16,11 +25,26 @@ SettingsManager::SettingsManager(QObject *parent) : QObject(parent)
     loadTranslations();
 }
 
-QString SettingsManager::getSystemLanguage() const
+QString SettingsManager::getInstalledLanguage() const
 {
-    auto entries = QDir(":/i18n/").entryList();
-    entries.prepend("qview_en.ts");
-    const auto centries = entries;
+    // The installer ships a catalog for the language chosen during installation, so the language
+    // is resolved from what is actually installed next to the executable.
+    QStringList available;
+    const auto entries = QDir(translationsPath()).entryList({"wView_*.qm"}, QDir::Files);
+    for (const auto &entry : entries)
+    {
+        QString language = entry;
+        language.remove(0, 6);
+        language.remove(language.length() - 3, 3);
+        available.append(language);
+    }
+
+    if (available.isEmpty())
+        return "en";
+
+    // Only one catalog installed means the install-time choice wins over the system locale
+    if (available.size() == 1)
+        return available.first();
 
     const auto languages = QLocale::system().uiLanguages();
     for (auto language : languages)
@@ -28,34 +52,30 @@ QString SettingsManager::getSystemLanguage() const
         language.replace('-', '_');
         const auto countryless = language.left(2);
 
-        for (auto entry : centries)
+        for (const auto &entry : available)
         {
-            entry.remove(0, 6);
-            entry.remove(entry.length()-3, 3);
+            if (entry.compare(language, Qt::CaseInsensitive) == 0)
+                return entry;
 
-            if (entry == language)
-                return language;
-
-            if (entry == countryless)
-                return countryless;
+            if (entry.compare(countryless, Qt::CaseInsensitive) == 0)
+                return entry;
         }
     }
-    return "en";
+    return available.first();
 }
 
 void SettingsManager::loadTranslations()
 {
-    QString language = getString("language");
-    if (language == "system")
-        language = getSystemLanguage();
-
+    const QString language = getInstalledLanguage();
     if (language == "en")
         return;
 
-    if (qtTranslator.load(QLocale(language), "qtbase", "_", ":/qt-translations"))
+    const QString path = translationsPath();
+
+    if (qtTranslator.load(QLocale(language), "qtbase", "_", path))
         QCoreApplication::installTranslator(&qtTranslator);
 
-    if (appTranslator.load("qview_" + language + ".qm", ":/i18n"))
+    if (appTranslator.load("wView_" + language + ".qm", path))
         QCoreApplication::installTranslator(&appTranslator);
 }
 
@@ -158,20 +178,106 @@ void SettingsManager::migrateOldSettings()
             Qv::SmoothScalingMode::Disabled;
         settings.setValue("smoothscalingmode", static_cast<int>(value));
     }
+
+    // Migration: Clear old Mirror shortcut "F" to avoid conflict with Fullscreen "F"
+    QSettings shortcutSettings;
+    shortcutSettings.beginGroup("shortcuts");
+    const QString mirrorKey = "mirror";
+    if (shortcutSettings.contains(mirrorKey))
+    {
+        QStringList currentShortcuts = shortcutSettings.value(mirrorKey).toStringList();
+        if (currentShortcuts.contains(QKeySequence(Qt::Key_F).toString()))
+        {
+            currentShortcuts.removeAll(QKeySequence(Qt::Key_F).toString());
+            if (currentShortcuts.isEmpty())
+                shortcutSettings.remove(mirrorKey);
+            else
+                shortcutSettings.setValue(mirrorKey, currentShortcuts);
+        }
+    }
+
+    // Migration: Update Full Screen shortcuts to new defaults
+    const QString fullscreenKey = "fullscreen";
+    if (shortcutSettings.contains(fullscreenKey))
+    {
+        QStringList currentShortcuts = shortcutSettings.value(fullscreenKey).toStringList();
+        QStringList newShortcuts;
+        newShortcuts << QKeySequence(Qt::Key_F11).toString();
+        newShortcuts << QKeySequence(Qt::ALT | Qt::Key_Return).toString();
+        newShortcuts << QKeySequence(Qt::Key_F).toString();
+        // Only update if the shortcuts don't already match
+        if (currentShortcuts != newShortcuts)
+        {
+            shortcutSettings.setValue(fullscreenKey, newShortcuts);
+        }
+    }
+
+    shortcutSettings.endGroup();
+
+    // Migration: Force skiphidden to true
+    QSettings optionsSettings;
+    optionsSettings.beginGroup("options");
+    if (!optionsSettings.contains("skiphidden") || !optionsSettings.value("skiphidden").toBool())
+    {
+        optionsSettings.setValue("skiphidden", true);
+    }
+
+    optionsSettings.endGroup();
+
+    // Migration: Update shortcut defaults
+    // Remove "Up" from Rotate Right, "Down" from Rotate Left, "Ctrl+F" from Flip
+    // Change "Pause" from "P" to "Space"
+    const QString shortcutPrefix = "shortcuts/";
+    QSettings shortcutMigrate;
+    const QStringList removedShortcutKeys = {
+        "rotateright", "rotateleft", "flip"
+    };
+    for (const QString &key : removedShortcutKeys)
+    {
+        if (shortcutMigrate.contains(shortcutPrefix + key))
+        {
+            QStringList currentShortcuts = shortcutMigrate.value(shortcutPrefix + key).toStringList();
+            QStringList newShortcuts;
+            for (const QString &shortcut : currentShortcuts)
+            {
+                if (QKeySequence(shortcut) != QKeySequence(Qt::Key_Up) &&
+                    QKeySequence(shortcut) != QKeySequence(Qt::Key_Down) &&
+                    QKeySequence(shortcut) != QKeySequence(Qt::CTRL | Qt::Key_F))
+                {
+                    newShortcuts << shortcut;
+                }
+            }
+            if (newShortcuts.isEmpty())
+                shortcutMigrate.remove(shortcutPrefix + key);
+            else
+                shortcutMigrate.setValue(shortcutPrefix + key, newShortcuts);
+        }
+    }
+
+    // Change Pause from "P" to "Space"
+    const QString pauseKey = "shortcuts/pause";
+    if (shortcutMigrate.contains(pauseKey))
+    {
+        QStringList currentShortcuts = shortcutMigrate.value(pauseKey).toStringList();
+        if (currentShortcuts.contains(QKeySequence(Qt::Key_P).toString()))
+        {
+            QStringList newShortcuts;
+            for (const QString &shortcut : currentShortcuts)
+            {
+                if (QKeySequence(shortcut) == QKeySequence(Qt::Key_P))
+                    newShortcuts << QKeySequence(Qt::Key_Space).toString();
+                else
+                    newShortcuts << shortcut;
+            }
+            shortcutMigrate.setValue(pauseKey, newShortcuts);
+        }
+    }
 }
 
 void SettingsManager::copyFromOfficial()
 {
-    const QSet<QString> keysToSkip = []()
-    {
-#ifdef Q_OS_MACOS
-        QList<QString> systemDefaultKeys = QSettings{"qView", "NonExistent"}.allKeys();
-        return QSet<QString>{systemDefaultKeys.begin(), systemDefaultKeys.end()};
-#else
-        return QSet<QString>();
-#endif
-    }();
-    QSettings src{"qView", "qView"};
+    const QSet<QString> keysToSkip;
+    QSettings src{"wView", "wView"};
     QSettings dst{};
 
     for (const QString &key : src.allKeys())
@@ -187,70 +293,51 @@ void SettingsManager::initializeSettingsLibrary()
     settingsLibrary.insert("bgcolorenabled", {true, {}});
     settingsLibrary.insert("bgcolor", {"#212121", {}});
     settingsLibrary.insert("checkerboardbackground", {false, {}});
-    settingsLibrary.insert("titlebarmode", {static_cast<int>(Qv::TitleBarText::Minimal), {}});
+    settingsLibrary.insert("titlebarmode", {static_cast<int>(Qv::TitleBarText::Verbose), {}});
     settingsLibrary.insert("customtitlebartext", {"%z - %n", {}});
-    settingsLibrary.insert("windowresizemode", {static_cast<int>(Qv::WindowResizeMode::WhenLaunching), {}});
-    settingsLibrary.insert("aftermatchingsizemode", {static_cast<int>(Qv::AfterMatchingSize::CenterOnPrevious), {}});
-    settingsLibrary.insert("minwindowresizedpercentage", {20, {}});
-    settingsLibrary.insert("maxwindowresizedpercentage", {70, {}});
-    settingsLibrary.insert("titlebaralwaysdark", {false, {}});
-    settingsLibrary.insert("quitonlastwindow", {false, {}});
-    settingsLibrary.insert("menubarenabled", {false, {}});
-    settingsLibrary.insert("fullscreendetails", {false, {}});
-#if defined Q_OS_MACOS && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
-    settingsLibrary.insert("mainmenuicons", {false, {}});
-    settingsLibrary.insert("contextmenuicons", {false, {}});
-#else
+    settingsLibrary.insert("windowsizemode", {static_cast<int>(Qv::WindowSizeMode::Auto), {}});
+    settingsLibrary.insert("windowpositionmode", {static_cast<int>(Qv::WindowPositionMode::Centered), {}});
+    settingsLibrary.insert("menubarenabled", {true, {}});
+    settingsLibrary.insert("allowmultiplewindows", {false, {}});
     settingsLibrary.insert("mainmenuicons", {true, {}});
     settingsLibrary.insert("contextmenuicons", {true, {}});
-#endif
     settingsLibrary.insert("submenuicons", {true, {}});
     settingsLibrary.insert("slideshowkeepswindowontop", {false, {}});
-    settingsLibrary.insert("reusewindow", {false, {}});
-    settingsLibrary.insert("persistsession", {false, {}});
+    settingsLibrary.insert("minwindowresizedpercentage", {25, {}});
+    settingsLibrary.insert("maxwindowresizedpercentage", {100, {}});
     // Image
     settingsLibrary.insert("smoothscalingmode", {static_cast<int>(Qv::SmoothScalingMode::Expensive), {}});
     settingsLibrary.insert("scalingtwoenabled", {true, {}});
-    settingsLibrary.insert("smoothscalinglimitenabled", {false, {}});
+    settingsLibrary.insert("smoothscalinglimitenabled", {true, {}});
     settingsLibrary.insert("smoothscalinglimitpercent", {400, {}});
     settingsLibrary.insert("scalefactor", {25, {}});
     settingsLibrary.insert("cursorzoom", {true, {}});
     settingsLibrary.insert("navresetszoom", {true, {}});
-#ifdef Q_OS_MACOS
-    // Usually not desired due to the way macOS does DPI scaling
-    settingsLibrary.insert("onetoonepixelsizing", {false, {}});
-#else
     settingsLibrary.insert("onetoonepixelsizing", {true, {}});
-#endif
-    settingsLibrary.insert("calculatedzoommode", {static_cast<int>(Qv::CalculatedZoomMode::ZoomToFit), {}});
-    settingsLibrary.insert("fitzoomlimitenabled", {false, {}});
-    settingsLibrary.insert("fitzoomlimitpercent", {100, {}});
-    settingsLibrary.insert("fitoverscan", {0, {}});
+    settingsLibrary.insert("calculatedzoommode", {static_cast<int>(Qv::CalculatedZoomMode::FitWidth), {}});
+    settingsLibrary.insert("initialviewmode", {static_cast<int>(Qv::InitialViewMode::Top), {}});
+    settingsLibrary.insert("portraitpadding", {static_cast<int>(Qv::HorizontalPortraitPadding::Fifteen), {}});
     settingsLibrary.insert("constrainimageposition", {true, {}});
     settingsLibrary.insert("constraincentersmallimage", {true, {}});
     settingsLibrary.insert("disabledelayedconstraint", {false, {}});
-    settingsLibrary.insert("originalsizeastoggle", {false, {}});
     settingsLibrary.insert("colorspaceconversion", {static_cast<int>(Qv::ColorSpaceConversion::AutoDetect), {}});
     // Miscellaneous
-    settingsLibrary.insert("language", {"system", {}});
     settingsLibrary.insert("sortmode", {static_cast<int>(Qv::SortMode::Name), {}});
     settingsLibrary.insert("sortdescending", {false, {}});
     settingsLibrary.insert("preloadingmode", {static_cast<int>(Qv::PreloadMode::Adjacent), {}});
     settingsLibrary.insert("navspeed", {50, {}});
-    settingsLibrary.insert("loopfoldersenabled", {true, {}});
+    settingsLibrary.insert("loopfoldersenabled", {false, {}});
     settingsLibrary.insert("slideshowdirection", {static_cast<int>(Qv::SlideshowDirection::Forward), {}});
     settingsLibrary.insert("slideshowtimer", {5, {}});
     settingsLibrary.insert("afterdelete", {static_cast<int>(Qv::AfterDelete::MoveForward), {}});
     settingsLibrary.insert("askdelete", {true, {}});
     settingsLibrary.insert("allowmimecontentdetection", {false, {}});
-    settingsLibrary.insert("skiphidden", {false, {}});
-    settingsLibrary.insert("saverecents", {true, {}});
-    settingsLibrary.insert("updatenotifications", {false, {}});
+    settingsLibrary.insert("skiphidden", {true, {}});
     // Formats
     settingsLibrary.insert("disabledfileextensions", {"", {}});
     // Mouse
     settingsLibrary.insert("navigationregionsenabled", {false, {}});
-    settingsLibrary.insert("viewportdoubleclickaction", {static_cast<int>(Qv::ViewportClickAction::ToggleFullScreen), {}});
+    settingsLibrary.insert("viewportdoubleclickaction", {static_cast<int>(Qv::ViewportClickAction::OriginalSize), {}});
     settingsLibrary.insert("viewportaltdoubleclickaction", {static_cast<int>(Qv::ViewportClickAction::ToggleTitlebarHidden), {}});
     settingsLibrary.insert("viewportdragaction", {static_cast<int>(Qv::ViewportDragAction::Pan), {}});
     settingsLibrary.insert("viewportaltdragaction", {static_cast<int>(Qv::ViewportDragAction::MoveWindow), {}});
@@ -259,16 +346,11 @@ void SettingsManager::initializeSettingsLibrary()
     settingsLibrary.insert("viewportaltmiddleclickaction", {static_cast<int>(Qv::ViewportClickAction::OriginalSize), {}});
     settingsLibrary.insert("viewportmiddledragaction", {static_cast<int>(Qv::ViewportDragAction::Pan), {}});
     settingsLibrary.insert("viewportaltmiddledragaction", {static_cast<int>(Qv::ViewportDragAction::MoveWindow), {}});
-    settingsLibrary.insert("viewportverticalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Zoom), {}});
+    settingsLibrary.insert("viewportverticalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Pan), {}});
     settingsLibrary.insert("viewporthorizontalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Navigate), {}});
-    settingsLibrary.insert("viewportaltverticalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Pan), {}});
+    settingsLibrary.insert("viewportaltverticalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Zoom), {}});
     settingsLibrary.insert("viewportalthorizontalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Pan), {}});
-#ifdef Q_OS_MACOS
-    // Works best with touchpads that accurately report ScrollPhase (macOS only currently)
-    settingsLibrary.insert("scrollactioncooldown", {true, {}});
-#else
     settingsLibrary.insert("scrollactioncooldown", {false, {}});
-#endif
     settingsLibrary.insert("cursorautohidefullscreenenabled", {true, {}});
     settingsLibrary.insert("cursorautohidefullscreendelay", {2, {}});
 }

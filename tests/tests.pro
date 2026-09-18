@@ -1,7 +1,5 @@
 QT += core testlib gui network widgets
 
-macx:LIBS += -framework Cocoa
-
 VERSION = 1.0
 DEFINES += "VERSION=$$VERSION"
 
@@ -16,3 +14,8 @@ INCLUDEPATH += ../src
 include( ../src/src.pri )
 
 SOURCES -= $$absolute_path(../src/main.cpp)
+
+win32 {
+    LIBS += -lshell32 -luser32 -lole32 -loleaut32 -luuid -lshlwapi -lgdi32 -ldwmapi
+    DEFINES += WIN32_LOADED
+}

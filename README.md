@@ -1,35 +1,32 @@
-# qView
+<p align="center">
+  <img src="img/logo.png" alt="wView logo" width="180">
+</p>
+
+<h1 align="center">wView</h1>
+
+wView is a lightweight image viewer for Windows. A Windows focused fork of [jdpurcell's qView](https://github.com/jdpurcell/qView).
+
 ## Additional features in this fork
-* Option to constrain image position to keep it snapped inside the viewport.
-* macOS: Option to persist session across app restarts.
-* Shows zoom level in titlebar in Practical/Verbose mode.
-* Custom titlebar mode based on format string.
-* Option to make zoom level relative to screen pixels (for Windows/Linux users with DPI scaling enabled; not so useful in macOS due to the way it handles scaling).
-* Option to disable smooth scaling above a specified zoom level.
-* Menu toggle to preserve zoom level when changing between images.
-* "Fill Window" zoom option.
-* Basic subfolder support (you must create a file named `qv-recurse.txt` in your image folder to enable this).
-* Ability to hide the titlebar (via menu item, keyboard, or mouse shortcut).
-* Ability to drag window via its viewport (Ctrl/Cmd + drag by default; customizable).
-* Ability to change file sorting temporarily per-window (in context menu).
-* Random file navigation (Go -> Random File, or "r" keyboard shortcut) to browse randomly without changing sort mode.
-* Navigate between images when scrolling sideways (e.g. two finger swipe), or optionally, when clicking the left/right sides of the viewport.
-* Customizable mouse actions (e.g. change what double clicking or middle clicking does).
-* Option to ignore certain file extensions when navigating through a folder.
-* Ability to keep window on top (via menu item + keyboard shortcut, and option to toggle on automatically during slideshow).
-* Improved performance during rapid image navigation when holding down the previous/next file shortcut keys, and configurable speed no longer linked to key repeat rate.
-* Windows: Supports dark mode even on Windows 10.
-* macOS: Option to reuse existing window when launching with image.
-* Configurable window positioning behavior after matching image size.
-* More accurate zoom-to-fit plus customizable overscan setting.
-* Option to hide mouse cursor in fullscreen mode.
-* Option for checkerboard background.
-* Option to show/hide menu icons on all OSes, with separate options for main menus, context menus, and submenus (i.e. "Open Recent" and "Open With").
+* Windows focused features and configuratiion
+* Follows Windows explorer Sorting
+* Support Windows thumbnails (workaround for pesky Google Drive blocks PNG thumbnails on windows explorer)
+* Adds window size modes: `Auto` (default), `Maximize`, or `Fullscreen`.
+* Adds window positioning modes: `Centered` (default) or `Remember last position`, with multi-monitor and per-monitor DPI awareness.
+* Adds zoom defaults `Fit`, `Fit Height`, and `Fit Width` (default), and never upscales images smaller than the viewport.
+* Adds an initial view position option: `Top` (default) or `Center`.
+* Adds horizontal padding for portrait and square images (`0%`, `10%`, or `15%`; the default limits image width to 85% of the screen). *Manga readers, REJOICE!* 
+* Confines the checkerboard background strictly to the bounds of transparent images, with a fixed pattern size that pans with the image.
+* Ships refined default mouse actions (double-click toggles original size, Ctrl + double-click toggles the titlebar, drag pans, Ctrl + drag moves the window, middle click zooms to fit, and more).
+* Ships refined default shortcuts (`Ctrl + 0` fits and centers, `Esc` closes the window, `F11`/`Alt + Enter`/`F` toggle fullscreen); the mirror shortcut was removed.
+* Restores the previous zoom level and view position when toggling original size.
+* Streamlines the preferences: menubar enabled by default, verbose titlebar by default (no titlebar text in fullscreen), menu icons always shown, slideshow keep-on-top disabled by default, and deprecated or non-Windows settings removed.
+* Removes the update checker. Download the newest installer if you want to update.
+* Loads SVG files at their intrinsic size and re-renders them at the target resolution when zoomed, so they no longer pixelate.
+* Fixes single-instance activation (no taskbar flashing or inactive titlebar when opening an image from Windows File Explorer).
 ## Screenshot
 ![screenshot](docs/screenshot.png)
 ## Supported platforms
 * Windows 10+ (x64 or ARM64 binaries). You may need to install the [Visual C++ runtime](https://aka.ms/vs/17/release/vc_redist.x64.exe) if you don't have it already.
-* macOS 13+ (Universal binary). For macOS 11-12 there's a "legacy" build in GitHub Actions (not published on the Releases page).
-* Linux (x64 or ARM64 AppImage).
-## About releases
-There's nothing particularly special about the builds uploaded under "Releases". Every once in a while, typically after enough noteworthy changes, I simply download the binaries from a GitHub Actions run and upload them as a "Release". I do this to make them more easily accessible since the Actions artifacts are only available to users logged into GitHub, and to preserve them since the Actions artifacts expire after 90 days. But in general, I avoid committing unfinished/untested work to the `master` branch. So if you see a commit you're interested in there, no need to wait for a release; simply download the artifact from Actions.
+## Credits
+* [jurplel](https://github.com/jurplel) - original author of [qView](https://github.com/jurplel/qView), which wView is derived from.
+* [jdpurcell](https://github.com/jdpurcell) - maintainer of the [qView fork](https://github.com/jdpurcell/qView) that wView is based on.

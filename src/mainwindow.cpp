@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qvapplication.h"
-#include "qvcocoafunctions.h"
 #include "qvwin32functions.h"
 #include "qvrenamedialog.h"
 #include "qvmenu.h"
@@ -68,12 +67,6 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_OpaquePaintEvent);
 
-#ifdef COCOA_LOADED
-    // Allow the titlebar to overlap widgets with full size content view
-    setAttribute(Qt::WA_ContentsMarginsRespectsSafeArea, false);
-    centralWidget()->setAttribute(Qt::WA_ContentsMarginsRespectsSafeArea, false);
-#endif
-
     sessionStateToLoad = windowSessionState;
     lastActivated.start();
 
@@ -108,17 +101,20 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
 
     // Connect graphicsview signals
     connect(graphicsView, &QVGraphicsView::fileChanged, this, &MainWindow::fileChanged);
+    connect(&graphicsView->getLoadedMovie(), &QVMovie::frameChanged, this, [this](const int frameNumber) {
+        if (info->isVisible())
+            info->setFrameInfo(graphicsView->getLoadedMovie().frameCount(), frameNumber);
+    });
     connect(graphicsView, &QVGraphicsView::zoomLevelChanged, this, &MainWindow::zoomLevelChanged);
     connect(graphicsView, &QVGraphicsView::calculatedZoomModeChanged, this, &MainWindow::syncCalculatedZoomMode);
     connect(graphicsView, &QVGraphicsView::navigationResetsZoomChanged, this, &MainWindow::syncNavigationResetsZoom);
     connect(graphicsView, &QVGraphicsView::sortParametersChanged, this, &MainWindow::syncSortParameters);
     connect(graphicsView, &QVGraphicsView::cancelSlideshow, this, &MainWindow::cancelSlideshow);
 
-    // Initialize escape shortcut
+    // Initialize escape shortcut - close window on Esc
     escShortcut = new QShortcut(Qt::Key_Escape, this);
     connect(escShortcut, &QShortcut::activated, this, [this](){
-        if (windowState().testFlag(Qt::WindowFullScreen))
-            toggleFullScreen();
+        close();
     });
 
     // Enable drag&dropping
@@ -147,9 +143,6 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     actionManager.addCloneOfAction(contextMenu, "openurl");
     contextMenu->addMenu(actionManager.buildRecentsMenu(contextMenu));
     contextMenu->addMenu(actionManager.buildOpenWithMenu(contextMenu));
-#ifdef Q_OS_MACOS
-    actionManager.addCloneOfAction(contextMenu, "openwithplaceholder");
-#endif
     actionManager.addCloneOfAction(contextMenu, "opencontainingfolder");
     actionManager.addCloneOfAction(contextMenu, "showfileinfo");
     contextMenu->addSeparator();
@@ -158,8 +151,6 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     contextMenu->addSeparator();
     actionManager.addCloneOfAction(contextMenu, "nextfile");
     actionManager.addCloneOfAction(contextMenu, "previousfile");
-    contextMenu->addSeparator();
-    contextMenu->addMenu(actionManager.buildSortMenu(contextMenu));
     contextMenu->addSeparator();
     contextMenu->addMenu(actionManager.buildViewMenu(contextMenu));
     contextMenu->addMenu(actionManager.buildToolsMenu(contextMenu));
@@ -220,18 +211,21 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     {
         loadSessionState(sessionStateToLoad, true);
     }
-    else
-    {
-        // Load window geometry
-        restoreGeometry(settings.value("geometry").toByteArray());
-    }
-
-    // Show welcome dialog on first launch
-    if (!settings.value("firstlaunch", false).toBool())
-    {
-        settings.setValue("firstlaunch", true);
-        settings.setValue("configversion", VERSION);
-        qvApp->openWelcomeDialog(this);
+    else {
+        //Only restore geometry if "Remember last position" mode is enabled
+        auto &settingsManager = qvApp->getSettingsManager();
+        auto positionMode = settingsManager.getEnum<Qv::WindowPositionMode>("windowpositionmode");
+        if(positionMode == Qv::WindowPositionMode::RememberLastPosition) {
+            restoreGeometry(settings.value("geometry").toByteArray());
+        }
+        else {
+            QScreen *cursorScreen = QGuiApplication::screenAt(QCursor::pos());
+            if(cursorScreen) {
+                QRect rect = frameGeometry();
+                rect.moveCenter(cursorScreen->availableGeometry().center());
+                move(rect.topLeft());
+            }
+        }
     }
 }
 
@@ -251,25 +245,13 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
-#ifdef COCOA_LOADED
-    // Workaround to show native context menus on macOS
-    QVCocoaFunctions::showMenu(contextMenu, event->pos(), windowHandle());
-#else
     contextMenu->popup(event->globalPos());
-#endif
 
     QMainWindow::contextMenuEvent(event);
 }
 
 void MainWindow::showEvent(QShowEvent *event)
 {
-#ifdef COCOA_LOADED
-    // Defer full size content view until after geometry restoration (see comment in closeEvent)
-    QTimer::singleShot(0, this, [this]() {
-        QVCocoaFunctions::setFullSizeContentView(this, true);
-    });
-#endif
-
     if (!menuBar()->sizeHint().isEmpty())
     {
         ui->fullscreenLabel->setMargin(0);
@@ -296,16 +278,6 @@ void MainWindow::showEvent(QShowEvent *event)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     isClosing = true;
-
-#ifdef COCOA_LOADED
-    // restoreGeometry tries to restore the client-area geometry captured by saveGeometry, but its
-    // validation logic clamps the restored height under the assumption that additional vertical
-    // space must be reserved for the titlebar. That assumption is not valid with full size content
-    // view, where the titlebar overlaps the client area. To properly round-trip the geometry of a
-    // full-height window, disable full size content view before saving the geometry, and when
-    // creating a window, restore its geometry before enabling full size content view.
-    QVCocoaFunctions::setFullSizeContentView(this, false);
-#endif
 
     if (qvApp->getIsSessionStateSaveRequested())
         qvApp->addClosedWindowSessionState(getSessionState(), getLastActivatedTimestamp());
@@ -357,41 +329,64 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
     if (viewportRect.isValid())
     {
-        if (checkerboardBackground && getIsPixmapLoaded())
+        const QColor &backgroundColor = customBackgroundColor.isValid() ? customBackgroundColor : painter.background().color();
+        painter.fillRect(viewportRect, backgroundColor);
+
+        const QPixmap &pixmap = graphicsView->getLoadedPixmap();
+        const bool hasTransparency = !pixmap.isNull() && pixmap.hasAlpha();
+
+        if (checkerboardBackground && getIsPixmapLoaded() && hasTransparency)
         {
-            const int gridSize = 16;
-            const QColor darkColor = QColor(204, 204, 204);
-            const QColor lightColor = QColorConstants::White;
-            const int numHorizontalSquares = (viewportRect.width() + (gridSize - 1)) / gridSize;
-            const int numVerticalSquares = (viewportRect.height() + (gridSize - 1)) / gridSize;
-            for (int iY = 0; iY < numVerticalSquares; iY++)
+            //The checkerboard is drawn behind the image and matches its on-screen position and size
+            const QRect imageViewportRect = graphicsView->getImageViewportRect();
+            if (!imageViewportRect.isEmpty())
             {
-                for (int iX = 0; iX < numHorizontalSquares; iX++)
+                const QRect imageRectInWindow = QRect(graphicsView->viewport()->mapTo(this, imageViewportRect.topLeft()), imageViewportRect.size());
+                const QRect checkerRect = imageRectInWindow.intersected(viewportRect);
+                if (checkerRect.isValid())
                 {
-                    const bool isDarkSquare = (iX % 2) != (iY % 2);
-                    painter.fillRect(
-                        viewportRect.x() + (iX * gridSize),
-                        viewportRect.y() + (iY * gridSize),
-                        gridSize,
-                        gridSize,
-                        isDarkSquare ? darkColor : lightColor
-                    );
+                    const int gridSize = 16;
+                    const QColor darkColor = QColor(204, 204, 204);
+                    const QColor lightColor = QColorConstants::White;
+                    //Anchor the pattern to the image's top-left corner so it moves with the image and stays fixed in size
+                    const int originX = imageRectInWindow.x();
+                    const int originY = imageRectInWindow.y();
+                    int startIX = (checkerRect.left() - originX) / gridSize;
+                    int startIY = (checkerRect.top() - originY) / gridSize;
+                    if (originX + (startIX * gridSize) > checkerRect.left())
+                        startIX--;
+                    if (originY + (startIY * gridSize) > checkerRect.top())
+                        startIY--;
+                    const int endIX = startIX + (checkerRect.width() / gridSize) + 2;
+                    const int endIY = startIY + (checkerRect.height() / gridSize) + 2;
+                    painter.save();
+                    painter.setClipRect(checkerRect);
+                    for (int iY = startIY; iY <= endIY; iY++)
+                    {
+                        for (int iX = startIX; iX <= endIX; iX++)
+                        {
+                            const bool isDarkSquare = ((iX + iY) % 2) != 0;
+                            painter.fillRect(
+                                originX + (iX * gridSize),
+                                originY + (iY * gridSize),
+                                gridSize,
+                                gridSize,
+                                isDarkSquare ? darkColor : lightColor
+                            );
+                        }
+                    }
+                    painter.restore();
                 }
             }
         }
-        else
-        {
-            const QColor &backgroundColor = customBackgroundColor.isValid() ? customBackgroundColor : painter.background().color();
-            painter.fillRect(viewportRect, backgroundColor);
 
-            if (getCurrentFileDetails().errorData.has_value())
-            {
-                const QVImageCore::ErrorData &errorData = getCurrentFileDetails().errorData.value();
-                const QString errorMessage = tr("Error occurred opening\n%3\n%2 (Error %1)").arg(QString::number(errorData.errorNum), errorData.errorString, getCurrentFileDetails().fileInfo.fileName());
-                painter.setFont(font());
-                painter.setPen(Qv::getPerceivedBrightness(backgroundColor) > 0.5 ? QColorConstants::Black : QColorConstants::White);
-                painter.drawText(viewportRect, errorMessage, QTextOption(Qt::AlignCenter));
-            }
+        if (getCurrentFileDetails().errorData.has_value())
+        {
+            const QVImageCore::ErrorData &errorData = getCurrentFileDetails().errorData.value();
+            const QString errorMessage = tr("Error occurred opening\n%3\n%2 (Error %1)").arg(QString::number(errorData.errorNum), errorData.errorString, getCurrentFileDetails().fileInfo.fileName());
+            painter.setFont(font());
+            painter.setPen(Qv::getPerceivedBrightness(backgroundColor) > 0.5 ? QColorConstants::Black : QColorConstants::White);
+            painter.drawText(viewportRect, errorMessage, QTextOption(Qt::AlignCenter));
         }
     }
 }
@@ -432,9 +427,9 @@ void MainWindow::pauseChanged()
     }
 }
 
-void MainWindow::openFile(const QString &fileName, const QString &baseDir)
+void MainWindow::openFile(const QString &fileName, const QString &baseDir, const std::optional<int> initialFrameNumber)
 {
-    graphicsView->loadFile(fileName, baseDir);
+    graphicsView->loadFile(fileName, baseDir, initialFrameNumber);
     cancelSlideshow();
 }
 
@@ -452,11 +447,6 @@ void MainWindow::settingsUpdated()
 
     // menubarenabled
     menuBarEnabled = settingsManager.getBoolean("menubarenabled");
-
-#ifdef COCOA_LOADED
-    // titlebaralwaysdark
-    QVCocoaFunctions::setVibrancy(settingsManager.getBoolean("titlebaralwaysdark"), windowHandle());
-#endif
 
     //slideshow timer
     slideshowTimer->setInterval(static_cast<int>(settingsManager.getDouble("slideshowtimer")*1000));
@@ -538,12 +528,6 @@ void MainWindow::syncNavigationResetsZoom()
 
 void MainWindow::syncSortParameters()
 {
-    const Qv::SortMode mode = graphicsView->getSortMode();
-    const bool descending = graphicsView->getSortDescending();
-    for (const auto &action : qvApp->getActionManager().getAllClonesOfAction("sortmode" + QString::number(static_cast<int>(mode)), this))
-        action->setChecked(true);
-    for (const auto &action : qvApp->getActionManager().getAllClonesOfAction("sortdirection" + QString::number(static_cast<int>(descending)), this))
-        action->setChecked(true);
     buildWindowTitle();
 }
 
@@ -564,6 +548,10 @@ void MainWindow::disableActions()
                 if (cloneData.last() == "disable")
                 {
                     clone->setEnabled(getIsPixmapLoaded());
+                }
+                else if (cloneData.last() == "framedisable")
+                {
+                    clone->setEnabled(getIsMovieLoaded() || getCurrentFileDetails().isMultiFrameImage);
                 }
                 else if (cloneData.last() == "gifdisable")
                 {
@@ -589,18 +577,7 @@ void MainWindow::disableActions()
     for (const auto &menu : openWithMenus)
     {
         menu->setEnabled(getIsPixmapLoaded());
-#ifdef Q_OS_MACOS
-        menu->menuAction()->setVisible(getIsPixmapLoaded());
-#endif
     }
-
-#ifdef Q_OS_MACOS
-    const auto &openWithPlaceholderActions = qvApp->getActionManager().getAllClonesOfAction("openwithplaceholder", this);
-    for (const auto &action : openWithPlaceholderActions)
-    {
-        action->setVisible(!getIsPixmapLoaded());
-    }
-#endif
 }
 
 void MainWindow::requestPopulateOpenWithMenu()
@@ -656,13 +633,14 @@ void MainWindow::refreshProperties()
     info->setInfo(
         fileDetails.fileInfo,
         fileDetails.baseImageSize,
-        fileDetails.isMovieLoaded ? graphicsView->getLoadedMovie().frameCount() : 0
+        fileDetails.isMovieLoaded ? graphicsView->getLoadedMovie().frameCount() : fileDetails.frameCount,
+        fileDetails.isMovieLoaded ? graphicsView->getLoadedMovie().currentFrameNumber() : fileDetails.frameNumber
     );
 }
 
 void MainWindow::buildWindowTitle()
 {
-    QString newString = "qView";
+    QString newString = "wView";
     if (getCurrentFileDetails().fileInfo.isFile())
     {
         const QVImageCore::FileDetails &fileDetails = getCurrentFileDetails();
@@ -688,7 +666,7 @@ void MainWindow::buildWindowTitle()
         case Qv::TitleBarText::Verbose:
         {
             newString = getZoomLevel() + " - " + getImageIndex() + "/" + getImageCount() + " - " + getFileName() + " - " +
-                        getImageWidth() + "x" + getImageHeight() + " - " + getFileSize() + " - qView";
+                        getImageWidth() + "x" + getImageHeight() + " - " + getFileSize() + " - wView";
             break;
         }
         case Qv::TitleBarText::Custom:
@@ -743,12 +721,7 @@ void MainWindow::updateWindowFilePath()
 void MainWindow::updateMenuBarVisible()
 {
     bool alwaysVisible = false;
-    bool hideWhenImmersive = false;
-#ifdef Q_OS_MACOS
-    alwaysVisible = true;
-#else
-    hideWhenImmersive = true;
-#endif
+    bool hideWhenImmersive = true;
     const auto isImmersive = [&]() { return getTitlebarHidden() || windowState().testFlag(Qt::WindowFullScreen); };
     menuBar()->setVisible(alwaysVisible || (menuBarEnabled && !(hideWhenImmersive && isImmersive())));
 }
@@ -791,11 +764,7 @@ bool MainWindow::getTitlebarHidden() const
     if (!windowHandle())
         return false;
 
-#ifdef COCOA_LOADED
-    return QVCocoaFunctions::getTitlebarHidden(this);
-#else
     return !windowFlags().testFlag(Qt::WindowTitleHint);
-#endif
 }
 
 void MainWindow::setTitlebarHidden(const bool shouldHide)
@@ -807,14 +776,7 @@ void MainWindow::setTitlebarHidden(const bool shouldHide)
         Qv::alterWindowFlags(this, [&](Qt::WindowFlags f) { return (on ? (f | flagsToChange) : (f & ~flagsToChange)) | Qt::CustomizeWindowHint; });
     };
 
-#ifdef COCOA_LOADED
-    QVCocoaFunctions::setTitlebarHidden(this, shouldHide);
-    customizeWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint | Qt::WindowFullscreenButtonHint, !shouldHide);
-#elif defined WIN32_LOADED
     customizeWindowFlags(Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint, !shouldHide);
-#else
-    customizeWindowFlags(Qt::WindowTitleHint, !shouldHide);
-#endif
 
     const auto toggleTitlebarActions = qvApp->getActionManager().getAllClonesOfAction("toggletitlebar", this);
     for (const auto &toggleTitlebarAction : toggleTitlebarActions)
@@ -829,101 +791,155 @@ void MainWindow::setTitlebarHidden(const bool shouldHide)
     graphicsView->fitOrConstrainImage();
 }
 
-void MainWindow::setWindowSize(const bool isReapplying, const bool isExplicitRequest)
-{
-    if (!getIsPixmapLoaded())
+void MainWindow::setWindowSize(const bool isReapplying,const bool isExplicitRequest) {
+    Q_UNUSED(isReapplying)
+    if(!getIsPixmapLoaded()) {
         return;
+    }
 
     //check if the program is configured to resize the window
-    const auto windowResizeMode = qvApp->getSettingsManager().getEnum<Qv::WindowResizeMode>("windowresizemode");
+    const auto windowSizeMode = qvApp->getSettingsManager().getEnum<Qv::WindowSizeMode>("windowsizemode");
     const bool shouldResize =
         isExplicitRequest ||
-        windowResizeMode == Qv::WindowResizeMode::WhenOpeningImages ||
-        (windowResizeMode == Qv::WindowResizeMode::WhenLaunching && justLaunchedWithImage);
-    if (!shouldResize)
+        windowSizeMode == Qv::WindowSizeMode::Auto ||
+        windowSizeMode == Qv::WindowSizeMode::Maximize ||
+        windowSizeMode == Qv::WindowSizeMode::Fullscreen;
+    if(!shouldResize) {
         return;
+    }
+
+    const auto windowPositionMode = qvApp->getSettingsManager().getEnum<Qv::WindowPositionMode>("windowpositionmode");
+
+    QScreen *currentScreen = nullptr;
+    if(justLaunchedWithImage) {
+        if(windowPositionMode == Qv::WindowPositionMode::RememberLastPosition) {
+            currentScreen = screenContaining(frameGeometry());
+        }
+        if(!currentScreen) {
+            currentScreen = QGuiApplication::screenAt(QCursor::pos());
+        }
+    }
+    else {
+        currentScreen = screenContaining(frameGeometry());
+    }
+
+    if(!currentScreen) {
+        currentScreen = screen();
+    }
+    if(!currentScreen) {
+        currentScreen = QGuiApplication::primaryScreen();
+    }
 
     justLaunchedWithImage = false;
 
-    //check if window is maximized or fullscreened
-    if (windowState().testFlag(Qt::WindowMaximized) || windowState().testFlag(Qt::WindowFullScreen))
+    if(!currentScreen) {
         return;
-
-    const qreal minWindowResizedPercentage = qvApp->getSettingsManager().getInteger("minwindowresizedpercentage")/100.0;
-    const qreal maxWindowResizedPercentage = qvApp->getSettingsManager().getInteger("maxwindowresizedpercentage")/100.0;
-
-    // Try to grab the current screen
-    QScreen *currentScreen = screenContaining(frameGeometry());
-    // If completely offscreen, use first screen as fallback
-    if (!currentScreen)
-        currentScreen = QGuiApplication::screens().at(0);
-
-    QSize extraWidgetsSize { 0, 0 };
-
-    if (menuBar()->isVisible())
-        extraWidgetsSize.rheight() += menuBar()->height();
-
-    const int titlebarOverlap = getTitlebarOverlap();
-    if (titlebarOverlap != 0)
-        extraWidgetsSize.rheight() += titlebarOverlap;
-
-    const QSize windowFrameSize = frameGeometry().size() - geometry().size();
-    const QSize hardLimitSize = currentScreen->availableSize() - windowFrameSize - extraWidgetsSize;
-    const QSize screenSize = currentScreen->size();
-    const QSize minWindowSize = (screenSize * minWindowResizedPercentage).boundedTo(hardLimitSize);
-    const QSize maxWindowSize = (screenSize * qMax(maxWindowResizedPercentage, minWindowResizedPercentage)).boundedTo(hardLimitSize);
-    const bool isZoomFixed = (!graphicsView->getNavigationResetsZoom() || isReapplying) && !graphicsView->getCalculatedZoomMode().has_value();
-    const QSizeF imageSize = graphicsView->getEffectiveOriginalSize() * (isZoomFixed ? graphicsView->getZoomLevel() : 1.0);
-    const int fitOverscan = graphicsView->getFitOverscan();
-    const QSize fitOverscanSize = QSize(fitOverscan * 2, fitOverscan * 2);
-    const LogicalPixelFitter fitter = graphicsView->getPixelFitter();
-    const bool enforceMinSizeBothDimensions = false;
-
-    QSize targetSize = fitter.snapSize(imageSize) - fitOverscanSize;
-
-    const bool limitToMin = targetSize.width() < minWindowSize.width() && targetSize.height() < minWindowSize.height();
-    const bool limitToMax = targetSize.width() > maxWindowSize.width() || targetSize.height() > maxWindowSize.height();
-    if (limitToMin || limitToMax)
-    {
-        const QSizeF enforcedSize = fitter.unsnapSize(limitToMin ? minWindowSize : maxWindowSize) + fitOverscanSize;
-        const qreal fitRatio = qMin(enforcedSize.width() / imageSize.width(), enforcedSize.height() / imageSize.height());
-        targetSize = fitter.snapSize(imageSize * fitRatio) - fitOverscanSize;
     }
 
-    if (enforceMinSizeBothDimensions)
-        targetSize = targetSize.expandedTo(minWindowSize);
+    //Use the target screen's DPI for calculations
+    const qreal dpi = currentScreen->devicePixelRatio();
+    const QSize screenSize = currentScreen->availableSize();
+    const QSize nativeSize = graphicsView->getCurrentFileDetails().baseImageSize;
 
-    const bool recenterImage = isZoomFixed && geometry().size() != targetSize + extraWidgetsSize;
+    const bool useOneToOne = qvApp->getSettingsManager().getBoolean("onetoonepixelsizing");
+    qreal scaleDpi = 1.0;
+    if(useOneToOne) {
+        scaleDpi = dpi;
+    }
 
-    const auto afterMatchingSizeMode = qvApp->getSettingsManager().getEnum<Qv::AfterMatchingSize>("aftermatchingsizemode");
-    const QPoint referenceCenter =
-        afterMatchingSizeMode == Qv::AfterMatchingSize::CenterOnPrevious ? geometry().center() :
-        afterMatchingSizeMode == Qv::AfterMatchingSize::CenterOnScreen ? currentScreen->availableGeometry().center() :
-        QPoint();
+    int menuHeight = 0;
+    if(menuBar()) {
+        if(menuBar()->isVisible()) {
+            menuHeight = menuBar()->height();
+        }
+    }
 
-    // Resize window first, reposition later
-    // This is smoother than a single geometry set for some reason
-    resize(targetSize + extraWidgetsSize);
-    QRect newRect = geometry();
+    //Check if image is bigger than the available screen in either dimension
+    const bool isImageBiggerThanScreen =
+        nativeSize.width() > qRound(screenSize.width() * scaleDpi) ||
+        (nativeSize.height() + qRound(menuHeight * scaleDpi)) > qRound(screenSize.height() * scaleDpi);
 
-    if (afterMatchingSizeMode != Qv::AfterMatchingSize::AvoidRepositioning)
-        newRect.moveCenter(referenceCenter);
+    if(windowSizeMode == Qv::WindowSizeMode::Fullscreen) {
+        if(!windowState().testFlag(Qt::WindowFullScreen)) {
+            if(windowHandle()) {
+                windowHandle()->setScreen(currentScreen);
+            }
+            move(currentScreen->geometry().topLeft());
+            showFullScreen();
+            QTimer::singleShot(0,this,[this]() {
+                if(graphicsView->getCalculatedZoomMode().has_value()) {
+                    graphicsView->recalculateZoom();
+                }
+                graphicsView->centerImage();
+            });
+        }
+        return;
+    }
 
-    // Ensure titlebar is not above or below the available screen area
-    const QRect availableScreenRect = currentScreen->availableGeometry();
-    const int topFrameHeight = geometry().top() - frameGeometry().top();
-    const int windowMinY = availableScreenRect.top() + topFrameHeight;
-    const int windowMaxY = availableScreenRect.top() + availableScreenRect.height() - titlebarOverlap;
-    if (newRect.top() < windowMinY)
-        newRect.moveTop(windowMinY);
-    if (newRect.top() > windowMaxY)
-        newRect.moveTop(windowMaxY);
+    if(windowSizeMode == Qv::WindowSizeMode::Maximize || (windowSizeMode == Qv::WindowSizeMode::Auto && isImageBiggerThanScreen)) {
+        if(!windowState().testFlag(Qt::WindowMaximized) && !windowState().testFlag(Qt::WindowFullScreen)) {
+            if(windowHandle()) {
+                windowHandle()->setScreen(currentScreen);
+            }
+            move(currentScreen->availableGeometry().topLeft());
+            graphicsView->setPendingMaximize(true);
+            showMaximized();
+            QTimer::singleShot(0,this,[this]() {
+                graphicsView->setPendingMaximize(false);
+                if(graphicsView->getCalculatedZoomMode().has_value()) {
+                    graphicsView->recalculateZoom();
+                }
+                graphicsView->centerImage();
+            });
+        }
+        return;
+    }
 
-    // Reposition window
-    setGeometry(newRect);
+    //Once maximized, always stay maximized (don't un-maximize for smaller images)
+    if(windowState().testFlag(Qt::WindowMaximized) || windowState().testFlag(Qt::WindowFullScreen)) {
+        return;
+    }
 
-    if (recenterImage)
+    //Only force original size when navigation is allowed to reset the zoom, so a preserved
+    //zoom level survives navigating to an image smaller than the window
+    if(graphicsView->getNavigationResetsZoom()) {
+        graphicsView->setCalculatedZoomMode(Qv::CalculatedZoomMode::OriginalSize);
+        graphicsView->setSmallImageMode(true);
+    }
+
+    //Remove any minimum size constraints that might prevent shrinking
+    setMinimumSize(QSize(0,0));
+    centralWidget()->setMinimumSize(QSize(0,0));
+
+    //Convert native pixels to logical pixels
+    QSize clientSize(qRound(nativeSize.width() / scaleDpi),qRound(nativeSize.height() / scaleDpi));
+    if(menuBar()) {
+        if(menuBar()->isVisible()) {
+            clientSize.rheight() += menuBar()->height();
+        }
+    }
+    clientSize = clientSize.boundedTo(currentScreen->availableSize());
+
+    if(windowHandle()) {
+        windowHandle()->setScreen(currentScreen);
+    }
+
+    QTimer::singleShot(0,this,[this,clientSize,currentScreen,windowPositionMode]() {
+        resize(clientSize);
+
+        if(windowPositionMode == Qv::WindowPositionMode::Centered) {
+            const QRect availGeom = currentScreen->availableGeometry();
+            const int frameExtraWidth = qMax(0,frameGeometry().width() - width());
+            const int frameExtraHeight = qMax(0,frameGeometry().height() - height());
+            const int targetTotalWidth = clientSize.width() + frameExtraWidth;
+            const int targetTotalHeight = clientSize.height() + frameExtraHeight;
+            const int x = availGeom.x() + (availGeom.width() - targetTotalWidth) / 2;
+            const int y = availGeom.y() + (availGeom.height() - targetTotalHeight) / 2;
+            move(x,y);
+        }
+
         graphicsView->centerImage();
+    });
 }
 
 // Initially copied from Qt source code (QGuiApplication::screenAt) and then customized
@@ -967,6 +983,9 @@ const QJsonObject MainWindow::getSessionState() const
 
         if (getCurrentFileDetails().folderFileInfoList.getIsRecursive())
             state["baseDir"] = getCurrentFileDetails().folderFileInfoList.getBaseDir();
+
+        if (getCurrentFileDetails().isMultiFrameImage)
+            state["frameNumber"] = getCurrentFileDetails().frameNumber;
     }
 
     state["graphicsView"] = graphicsView->getSessionState();
@@ -995,8 +1014,9 @@ void MainWindow::loadSessionState(const QJsonObject &state, const bool isInitial
     const QString baseDir = state.contains("baseDir") ? state["baseDir"].toString() : "";
     if (!path.isEmpty())
     {
+        const auto initialFrameNumber = state.contains("frameNumber") ? std::optional(state["frameNumber"].toInt()) : std::nullopt;
         graphicsView->setLoadIsFromSessionRestore(true);
-        openFile(path, baseDir);
+        openFile(path, baseDir, initialFrameNumber);
     }
 }
 
@@ -1115,10 +1135,6 @@ void MainWindow::openContainingFolder()
             return;
     }
     QVWin32Functions::showInExplorer(pathToSelect);
-#elif defined Q_OS_MACOS
-    QProcess::execute("open", QStringList() << "-R" << selectedFileInfo.absoluteFilePath());
-#else
-    QDesktopServices::openUrl(QUrl::fromLocalFile(selectedFileInfo.absolutePath()));
 #endif
 }
 
@@ -1349,16 +1365,6 @@ void MainWindow::setNavigationResetsZoom(const bool value)
     graphicsView->setNavigationResetsZoom(value);
 }
 
-void MainWindow::setSortMode(const Qv::SortMode mode)
-{
-    graphicsView->setSortMode(mode);
-}
-
-void MainWindow::setSortDescending(const bool descending)
-{
-    graphicsView->setSortDescending(descending);
-}
-
 void MainWindow::rotateRight()
 {
     graphicsView->rotateImage(90);
@@ -1390,6 +1396,11 @@ void MainWindow::resetTransformation()
     graphicsView->resetTransformation();
     graphicsView->fitOrConstrainImage();
     setWindowSize(true);
+}
+
+void MainWindow::scrollImage(int deltaX, int deltaY)
+{
+    graphicsView->scrollImage(deltaX, deltaY);
 }
 
 void MainWindow::firstFile()
@@ -1579,11 +1590,6 @@ void MainWindow::toggleWindowOnTop()
     for (const auto &action : qvApp->getActionManager().getAllClonesOfAction("windowontop", this))
         action->setChecked(targetValue);
 
-#ifdef COCOA_LOADED
-    // Make sure window still participates in Mission Control
-    QVCocoaFunctions::setWindowCollectionBehaviorManaged(this);
-#endif
-
     emit qvApp->windowOnTopChanged();
 }
 
@@ -1597,11 +1603,6 @@ void MainWindow::toggleTitlebarHidden()
 
 int MainWindow::getTitlebarOverlap() const
 {
-#ifdef COCOA_LOADED
-    // To account for fullsizecontentview on mac
-    return QVCocoaFunctions::getObscuredHeight(window()->windowHandle());
-#endif
-
     return 0;
 }
 

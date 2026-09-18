@@ -2,14 +2,30 @@ param (
     $BuildNum = ""
 )
 
+$ErrorActionPreference = "Stop"
+
 $qtVersion = [version](qmake -query QT_VERSION)
 Write-Host "Detected Qt version $qtVersion"
 
 # Run windeployqt
 $isCrossCompile = $env:buildArch -eq 'Arm64'
-$winDeployQt = $isCrossCompile ? "$env:QT_HOST_PATH\bin\windeployqt" : "windeployqt"
-$argQtPaths = $isCrossCompile ? "--qtpaths=$env:QT_ROOT_DIR\bin\qtpaths.bat" : $null
-& $winDeployQt $argQtPaths --no-compiler-runtime --no-translations "bin\qView.exe"
+if ($isCrossCompile) {
+    $winDeployQt = "$env:QT_HOST_PATH\bin\windeployqt"
+} else {
+    $winDeployQt = "windeployqt"
+}
+
+if ($isCrossCompile) {
+    $argQtPaths = "--qtpaths=$env:QT_ROOT_DIR\bin\qtpaths.bat"
+} else {
+    $argQtPaths = $null
+}
+& $winDeployQt $argQtPaths --no-compiler-runtime --no-translations "bin\wView.exe"
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "windeployqt failed"
+    exit 1
+}
 
 if ($qtVersion -ge [version]'6.8.1') {
     # Copy font so windows11 style can work on Windows 10

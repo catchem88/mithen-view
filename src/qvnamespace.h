@@ -31,11 +31,39 @@ namespace Qv
         CenterOnScreen = 2
     };
 
+    enum class WindowSizeMode
+    {
+        Auto = 0,
+        Maximize = 1,
+        Fullscreen = 2
+    };
+
+    enum class WindowPositionMode
+    {
+        Centered = 0,
+        RememberLastPosition = 1
+    };
+
+    enum class InitialViewMode
+    {
+        Top = 0,
+        Center = 1
+    };
+
+    enum class HorizontalPortraitPadding
+    {
+        Zero = 0,
+        Ten = 1,
+        Fifteen = 2
+    };
+
     enum class CalculatedZoomMode
     {
         ZoomToFit = 0,
-        FillWindow = 1,
-        OriginalSize = 2
+        FitHeight = 1,
+        FitWidth = 2,
+        FillWindow = 3,
+        OriginalSize = 4
     };
 
     enum class ClickOrDrag
@@ -225,6 +253,8 @@ namespace Qv
     {
         return
             mode == CalculatedZoomMode::ZoomToFit ||
+            mode == CalculatedZoomMode::FitHeight ||
+            mode == CalculatedZoomMode::FitWidth ||
             mode == CalculatedZoomMode::FillWindow;
     }
 

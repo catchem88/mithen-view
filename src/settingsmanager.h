@@ -48,7 +48,7 @@ protected:
     void initializeSettingsLibrary();
 
 private:
-    QString getSystemLanguage() const;
+    QString getInstalledLanguage() const;
 
     void loadTranslations();
 

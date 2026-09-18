@@ -1,30 +1,58 @@
-#!/usr/bin/env pwsh
-
 param (
     $Prefix = "/usr"
 )
 
+$ErrorActionPreference = "Stop"
+
 $qtVersion = [version](qmake -query QT_VERSION)
 Write-Host "Detected Qt version $qtVersion"
 
-if ($IsWindows) {
+$os = $PSVersionTable.Platform
+if ($os -eq 'Win32NT' -or $env:OS -eq 'Windows_NT') {
     dist/scripts/vcvars.ps1
-}
 
-if ($IsMacOS) {
-    $argDeviceArchs =
-        $env:buildArch -eq 'X64' ? 'QMAKE_APPLE_DEVICE_ARCHS=x86_64' :
-        $env:buildArch -eq 'Arm64' ? 'QMAKE_APPLE_DEVICE_ARCHS=arm64' :
-        $env:buildArch -eq 'Universal' ? 'QMAKE_APPLE_DEVICE_ARCHS=x86_64 arm64' :
-        $null
-} elseif ($IsWindows) {
     # Workaround for https://developercommunity.visualstudio.com/t/10664660
     $argVcrMutexWorkaround = 'DEFINES+=_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR'
 }
-qmake PREFIX="$Prefix" DEFINES+="$env:nightlyDefines" $argVcrMutexWorkaround $argDeviceArchs
+qmake PREFIX="$Prefix" DEFINES+="$env:nightlyDefines" $argVcrMutexWorkaround
 
-if ($IsWindows) {
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "qmake failed"
+    exit 1
+}
+
+if ($os -eq 'Win32NT' -or $env:OS -eq 'Windows_NT') {
     nmake
 } else {
     make
 }
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Build failed"
+    exit 1
+}
+
+# Stage translation catalogs for the installer. Only the language chosen during installation
+# is copied into the install directory, so nothing is embedded in the executable.
+$translationsDir = "dist/win/translations"
+Remove-Item $translationsDir -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path $translationsDir -Force | Out-Null
+
+$wViewCatalogs = Get-ChildItem -Path ".qm" -Filter "wView_*.qm" -ErrorAction SilentlyContinue
+if (-not $wViewCatalogs) {
+    Write-Error "No translation catalogs were built"
+    exit 1
+}
+$wViewCatalogs | Copy-Item -Destination $translationsDir -Force
+
+$qtTranslationsDir = (qmake -query QT_INSTALL_TRANSLATIONS).Trim()
+foreach ($language in @('de','es','fr','ja','ko','ru','zh_CN')) {
+    $qtCatalog = Join-Path $qtTranslationsDir "qtbase_$language.qm"
+    if (Test-Path $qtCatalog) {
+        Copy-Item $qtCatalog -Destination $translationsDir -Force
+    } else {
+        Write-Warning "Missing Qt catalog $qtCatalog"
+    }
+}
+
+Write-Host "Staged translations in $translationsDir"

@@ -1,5 +1,8 @@
 #include "qvfileenumerator.h"
 #include "qvapplication.h"
+#ifdef WIN32_LOADED
+#include "qvwin32functions.h"
+#endif
 #if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 #include <QDirIterator>
 #endif
@@ -105,6 +108,33 @@ QVFileEnumerator::CompatibleFileList QVFileEnumerator::getCompatibleFiles(const 
             return sortDescending ? (result > 0) : (result < 0);
         }
     );
+
+#ifdef WIN32_LOADED
+    if (sortMode == Qv::SortMode::Name && !sortDescending)
+    {
+        const QStringList explorerOrder = QVWin32Functions::getExplorerSortOrder(dirPath);
+        if (!explorerOrder.isEmpty())
+        {
+            QHash<QString, int> orderMap;
+            for (int i = 0; i < explorerOrder.size(); i++)
+            {
+                orderMap[QDir::toNativeSeparators(explorerOrder[i])] = i;
+            }
+
+            std::stable_sort(
+                fileList.begin(),
+                fileList.end(),
+                [&](const CompatibleFile &file1, const CompatibleFile &file2) {
+                    const QString nativePath1 = QDir::toNativeSeparators(file1.absoluteFilePath);
+                    const QString nativePath2 = QDir::toNativeSeparators(file2.absoluteFilePath);
+                    const int order1 = orderMap.value(nativePath1, INT_MAX);
+                    const int order2 = orderMap.value(nativePath2, INT_MAX);
+                    return order1 < order2;
+                }
+            );
+        }
+    }
+#endif
 
     return fileList;
 }

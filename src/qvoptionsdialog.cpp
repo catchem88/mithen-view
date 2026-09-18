@@ -27,39 +27,19 @@ QVOptionsDialog::QVOptionsDialog(QWidget *parent) :
     // Center fixed-height checkboxes beside taller form fields
     ui->windowLayout->setAlignment(ui->bgColorCheckbox, Qt::AlignVCenter);
     ui->imageLayout->setAlignment(ui->smoothScalingLimitCheckbox, Qt::AlignVCenter);
-    ui->imageLayout->setAlignment(ui->fitZoomLimitCheckbox, Qt::AlignVCenter);
     ui->cursorLayout->setAlignment(ui->cursorAutoHideFullscreenCheckbox, Qt::AlignVCenter);
-
-#ifdef Q_OS_MACOS
-    // Workaround for QTBUG-150017
-    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::MacOS, 27))
-    {
-        if (QStyle *fusionStyle = QStyleFactory::create("fusion"))
-        {
-            fusionStyle->setParent(ui->formatsTable);
-            ui->formatsTable->setStyle(fusionStyle);
-            for (QWidget *child : ui->formatsTable->findChildren<QWidget *>())
-                child->setStyle(fusionStyle);
-        }
-    }
-#endif
 
     connect(ui->categoryList, &QListWidget::currentRowChanged, this, [this](int currentRow) { ui->stackedWidget->setCurrentIndex(currentRow); });
     connect(ui->buttonBox, &QDialogButtonBox::clicked, this, &QVOptionsDialog::buttonBoxClicked);
     connect(ui->shortcutsTable, &QTableWidget::cellDoubleClicked, this, &QVOptionsDialog::shortcutCellDoubleClicked);
     connect(ui->bgColorCheckbox, &QCheckBox::checkStateChanged, this, &QVOptionsDialog::bgColorCheckboxCheckStateChanged);
-    connect(ui->mainMenuIconsCheckbox, &QCheckBox::checkStateChanged, this, [this](Qt::CheckState state) { restartNotifyForCheckbox("mainmenuicons", state); });
-    connect(ui->contextMenuIconsCheckbox, &QCheckBox::checkStateChanged, this, [this](Qt::CheckState state) { restartNotifyForCheckbox("contextmenuicons", state); });
-    connect(ui->submenuIconsCheckbox, &QCheckBox::checkStateChanged, this, [this](Qt::CheckState state) { restartNotifyForCheckbox("submenuicons", state); });
     connect(ui->smoothScalingLimitCheckbox, &QCheckBox::checkStateChanged, this, &QVOptionsDialog::smoothScalingLimitCheckboxCheckStateChanged);
-    connect(ui->fitZoomLimitCheckbox, &QCheckBox::checkStateChanged, this, &QVOptionsDialog::fitZoomLimitCheckboxCheckStateChanged);
     connect(ui->constrainImagePositionCheckbox, &QCheckBox::checkStateChanged, this, &QVOptionsDialog::constrainImagePositionCheckboxCheckStateChanged);
     connect(ui->cursorAutoHideFullscreenCheckbox, &QCheckBox::checkStateChanged, this, &QVOptionsDialog::cursorAutoHideFullscreenCheckboxCheckStateChanged);
     connect(ui->middleButtonModeClickRadioButton, &QRadioButton::clicked, this, &QVOptionsDialog::middleButtonModeChanged);
     connect(ui->middleButtonModeDragRadioButton, &QRadioButton::clicked, this, &QVOptionsDialog::middleButtonModeChanged);
     connect(ui->titlebarComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QVOptionsDialog::titlebarComboBoxCurrentIndexChanged);
     connect(ui->smoothScalingComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QVOptionsDialog::smoothScalingComboBoxCurrentIndexChanged);
-    connect(ui->langComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QVOptionsDialog::languageComboBoxCurrentIndexChanged);
     connect(ui->formatsTable, &QTableWidget::itemChanged, this, &QVOptionsDialog::formatsItemChanged);
 
     QSettings settings;
@@ -67,29 +47,8 @@ QVOptionsDialog::QVOptionsDialog(QWidget *parent) :
     customizePalette();
     populateCategories(settings.value("optionstab", 1).toInt());
     populateComboBoxes();
-    populateLanguages();
 
-    // Platform specific behaviors
-#ifdef Q_OS_MACOS
-    restoreGeometry(settings.value("optionsgeometry").toByteArray());
-
-    if (QOperatingSystemVersion::current() < QOperatingSystemVersion(QOperatingSystemVersion::MacOS, 13))
-        setWindowTitle(tr("Preferences"));
-#else
     setWindowModality(Qt::WindowModal);
-#endif
-
-    // Platform specific settings
-#ifdef Q_OS_MACOS
-    ui->menubarCheckbox->hide();
-#else
-    ui->reuseWindowCheckbox->hide();
-    ui->darkTitlebarCheckbox->hide();
-    ui->quitOnLastWindowCheckbox->hide();
-#endif
-
-    if (!QVApplication::supportsSessionPersistence())
-        ui->persistSessionCheckbox->hide();
 
     QString ctrlKeyName = QKeySequence(Qt::CTRL).toString(QKeySequence::NativeText).replace(QRegularExpression("\\+$"), "");
     ui->altDoubleClickLabel->setText(tr("%1 + Double Click:").arg(ctrlKeyName));
@@ -124,15 +83,6 @@ void QVOptionsDialog::done(int r)
 
 void QVOptionsDialog::showEvent(QShowEvent *event)
 {
-#ifdef Q_OS_MACOS
-    // On macOS, we don't make this dialog modal, so make sure it doesn't get covered by on top windows
-    const auto updateWindowOnTop = [this]() {
-        windowHandle()->setFlag(Qt::WindowStaysOnTopHint, qvApp->foundOnTopWindow());
-    };
-    updateWindowOnTop();
-    connect(qvApp, &QVApplication::windowOnTopChanged, this, updateWindowOnTop);
-#endif
-
     QDialog::showEvent(event);
 }
 
@@ -200,34 +150,16 @@ void QVOptionsDialog::syncSettings(bool defaults, bool makeConnections)
     syncComboBox(ui->titlebarComboBox, "titlebarmode", defaults, makeConnections);
     // customtitlebartext
     syncLineEdit(ui->customTitlebarLineEdit, "customtitlebartext", defaults, makeConnections);
-    // windowresizemode
-    syncComboBox(ui->windowResizeComboBox, "windowresizemode", defaults, makeConnections);
-    // aftermatchingsize
-    syncComboBox(ui->afterMatchingSizeComboBox, "aftermatchingsizemode", defaults, makeConnections);
-    // minwindowresizedpercentage
-    syncSpinBox(ui->minWindowResizeSpinBox, "minwindowresizedpercentage", defaults, makeConnections);
-    // maxwindowresizedperecentage
-    syncSpinBox(ui->maxWindowResizeSpinBox, "maxwindowresizedpercentage", defaults, makeConnections);
-    // titlebaralwaysdark
-    syncCheckbox(ui->darkTitlebarCheckbox, "titlebaralwaysdark", defaults, makeConnections);
-    // quitonlastwindow
-    syncCheckbox(ui->quitOnLastWindowCheckbox, "quitonlastwindow", defaults, makeConnections);
+    // windowsizemode
+    syncComboBox(ui->windowResizeComboBox, "windowsizemode", defaults, makeConnections);
+    // windowpositionmode
+    syncComboBox(ui->afterMatchingSizeComboBox, "windowpositionmode", defaults, makeConnections);
     // menubarenabled
     syncCheckbox(ui->menubarCheckbox, "menubarenabled", defaults, makeConnections);
-    // fullscreendetails
-    syncCheckbox(ui->detailsInFullscreen, "fullscreendetails", defaults, makeConnections);
-    // mainmenuicons
-    syncCheckbox(ui->mainMenuIconsCheckbox, "mainmenuicons", defaults, makeConnections);
-    // contextmenuicons
-    syncCheckbox(ui->contextMenuIconsCheckbox, "contextmenuicons", defaults, makeConnections);
-    // submenuicons
-    syncCheckbox(ui->submenuIconsCheckbox, "submenuicons", defaults, makeConnections);
+    // allowmultiplewindows
+    syncCheckbox(ui->allowMultipleWindowsCheckbox, "allowmultiplewindows", defaults, makeConnections);
     // slideshowkeepswindowontop
     syncCheckbox(ui->slideshowKeepsWindowOnTopCheckbox, "slideshowkeepswindowontop", defaults, makeConnections);
-    // reusewindow
-    syncCheckbox(ui->reuseWindowCheckbox, "reusewindow", defaults, makeConnections);
-    // persistsession
-    syncCheckbox(ui->persistSessionCheckbox, "persistsession", defaults, makeConnections);
     // smoothscalingmode
     syncComboBox(ui->smoothScalingComboBox, "smoothscalingmode", defaults, makeConnections);
     // scalingtwoenabled
@@ -244,13 +176,10 @@ void QVOptionsDialog::syncSettings(bool defaults, bool makeConnections)
     syncCheckbox(ui->oneToOnePixelSizingCheckbox, "onetoonepixelsizing", defaults, makeConnections);
     // calculatedzoommode
     syncComboBox(ui->zoomDefaultComboBox, "calculatedzoommode", defaults, makeConnections);
-    // fitzoomlimitenabled
-    syncCheckbox(ui->fitZoomLimitCheckbox, "fitzoomlimitenabled", defaults, makeConnections);
-    fitZoomLimitCheckboxCheckStateChanged(ui->fitZoomLimitCheckbox->checkState());
-    // fitzoomlimitpercent
-    syncSpinBox(ui->fitZoomLimitSpinBox, "fitzoomlimitpercent", defaults, makeConnections);
-    // fitoverscan
-    syncSpinBox(ui->fitOverscanSpinBox, "fitoverscan", defaults, makeConnections);
+    // initialviewmode
+    syncComboBox(ui->initialViewComboBox, "initialviewmode", defaults, makeConnections);
+    // portraitpadding
+    syncComboBox(ui->portraitPaddingComboBox, "portraitpadding", defaults, makeConnections);
     // navresetszoom
     syncCheckbox(ui->navResetsZoomCheckbox, "navresetszoom", defaults, makeConnections);
     // constrainimageposition
@@ -258,13 +187,9 @@ void QVOptionsDialog::syncSettings(bool defaults, bool makeConnections)
     constrainImagePositionCheckboxCheckStateChanged(ui->constrainImagePositionCheckbox->checkState());
     // constraincentersmallimage
     syncCheckbox(ui->constrainCentersSmallImageCheckbox, "constraincentersmallimage", defaults, makeConnections);
-    // originalsizeastoggle
-    syncCheckbox(ui->originalSizeAsToggleCheckbox, "originalsizeastoggle", defaults, makeConnections);
     // colorspaceconversion
     syncComboBox(ui->colorSpaceConversionComboBox, "colorspaceconversion", defaults, makeConnections);
-    // language
-    syncComboBox(ui->langComboBox, "language", defaults, makeConnections);
-    // sortmode
+    // language is chosen by the installer, so it has no setting here
     syncComboBox(ui->sortComboBox, "sortmode", defaults, makeConnections);
     // sortdescending
     syncRadioButtons({ui->descendingRadioButton0, ui->descendingRadioButton1}, "sortdescending", defaults, makeConnections);
@@ -286,10 +211,6 @@ void QVOptionsDialog::syncSettings(bool defaults, bool makeConnections)
     syncCheckbox(ui->mimeContentDetectionCheckbox, "allowmimecontentdetection", defaults, makeConnections);
     // skiphidden
     syncCheckbox(ui->skipHiddenCheckbox, "skiphidden", defaults, makeConnections);
-    // saverecents
-    syncCheckbox(ui->saveRecentsCheckbox, "saverecents", defaults, makeConnections);
-    // updatenotifications
-    syncCheckbox(ui->updateCheckbox, "updatenotifications", defaults, makeConnections);
 
     // mouse actions
     syncCheckbox(ui->navigationRegionsCheckbox, "navigationregionsenabled", defaults, makeConnections);
@@ -580,7 +501,7 @@ void QVOptionsDialog::restartNotifyForCheckbox(const QString &key, const Qt::Che
 {
     const bool savedValue = qvApp->getSettingsManager().getBoolean(key);
     if (static_cast<bool>(state) != savedValue)
-        QMessageBox::information(this, tr("Restart Required"), tr("You must restart qView for the setting change to take effect."));
+        QMessageBox::information(this, tr("Restart Required"), tr("You must restart wView for the setting change to take effect."));
 }
 
 void QVOptionsDialog::titlebarComboBoxCurrentIndexChanged(int index)
@@ -601,11 +522,6 @@ void QVOptionsDialog::smoothScalingLimitCheckboxCheckStateChanged(Qt::CheckState
 {
     const bool selfEnabled = ui->smoothScalingLimitCheckbox->isEnabled();
     ui->smoothScalingLimitSpinBox->setEnabled(selfEnabled && static_cast<bool>(state));
-}
-
-void QVOptionsDialog::fitZoomLimitCheckboxCheckStateChanged(Qt::CheckState state)
-{
-    ui->fitZoomLimitSpinBox->setEnabled(static_cast<bool>(state));
 }
 
 void QVOptionsDialog::constrainImagePositionCheckboxCheckStateChanged(Qt::CheckState state)
@@ -653,38 +569,6 @@ void QVOptionsDialog::populateCategories(int selectedRow)
     ui->categoryList->setFixedWidth(ui->categoryList->sizeHintForColumn(0) + ui->categoryList->frameWidth() + listRightPadding);
 }
 
-void QVOptionsDialog::populateLanguages()
-{
-    ui->langComboBox->clear();
-
-    ui->langComboBox->addItem(tr("System Language"), "system");
-
-    // Put english at the top seperately because it has no file
-    ui->langComboBox->addItem("English (en)", "en");
-
-    const auto entries = QDir(":/i18n/").entryList();
-    for (auto entry : entries)
-    {
-        entry.remove(0, 6);
-        entry.remove(entry.length()-3, 3);
-        QLocale locale(entry);
-
-        const QString langString = locale.nativeLanguageName() + " (" + entry + ")";
-
-        ui->langComboBox->addItem(langString, entry);
-    }
-}
-
-void QVOptionsDialog::languageComboBoxCurrentIndexChanged(int index)
-{
-    Q_UNUSED(index)
-    if (!isInitialLoad && !languageRestartMessageShown)
-    {
-        QMessageBox::information(this, tr("Restart Required"), tr("You must restart qView for the language change to take effect."));
-        languageRestartMessageShown = true;
-    }
-}
-
 void QVOptionsDialog::formatsItemChanged(QTableWidgetItem *item)
 {
     if (isLoadingFormats)
@@ -721,19 +605,41 @@ const Ui::ComboBoxItems<Qv::AfterDelete> QVOptionsDialog::mapAfterDelete() {
     };
 }
 
-const Ui::ComboBoxItems<Qv::AfterMatchingSize> QVOptionsDialog::mapAfterMatchingSize() {
+const Ui::ComboBoxItems<Qv::WindowPositionMode> QVOptionsDialog::mapWindowPositionMode() {
     return {
-        { Qv::AfterMatchingSize::AvoidRepositioning, tr("Avoid repositioning") },
-        { Qv::AfterMatchingSize::CenterOnPrevious, tr("Center relative to previous image") },
-        { Qv::AfterMatchingSize::CenterOnScreen, tr("Center relative to screen") }
+        { Qv::WindowPositionMode::Centered, tr("Centered") },
+        { Qv::WindowPositionMode::RememberLastPosition, tr("Remember last position") }
+    };
+}
+
+const Ui::ComboBoxItems<Qv::WindowSizeMode> QVOptionsDialog::mapWindowSizeMode() {
+    return {
+        { Qv::WindowSizeMode::Auto, tr("Auto") },
+        { Qv::WindowSizeMode::Maximize, tr("Maximize") },
+        { Qv::WindowSizeMode::Fullscreen, tr("Fullscreen") }
+    };
+}
+
+const Ui::ComboBoxItems<Qv::InitialViewMode> QVOptionsDialog::mapInitialViewMode() {
+    return {
+        { Qv::InitialViewMode::Top, tr("Top") },
+        { Qv::InitialViewMode::Center, tr("Middle") }
+    };
+}
+
+const Ui::ComboBoxItems<Qv::HorizontalPortraitPadding> QVOptionsDialog::mapHorizontalPortraitPadding() {
+    return {
+        { Qv::HorizontalPortraitPadding::Zero, tr("0%") },
+        { Qv::HorizontalPortraitPadding::Ten, tr("10%") },
+        { Qv::HorizontalPortraitPadding::Fifteen, tr("15%") }
     };
 }
 
 const Ui::ComboBoxItems<Qv::CalculatedZoomMode> QVOptionsDialog::mapCalculatedZoomMode() {
     return {
-        { Qv::CalculatedZoomMode::ZoomToFit, tr("Zoom to Fit") },
-        { Qv::CalculatedZoomMode::FillWindow, tr("Fill Window") },
-        { Qv::CalculatedZoomMode::OriginalSize, tr("Original Size") }
+        { Qv::CalculatedZoomMode::ZoomToFit, tr("Fit") },
+        { Qv::CalculatedZoomMode::FitHeight, tr("Fit Height") },
+        { Qv::CalculatedZoomMode::FitWidth, tr("Fit Width") }
     };
 }
 
@@ -791,20 +697,12 @@ const Ui::ComboBoxItems<Qv::TitleBarText> QVOptionsDialog::mapTitleBarText() {
     };
 }
 
-const Ui::ComboBoxItems<Qv::WindowResizeMode> QVOptionsDialog::mapWindowResizeMode() {
-    return {
-        { Qv::WindowResizeMode::Never, tr("Never") },
-        { Qv::WindowResizeMode::WhenLaunching, tr("When launching") },
-        { Qv::WindowResizeMode::WhenOpeningImages, tr("When opening images") }
-    };
-}
-
 const Ui::ComboBoxItems<Qv::ViewportClickAction> QVOptionsDialog::mapViewportClickAction() {
     return {
         { Qv::ViewportClickAction::None, tr("None") },
         { Qv::ViewportClickAction::ZoomToFit, tr("Zoom to Fit") },
         { Qv::ViewportClickAction::FillWindow, tr("Fill Window") },
-        { Qv::ViewportClickAction::OriginalSize, tr("Original Size") },
+        { Qv::ViewportClickAction::OriginalSize, tr("Toggle Original Size") },
         { Qv::ViewportClickAction::CenterImage, tr("Center Image") },
         { Qv::ViewportClickAction::ToggleFullScreen, tr("Toggle Full Screen") },
         { Qv::ViewportClickAction::ToggleTitlebarHidden, tr("Toggle Titlebar Hidden") }
@@ -842,13 +740,17 @@ void QVOptionsDialog::populateComboBoxes()
 {
     populateComboBox(ui->titlebarComboBox, mapTitleBarText());
 
-    populateComboBox(ui->windowResizeComboBox, mapWindowResizeMode());
+    populateComboBox(ui->windowResizeComboBox, mapWindowSizeMode());
 
-    populateComboBox(ui->afterMatchingSizeComboBox, mapAfterMatchingSize());
+    populateComboBox(ui->afterMatchingSizeComboBox, mapWindowPositionMode());
 
     populateComboBox(ui->smoothScalingComboBox, mapSmoothScalingMode());
 
     populateComboBox(ui->zoomDefaultComboBox, mapCalculatedZoomMode());
+
+    populateComboBox(ui->initialViewComboBox, mapInitialViewMode());
+
+    populateComboBox(ui->portraitPaddingComboBox, mapHorizontalPortraitPadding());
 
     populateComboBox(ui->colorSpaceConversionComboBox, mapColorSpaceConversion());
 

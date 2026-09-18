@@ -21,6 +21,8 @@ public:
     static bool showInExplorer(const QString &path);
 
     static QByteArray getIccProfileForWindow(const QWindow *window);
+
+    static QStringList getExplorerSortOrder(const QString &folderPath);
 };
 
 #endif // QVWIN32FUNCTIONS_H

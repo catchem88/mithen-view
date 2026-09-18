@@ -3,11 +3,7 @@
 $qtVersion = [version](qmake -query QT_VERSION)
 Write-Host "Detected Qt version $qtVersion"
 
-$osName =
-    $IsWindows ? 'Windows' :
-    $IsMacOS ? 'macOS' :
-    $IsLinux ? 'Linux' :
-    $null
+$osName = 'Windows'
 
 $binaryBaseUrl = "https://github.com/jdpurcell/kimageformats-binaries/releases/download/cont"
 
@@ -26,12 +22,8 @@ foreach ($pluginName in $pluginNames) {
 if ($IsWindows) {
     $out_frm = "bin"
     $out_imf = "bin/imageformats"
-} elseif ($IsMacOS) {
-    $out_frm = "bin/qView.app/Contents/Frameworks"
-    $out_imf = "bin/qView.app/Contents/PlugIns/imageformats"
 } else {
-    $out_frm = "bin/appdir/usr/lib"
-    $out_imf = "bin/appdir/usr/plugins/imageformats"
+    throw "This script only supports Windows."
 }
 
 New-Item -Type Directory -Path $out_frm -Force

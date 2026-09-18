@@ -132,7 +132,7 @@ void UpdateChecker::openDialog(QWidget *parent, bool isAutoCheck)
         return;
 
     auto *msgBox = new QMessageBox(parent);
-    msgBox->setWindowTitle(tr("qView Update Available"));
+    msgBox->setWindowTitle(tr("wView Update Available"));
     msgBox->setText(tr("A newer version is available to download.")
                     + "\n\n" + checkResult.releaseName + ":\n" + checkResult.changelog);
     msgBox->setWindowModality(Qt::ApplicationModal);
@@ -158,7 +158,7 @@ void UpdateChecker::openDialog(QWidget *parent, bool isAutoCheck)
             settings.beginGroup("options");
             settings.setValue("updatenotifications", false);
             qvApp->getSettingsManager().loadSettings();
-            QMessageBox::information(nullptr, tr("qView Update Checking Disabled"), tr("Update notifications on startup have been disabled.\nYou can reenable them in the options dialog."), QMessageBox::Ok);
+            QMessageBox::information(nullptr, tr("wView Update Checking Disabled"), tr("Update notifications on startup have been disabled.\nYou can reenable them in the options dialog."), QMessageBox::Ok);
         });
     }
     msgBox->open();

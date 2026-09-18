@@ -8,7 +8,6 @@
 #include "updatechecker.h"
 #include "qvoptionsdialog.h"
 #include "qvaboutdialog.h"
-#include "qvwelcomedialog.h"
 
 #include <QApplication>
 #include <QRegularExpression>
@@ -70,8 +69,6 @@ public:
 
     void openOptionsDialog(QWidget *parent = nullptr);
 
-    void openWelcomeDialog(QWidget *parent = nullptr);
-
     void openAboutDialog(QWidget *parent = nullptr);
 
     void hideIncompatibleActions();
@@ -98,8 +95,6 @@ public:
     ShortcutManager &getShortcutManager() { return shortcutManager; }
 
     ActionManager &getActionManager() { return actionManager; }
-
-    UpdateChecker &getUpdateChecker() { return updateChecker; }
 
     bool getShowMainMenuIcons() const { return showMainMenuIcons; }
 
@@ -147,8 +142,6 @@ private:
 
     QSet<MainWindow*> activeWindows;
 
-    QMenu *dockMenu;
-
     QMenuBar *menuBar;
 
     QSet<QString> disabledFileExtensions;
@@ -164,15 +157,12 @@ private:
     ShortcutManager shortcutManager;
 
     QPointer<QVOptionsDialog> optionsDialog;
-    QPointer<QVWelcomeDialog> welcomeDialog;
     QPointer<QVAboutDialog> aboutDialog;
 
     bool showMainMenuIcons {true};
     bool showContextMenuIcons {true};
     bool showSubmenuIcons {true};
     bool useCustomMenuShadow {false};
-
-    UpdateChecker updateChecker;
 
     bool isSessionStateSaveRequested {false};
     QList<ClosedWindowData> closedWindowData;

@@ -2,7 +2,6 @@
 #include "qvapplication.h"
 #include "qvinfodialog.h"
 #include "qvmovie.h"
-#include "qvcocoafunctions.h"
 #include <QWheelEvent>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
@@ -441,7 +440,34 @@ void QVGraphicsView::executeClickAction(const Qv::ViewportClickAction action, co
     }
     else if (action == Qv::ViewportClickAction::OriginalSize)
     {
-        setCalculatedZoomMode(Qv::CalculatedZoomMode::OriginalSize, false, mousePos);
+        if (isOriginalSizeMode)
+        {
+            // Restore previous zoom state and viewport position
+            isOriginalSizeMode = false;
+            if (previousCalculatedZoomMode.has_value())
+            {
+                setCalculatedZoomMode(previousCalculatedZoomMode);
+            }
+            else
+            {
+                setCalculatedZoomMode({});
+                zoomAbsolute(previousZoomLevel);
+            }
+            // Restore scroll position after zoom is applied
+            QTimer::singleShot(0, this, [this]() {
+                horizontalScrollBar()->setValue(previousScrollPos.x());
+                verticalScrollBar()->setValue(previousScrollPos.y());
+            });
+        }
+        else
+        {
+            // Save current state and switch to 100%
+            isOriginalSizeMode = true;
+            previousCalculatedZoomMode = calculatedZoomMode;
+            previousZoomLevel = zoomLevel;
+            previousScrollPos = QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
+            setCalculatedZoomMode(Qv::CalculatedZoomMode::OriginalSize, false, mousePos);
+        }
     }
     else if (action == Qv::ViewportClickAction::CenterImage)
     {
@@ -470,12 +496,7 @@ void QVGraphicsView::startDragAction(const Qv::ViewportDragAction action)
         // Let the window manager handle the move if possible to get window snapping support etc.
         if (pressedMouseButton == Qt::LeftButton && !window()->windowState().testFlag(Qt::WindowFullScreen))
         {
-#if defined COCOA_LOADED && QT_VERSION < QT_VERSION_CHECK(6, 11, 3)
-            // Avoid QWindow::startSystemMove due to QTBUG-141220
-            isSystemWindowDragActive = QVCocoaFunctions::startWindowDrag(window()->windowHandle());
-#else
             isSystemWindowDragActive = window()->windowHandle()->startSystemMove();
-#endif
         }
     }
 }
@@ -500,10 +521,8 @@ void QVGraphicsView::executeDragAction(const Qv::ViewportDragAction action, cons
     else if (action == Qv::ViewportDragAction::MoveWindow)
     {
         const auto windowState = window()->windowState();
-#ifndef Q_OS_MACOS
         if (windowState.testFlag(Qt::WindowMaximized))
             window()->showNormal();
-#endif
         if (isSystemWindowDragActive || windowState.testFlag(Qt::WindowFullScreen))
             return;
         window()->move(window()->pos() + delta);
@@ -602,9 +621,10 @@ void QVGraphicsView::loadMimeData(const QMimeData *mimeData)
     }
 }
 
-void QVGraphicsView::loadFile(const QString &fileName, const QString &baseDir)
+void QVGraphicsView::loadFile(const QString &fileName, const QString &baseDir, const std::optional<int> initialFrameNumber)
 {
-    imageCore.loadFile(fileName, false, baseDir);
+    //Always refresh the folder listing on an external open (even when reusing a window)
+    imageCore.loadFile(fileName, false, !baseDir.isEmpty() ? baseDir : QFileInfo(fileName).path(), false, initialFrameNumber);
 }
 
 void QVGraphicsView::reloadFile()
@@ -620,6 +640,11 @@ void QVGraphicsView::beforeLoad()
     // If a prior pixmap is still loaded, capture its content rect
     if (getCurrentFileDetails().isPixmapLoaded)
         lastImageContentRect = getContentRect();
+
+    // Reset toggle original size state when navigating to a new image
+    isOriginalSizeMode = false;
+    previousCalculatedZoomMode = {};
+    isSmallImageMode = false;
 }
 
 void QVGraphicsView::postLoad()
@@ -639,7 +664,7 @@ void QVGraphicsView::postLoad()
 
     emit fileChanged(loadIsFromSessionRestore);
 
-    if (!loadIsFromSessionRestore)
+    if (!loadIsFromSessionRestore && !isPendingMaximize && !isSmallImageMode)
     {
         if (navigationResetsZoom && calculatedZoomMode != defaultCalculatedZoomMode)
             setCalculatedZoomMode(defaultCalculatedZoomMode, true);
@@ -693,6 +718,13 @@ void QVGraphicsView::zoomAbsolute(const qreal absoluteLevel, const std::optional
 {
     if (!isApplyingCalculation || !Qv::calculatedZoomModeIsSticky(calculatedZoomMode.value()))
         setCalculatedZoomMode({});
+
+    // Update saved zoom state for toggle original size (only when not in original size mode)
+    if (!isOriginalSizeMode)
+    {
+        previousZoomLevel = zoomLevel;
+        previousCalculatedZoomMode = calculatedZoomMode;
+    }
 
     const bool isChanging = absoluteLevel != zoomLevel;
     const std::optional<QPoint> pos = targetPos == Qv::CalculateViewportCenterPos ? getUsableViewportRect().center() : targetPos;
@@ -834,7 +866,26 @@ void QVGraphicsView::recalculateZoom()
         return;
 
     const QSizeF imageSize = getEffectiveOriginalSize();
-    const QSize viewSize = getUsableViewportRect(true).size();
+    QSize viewSize = getUsableViewportRect(true).size();
+
+    if (viewSize.isEmpty())
+        return;
+
+    // Apply horizontal portrait padding for portrait/square images (only when maximized)
+    const auto &settingsManager = qvApp->getSettingsManager();
+    const auto portraitPadding = settingsManager.getEnum<Qv::HorizontalPortraitPadding>("portraitpadding");
+    const bool isPortraitOrSquare = imageSize.width() <= imageSize.height();
+    const bool isMaximized = window() && window()->windowState().testFlag(Qt::WindowMaximized);
+    if (isPortraitOrSquare && portraitPadding != Qv::HorizontalPortraitPadding::Zero && isMaximized)
+    {
+        int paddingPercent = 0;
+        if (portraitPadding == Qv::HorizontalPortraitPadding::Ten)
+            paddingPercent = 10;
+        else if (portraitPadding == Qv::HorizontalPortraitPadding::Fifteen)
+            paddingPercent = 15;
+        const int paddedWidth = viewSize.width() * (100 - paddingPercent) / 100;
+        viewSize.setWidth(paddedWidth);
+    }
 
     if (viewSize.isEmpty())
         return;
@@ -875,6 +926,12 @@ void QVGraphicsView::recalculateZoom()
                 targetRatio = qMin(fitXRatio, fitYRatio);
         }
         break;
+    case Qv::CalculatedZoomMode::FitHeight:
+        targetRatio = qMin(fitYRatio, 1.0);
+        break;
+    case Qv::CalculatedZoomMode::FitWidth:
+        targetRatio = qMin(fitXRatio, 1.0);
+        break;
     case Qv::CalculatedZoomMode::FillWindow:
         if ((imageOverflowX == 0 && imageOverflowY >= 0) ||
             (imageOverflowY == 0 && imageOverflowX >= 0))
@@ -885,6 +942,9 @@ void QVGraphicsView::recalculateZoom()
         {
             targetRatio = qMax(fitXRatio, fitYRatio);
         }
+        break;
+    case Qv::CalculatedZoomMode::OriginalSize:
+        targetRatio = 1.0;
         break;
     default:
         targetRatio = 1.0;
@@ -909,9 +969,24 @@ void QVGraphicsView::centerImage()
     const int vOverflow = contentRect.height() - viewRect.height();
 
     horizontalScrollBar()->setValue(hOffset + (hOverflow / (isRightToLeft() ? -2 : 2)));
-    verticalScrollBar()->setValue(vOffset + (vOverflow / 2));
+
+    // Apply Initial View Mode (Top or Middle)
+    // "Top" only takes effect if the image is taller than the viewport.
+    // Otherwise, always center vertically.
+    const auto &settingsManager = qvApp->getSettingsManager();
+    const auto initialView = settingsManager.getEnum<Qv::InitialViewMode>("initialviewmode");
+    if (initialView == Qv::InitialViewMode::Top && contentRect.height() > viewRect.height())
+        verticalScrollBar()->setValue(contentRect.top());
+    else
+        verticalScrollBar()->setValue(vOffset + (vOverflow / 2));
 
     scrollHelper->cancelAnimation();
+}
+
+void QVGraphicsView::scrollImage(int deltaX, int deltaY)
+{
+    scrollHelper->move(QPointF(deltaX, deltaY));
+    constrainBoundsTimer->start();
 }
 
 void QVGraphicsView::setCursorVisible(const bool visible)
@@ -1020,21 +1095,40 @@ void QVGraphicsView::fitOrConstrainImage()
         scrollHelper->constrain(true);
 }
 
-bool QVGraphicsView::isSmoothScalingRequested() const
-{
-    return smoothScalingMode != Qv::SmoothScalingMode::Disabled &&
-        (!smoothScalingLimit.has_value() || zoomLevel < smoothScalingLimit.value());
+bool QVGraphicsView::isSmoothScalingRequested() const {
+    const QString suffix = getCurrentFileDetails().fileInfo.suffix().toLower();
+    const bool isSvg = (suffix == "svg" || suffix == "svgz");
+    bool limitAllows = true;
+    if(smoothScalingLimit.has_value()) {
+        if(zoomLevel >= smoothScalingLimit.value()) {
+            limitAllows = false;
+        }
+    }
+    return smoothScalingMode != Qv::SmoothScalingMode::Disabled && (isSvg || limitAllows);
 }
 
-bool QVGraphicsView::isExpensiveScalingRequested() const
-{
-    if (!isSmoothScalingRequested() || smoothScalingMode != Qv::SmoothScalingMode::Expensive || !getCurrentFileDetails().isPixmapLoaded)
+bool QVGraphicsView::isExpensiveScalingRequested() const {
+    if(!isSmoothScalingRequested() || smoothScalingMode != Qv::SmoothScalingMode::Expensive || !getCurrentFileDetails().isPixmapLoaded) {
         return false;
+    }
 
-    // Don't go over the maximum scaling size (a small tolerance is added to cover rounding errors)
+    const QString suffix = getCurrentFileDetails().fileInfo.suffix().toLower();
+    const bool isSvg = (suffix == "svg" || suffix == "svgz");
+
+    //Don't go over the maximum scaling size (a small tolerance is added to cover rounding errors)
     const QSize contentSize = getContentRect().size();
-    const QSize maxSize = getUsableViewportRect(true).size() * (expensiveScalingAboveWindowSize ? 3 : 1) + QSize(2, 2);
-    return contentSize.width() <= maxSize.width() && contentSize.height() <= maxSize.height();
+    int multiplier = 1;
+    if(expensiveScalingAboveWindowSize) {
+        multiplier = 3;
+    }
+    const QSize maxSize = getUsableViewportRect(true).size() * multiplier + QSize(2,2);
+    if(!isSvg) {
+        return contentSize.width() <= maxSize.width() && contentSize.height() <= maxSize.height();
+    }
+
+    //For SVGs, allow scaling as long as mapped size does not exceed reasonable limits
+    const QSizeF mappedSize = QSizeF(getCurrentFileDetails().loadedPixmapSize) * zoomLevel * getDpiAdjustment() * devicePixelRatioF();
+    return mappedSize.width() <= 8192 && mappedSize.height() <= 8192;
 }
 
 QSizeF QVGraphicsView::getEffectiveOriginalSize() const
@@ -1084,6 +1178,20 @@ QRect QVGraphicsView::getContentRect() const
     const QTransform pixmapTransform = normalizeTransformOrigin(getUnspecializedTransform().scale(pixmapScale, pixmapScale), pixmapSize);
     const QRectF contentRect = pixmapTransform.mapRect(pixmapBoundingRect);
     return QRect(contentRect.topLeft().toPoint(), getPixelFitter().snapSize(contentRect.size()));
+}
+
+QRect QVGraphicsView::getImageViewportRect() const
+{
+    // Returns the image's actual rect in viewport coordinates, including the current scroll/pan
+    // position. Unlike getContentRect(), this reflects where the image is currently displayed.
+    if (!getCurrentFileDetails().isPixmapLoaded)
+        return {};
+
+    const QRectF sceneRect = loadedPixmapItem->sceneBoundingRect();
+    if (sceneRect.isEmpty())
+        return {};
+
+    return mapFromScene(sceneRect).boundingRect();
 }
 
 QRect QVGraphicsView::getUsableViewportRect(const bool addOverscan) const
