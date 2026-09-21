@@ -4,9 +4,9 @@
 
 <h1 align="center">wView</h1>
 
-<h2 align="center">
+<div align="center">
 wView is a lightweight image viewer, with basic editing feature & OCR for Windows. A Windows focused fork of [jdpurcell's qView](https://github.com/jdpurcell/qView), which is derived from [jurplel's qView](https://github.com/jurplel/qView).
-<h2 align="center">
+</div>
 
 ## Additional features in this fork
 * Windows focused features and configuration
