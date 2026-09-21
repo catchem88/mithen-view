@@ -120,6 +120,9 @@ void QVImageCore::loadPixmap(const ReadData &readData)
 {
     emit fileChanging();
 
+    //A freshly loaded image has no unsaved in-memory modifications
+    imageModified = false;
+
     if (readData.errorData.has_value())
     {
         FileDetails emptyDetails;
@@ -507,6 +510,49 @@ QPixmap QVImageCore::scaleExpensively(const QSizeF desiredSize) {
     }
 
     return loadedPixmap.scaled(size,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+}
+
+void QVImageCore::resizeImage(const qreal factor)
+{
+    if (!currentFileDetails.isPixmapLoaded || loadInProgress || currentFileDetails.isMovieLoaded)
+        return;
+
+    const QSize newSize = (QSizeF(currentFileDetails.loadedPixmapSize) * factor).toSize();
+    if (newSize.width() < 1 || newSize.height() < 1)
+        return;
+
+    applyImageEdit(loadedPixmap.toImage().scaled(newSize,Qt::IgnoreAspectRatio,Qt::SmoothTransformation));
+}
+
+void QVImageCore::cropImage(const QRect &rect)
+{
+    if (!currentFileDetails.isPixmapLoaded || loadInProgress || currentFileDetails.isMovieLoaded)
+        return;
+
+    const QRect imageRect(QPoint(), currentFileDetails.loadedPixmapSize);
+    const QRect cropRect = rect.intersected(imageRect);
+    if (cropRect.isEmpty() || cropRect == imageRect)
+        return;
+
+    applyImageEdit(loadedPixmap.toImage().copy(cropRect));
+}
+
+void QVImageCore::applyImageEdit(const QImage &newImage)
+{
+    if (newImage.isNull())
+        return;
+
+    loadedPixmap = QPixmap::fromImage(newImage);
+    currentFileDetails.loadedPixmapSize = loadedPixmap.size();
+    currentFileDetails.baseImageSize = loadedPixmap.size();
+    currentFileDetails.isMultiFrameImage = false;
+    currentFileDetails.frameCount = 1;
+    currentFileDetails.frameNumber = 0;
+
+    imageModified = true;
+
+    emit imageChanged();
+    emit imageModifiedChanged();
 }
 
 void QVImageCore::settingsUpdated()

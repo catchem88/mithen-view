@@ -3,6 +3,7 @@
 
 #include "qvnamespace.h"
 #include "qvimagecore.h"
+#include "qvocr.h"
 #include "axislocker.h"
 #include "logicalpixelfitter.h"
 #include "scrollhelper.h"
@@ -12,6 +13,7 @@
 #include <QMimeData>
 #include <QDir>
 #include <QTimer>
+#include <QProgressBar>
 #include <QFileInfo>
 
 class MainWindow;
@@ -53,6 +55,32 @@ public:
     void setSortMode(const Qv::SortMode mode) { imageCore.setSortMode(mode); }
     bool getSortDescending() const { return imageCore.getSortDescending(); }
     void setSortDescending(const bool descending) { imageCore.setSortDescending(descending); }
+
+    void resizeImage(const qreal factor) { imageCore.resizeImage(factor); }
+    void cropImage(const QRect &rect) { imageCore.cropImage(rect); }
+    bool getImageModified() const { return imageCore.getImageModified(); }
+    void clearImageModified() { imageCore.clearImageModified(); }
+
+    bool hasUnsavedTransform() const;
+    QImage getCurrentTransformedImage() const;
+
+    //True when the loaded file's format can be written by Qt
+    bool canSaveTransformedImage() const;
+
+    //Size of the image as currently displayed (transform applied)
+    QSize getCurrentImageSize() const;
+
+    void revertTransform();
+    void startCrop();
+    bool getIsCropping() const { return isCropping; }
+
+    void startOcr();
+    void finishOcr(const QList<QVOcrBox> &boxes);
+    void cancelOcr();
+    void showOcrToast(const QString &message,const int timeoutMs = 2000);
+    bool getIsOcrRunning() const { return isOcrRunning; }
+    bool getIsShowingOcr() const { return isShowingOcr; }
+    QString getOcrText() const;
 
     void applyExpensiveScaling();
     void removeExpensiveScaling();
@@ -104,8 +132,8 @@ public:
     const QPixmap& getLoadedPixmap() const { return imageCore.getLoadedPixmap(); }
     bool hasFileOrPendingLoad() const { return imageCore.hasFileOrPendingLoad(); }
     qreal getZoomLevel() const { return zoomLevel; }
-
     int getFitOverscan() const { return fitOverscan; }
+    Qv::CalculatedZoomMode getDefaultCalculatedZoomMode() const { return defaultCalculatedZoomMode; }
 
 signals:
     void cancelSlideshow();
@@ -117,6 +145,18 @@ signals:
     void calculatedZoomModeChanged();
 
     void navigationResetsZoomChanged();
+
+    //Emitted when the image transform or its pixel data changed
+    void transformChanged();
+
+    //Emitted when an interactive crop was applied
+    void cropApplied();
+
+    //Emitted when a recognized OCR line was clicked and its text should be copied
+    void ocrBoxClicked(const QString &text);
+
+    //Emitted when a recognition started or the results were shown/cleared
+    void ocrStateChanged();
 
     void sortParametersChanged();
 
@@ -200,6 +240,10 @@ private slots:
 
     void postLoad();
 
+    void imageChanged();
+
+    void drawForeground(QPainter *painter, const QRectF &rect) override;
+
 private:
     QGraphicsPixmapItem *loadedPixmapItem;
 
@@ -217,6 +261,41 @@ private:
     qreal zoomMultiplier {1.25};
 
     bool enableNavigationRegions {false};
+
+    //Right-button drag gestures
+    bool gestureNavigationEnabled {true};
+    bool gestureZoomEnabled {false};
+    bool isGestureDrag {false};
+    bool gesturePerformed {false};
+    QPoint gestureStartPos;
+    qreal gestureStartZoomLevel {1.0};
+
+    //Interactive crop
+    enum class CropHandle { None, Move, Left, Top, Right, Bottom, TopLeft, TopRight, BottomLeft, BottomRight };
+
+    CropHandle getCropHandleAt(const QPoint &pos) const;
+    void finishCrop();
+    void cancelCrop();
+
+    bool isCropping {false};
+    QRect cropRect;
+    CropHandle cropHandle {CropHandle::None};
+    QPoint cropDragStartPos;
+    QRect cropDragStartRect;
+
+    //OCR results
+    QRect getOcrBoxViewportRect(const QRect &imageRect) const;
+    int getOcrBoxAt(const QPoint &pos) const;
+    void updateOcrBusyIndicator();
+    void drawOverlayToast(QPainter *painter,const QString &text) const;
+
+    bool isOcrRunning {false};
+    bool isShowingOcr {false};
+    QList<QVOcrBox> ocrBoxes;
+    int hoveredOcrBox {-1};
+    QString ocrToastMessage;
+    QTimer *ocrToastTimer {nullptr};
+    QProgressBar *ocrBusyIndicator {nullptr};
     Qv::ViewportClickAction doubleClickAction {Qv::ViewportClickAction::None};
     Qv::ViewportClickAction altDoubleClickAction {Qv::ViewportClickAction::None};
     Qv::ViewportDragAction dragAction {Qv::ViewportDragAction::None};

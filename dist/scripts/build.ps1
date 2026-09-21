@@ -32,6 +32,28 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# Explorer thumbnail provider: a separate COM DLL with no Qt dependency
+if ($os -eq 'Win32NT' -or $env:OS -eq 'Windows_NT') {
+    New-Item -ItemType Directory -Path "build/thumbnail" -Force | Out-Null
+    Push-Location "build/thumbnail"
+    try {
+        qmake ../../thumbnail/wviewthumbnail.pro
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "qmake failed for the thumbnail provider"
+            exit 1
+        }
+        nmake
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Thumbnail provider build failed"
+            exit 1
+        }
+    } finally {
+        Pop-Location
+    }
+    # The import library is only needed at link time
+    Remove-Item "bin/wViewThumbnail.lib","bin/wViewThumbnail.exp" -Force -ErrorAction SilentlyContinue
+}
+
 # Stage translation catalogs for the installer. Only the language chosen during installation
 # is copied into the install directory, so nothing is embedded in the executable.
 $translationsDir = "dist/win/translations"

@@ -106,6 +106,10 @@ public:
 
     QMenu *buildViewMenu(QWidget *parent = nullptr);
 
+    QMenu *buildTransformMenu(QWidget *parent = nullptr);
+
+    QMenu *buildResizeMenu(QWidget *parent = nullptr);
+
     QMenu *buildToolsMenu(QWidget *parent = nullptr);
 
     QMenu *buildHelpMenu(QWidget *parent = nullptr);

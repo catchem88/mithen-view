@@ -6,7 +6,9 @@
 #include <QSettings>
 #include <QActionGroup>
 #include <QCache>
+#include <QDesktopServices>
 #include <QMimeDatabase>
+#include <QUrl>
 #include <QFileIconProvider>
 #include <QKeyEvent>
 
@@ -213,25 +215,17 @@ QMenuBar *ActionManager::buildMenuBar(QWidget *parent)
     menuBar->addMenu(editMenu);
     // End of edit menu
 
-    // Beginning of view menu
-    menuBar->addMenu(buildViewMenu(menuBar));
-    // End of view menu
-
-    // Beginning of go menu
-    auto *goMenu = new QVMenu(tr("&Go"), menuBar);
-
-    addCloneOfAction(goMenu, "firstfile");
-    addCloneOfAction(goMenu, "previousfile");
-    addCloneOfAction(goMenu, "nextfile");
-    addCloneOfAction(goMenu, "lastfile");
-    addCloneOfAction(goMenu, "randomfile");
-
-    menuBar->addMenu(goMenu);
-    // End of go menu
+    // Beginning of transform menu
+    menuBar->addMenu(buildTransformMenu(menuBar));
+    // End of transform menu
 
     // Beginning of tools menu
     menuBar->addMenu(buildToolsMenu(menuBar));
     // End of tools menu
+
+    // Beginning of view menu
+    menuBar->addMenu(buildViewMenu(menuBar));
+    // End of view menu
 
     // Beginning of help menu
     menuBar->addMenu(buildHelpMenu(menuBar));
@@ -256,21 +250,56 @@ QMenu *ActionManager::buildViewMenu(QWidget *parent)
     addCloneOfAction(viewMenu, "originalsize");
     addCloneOfAction(viewMenu, "zoomtofit");
     addCloneOfAction(viewMenu, "fillwindow");
-    addCloneOfAction(viewMenu, "navresetszoom");
     viewMenu->addSeparator();
-    addCloneOfAction(viewMenu, "rotateright");
-    addCloneOfAction(viewMenu, "rotateleft");
-    addCloneOfAction(viewMenu, "mirror");
-    addCloneOfAction(viewMenu, "flip");
-    addCloneOfAction(viewMenu, "resettransformation");
-    viewMenu->addSeparator();
-    addCloneOfAction(viewMenu, "matchimagesize");
     addCloneOfAction(viewMenu, "windowontop");
     addCloneOfAction(viewMenu, "toggletitlebar");
     addCloneOfAction(viewMenu, "fullscreen");
 
     menuCloneLibrary.insert(viewMenu->menuAction()->data().toString(), viewMenu);
     return viewMenu;
+}
+
+QMenu *ActionManager::buildTransformMenu(QWidget *parent)
+{
+    const bool isContextMenu = parent->property("isContextMenu").toBool();
+    auto *transformMenu = new QVMenu(tr("&Transform"), parent);
+    transformMenu->menuAction()->setData("transform");
+    if (isContextMenu)
+        transformMenu->setProperty("isContextMenu", true);
+    if (isContextMenu && qvApp->getShowContextMenuIcons())
+        transformMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::Crop));
+
+    addCloneOfAction(transformMenu, "rotateright");
+    addCloneOfAction(transformMenu, "rotateleft");
+    addCloneOfAction(transformMenu, "mirror");
+    addCloneOfAction(transformMenu, "flip");
+    addCloneOfAction(transformMenu, "reverttransform");
+    transformMenu->addSeparator();
+    addCloneOfAction(transformMenu, "crop");
+    transformMenu->addMenu(buildResizeMenu(transformMenu));
+
+    menuCloneLibrary.insert(transformMenu->menuAction()->data().toString(), transformMenu);
+    return transformMenu;
+}
+
+QMenu *ActionManager::buildResizeMenu(QWidget *parent)
+{
+    const bool isContextMenu = parent->property("isContextMenu").toBool();
+    auto *resizeMenu = new QVMenu(tr("&Resize"), parent);
+    resizeMenu->menuAction()->setData("resizemenu");
+    if (isContextMenu)
+        resizeMenu->setProperty("isContextMenu", true);
+    if (isContextMenu && qvApp->getShowContextMenuIcons())
+        resizeMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::SettingsOverscan));
+
+    addCloneOfAction(resizeMenu, "resize90");
+    addCloneOfAction(resizeMenu, "resize80");
+    addCloneOfAction(resizeMenu, "resize75");
+    addCloneOfAction(resizeMenu, "resize50");
+    addCloneOfAction(resizeMenu, "resize25");
+
+    menuCloneLibrary.insert(resizeMenu->menuAction()->data().toString(), resizeMenu);
+    return resizeMenu;
 }
 
 QMenu *ActionManager::buildToolsMenu(QWidget *parent)
@@ -283,6 +312,7 @@ QMenu *ActionManager::buildToolsMenu(QWidget *parent)
     if (isContextMenu && qvApp->getShowContextMenuIcons())
         toolsMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::Build));
 
+    addCloneOfAction(toolsMenu, "ocr");
     addCloneOfAction(toolsMenu, "saveframeas");
     addCloneOfAction(toolsMenu, "pause");
     addCloneOfAction(toolsMenu, "nextframe");
@@ -310,6 +340,8 @@ QMenu *ActionManager::buildHelpMenu(QWidget *parent)
         helpMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::HelpOutline));
 
     addCloneOfAction(helpMenu, "about");
+    helpMenu->addSeparator();
+    addCloneOfAction(helpMenu, "github");
     menuCloneLibrary.insert(helpMenu->menuAction()->data().toString(), helpMenu);
     return helpMenu;
 }
@@ -568,6 +600,8 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         }
     } else if (key == "options") {
         qvApp->openOptionsDialog(relevantWindow);
+    } else if (key == "github") {
+        QDesktopServices::openUrl(QUrl("https://github.com/catchem88/wView/releases"));
     } else if (key == "about") {
         qvApp->openAboutDialog(relevantWindow);
     } else if (key == "clearrecents") {
@@ -623,6 +657,8 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         relevantWindow->setFillWindow(triggeredAction->isChecked());
     } else if (key == "navresetszoom") {
         relevantWindow->setNavigationResetsZoom(triggeredAction->isChecked());
+    } else if (key == "defaultzoom") {
+        relevantWindow->defaultZoom();
     } else if (key == "rotateright") {
         relevantWindow->rotateRight();
     } else if (key == "rotateleft") {
@@ -633,8 +669,16 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         relevantWindow->flip();
     } else if (key == "resettransformation") {
         relevantWindow->resetTransformation();
-    } else if (key == "matchimagesize") {
-        relevantWindow->setWindowSize(true, true);
+    } else if (key == "reverttransform") {
+        relevantWindow->revertTransform();
+    } else if (key == "crop") {
+        relevantWindow->cropImage();
+    } else if (key.startsWith("resize")) {
+        bool isPercent;
+        const int percent = key.mid(QStringLiteral("resize").length()).toInt(&isPercent);
+        if(isPercent) {
+            relevantWindow->resizeImage(percent / 100.0);
+        }
     } else if (key == "scrollup") {
         relevantWindow->scrollImage(0, -120);
     } else if (key == "scrolldown") {
@@ -657,6 +701,10 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         relevantWindow->randomFile();
     } else if (key == "saveframeas") {
         relevantWindow->saveFrameAs();
+    } else if (key == "ocr") {
+        relevantWindow->ocr();
+    } else if (key == "copyocrtext") {
+        relevantWindow->copyOcrText();
     } else if (key == "pause") {
         relevantWindow->pause();
     } else if (key == "nextframe") {
@@ -770,6 +818,10 @@ void ActionManager::initializeActionLibrary()
     zoomToFitAction->setCheckable(true);
     actionLibrary.insert("zoomtofit", zoomToFitAction);
 
+    auto *defaultZoomAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::FitScreen), tr("&Default Zoom"));
+    defaultZoomAction->setData({"disable"});
+    actionLibrary.insert("defaultzoom", defaultZoomAction);
+
     auto *fillWindowAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::SettingsOverscan), tr("Fill &Window"));
     fillWindowAction->setData({"disable"});
     fillWindowAction->setCheckable(true);
@@ -800,9 +852,20 @@ void ActionManager::initializeActionLibrary()
     resetTransformationAction->setData({"disable"});
     actionLibrary.insert("resettransformation", resetTransformationAction);
 
-    auto *matchImageSizeAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Wallpaper), tr("M&atch Image Size"));
-    matchImageSizeAction->setData({"disable"});
-    actionLibrary.insert("matchimagesize", matchImageSizeAction);
+    auto *revertTransformAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Replay), tr("Re&vert Transformation"));
+    revertTransformAction->setData({"disable"});
+    actionLibrary.insert("reverttransform", revertTransformAction);
+
+    auto *cropAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Crop), tr("&Crop"));
+    cropAction->setData({"disable"});
+    actionLibrary.insert("crop", cropAction);
+
+    for (const int percent : {90, 80, 75, 50, 25})
+    {
+        auto *resizeAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::SettingsOverscan), tr("%1% Size").arg(percent));
+        resizeAction->setData({"disable"});
+        actionLibrary.insert("resize" + QString::number(percent), resizeAction);
+    }
 
     auto *scrollUpAction = new QAction(tr("Scroll &Up"));
     scrollUpAction->setData({"disable"});
@@ -846,8 +909,16 @@ void ActionManager::initializeActionLibrary()
     randomFileAction->setData({"folderdisable"});
     actionLibrary.insert("randomfile", randomFileAction);
 
+    auto *ocrAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Ballot), tr("&OCR"));
+    ocrAction->setData({"disable"});
+    actionLibrary.insert("ocr", ocrAction);
+
+    auto *copyOcrTextAction = new QAction(tr("Copy OCR &Text"));
+    copyOcrTextAction->setData({"ocrdisable"});
+    actionLibrary.insert("copyocrtext", copyOcrTextAction);
+
     auto *saveFrameAsAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Save), tr("Save Frame &As..."));
-    saveFrameAsAction->setData({"gifdisable"});
+    saveFrameAsAction->setData({"disable"});
     actionLibrary.insert("saveframeas", saveFrameAsAction);
 
     auto *pauseAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Pause), tr("Pa&use"));
@@ -886,6 +957,9 @@ void ActionManager::initializeActionLibrary()
     auto *aboutAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Info), tr("&About"));
     aboutAction->setMenuRole(QAction::AboutRole);
     actionLibrary.insert("about", aboutAction);
+
+    auto *githubAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Launch), tr("&GitHub"));
+    actionLibrary.insert("github", githubAction);
 
     //: This is for clearing the recents menu
     auto *clearRecentsAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::PlaylistRemove), tr("Clear &Menu"));

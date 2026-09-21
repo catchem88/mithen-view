@@ -346,6 +346,10 @@ void SettingsManager::initializeSettingsLibrary()
     settingsLibrary.insert("viewportaltmiddleclickaction", {static_cast<int>(Qv::ViewportClickAction::OriginalSize), {}});
     settingsLibrary.insert("viewportmiddledragaction", {static_cast<int>(Qv::ViewportDragAction::Pan), {}});
     settingsLibrary.insert("viewportaltmiddledragaction", {static_cast<int>(Qv::ViewportDragAction::MoveWindow), {}});
+
+    //Mouse gestures (right-button drag)
+    settingsLibrary.insert("gesturenavigationenabled", {true, {}});
+    settingsLibrary.insert("gesturezoomenabled", {false, {}});
     settingsLibrary.insert("viewportverticalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Pan), {}});
     settingsLibrary.insert("viewporthorizontalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Navigate), {}});
     settingsLibrary.insert("viewportaltverticalscrollaction", {static_cast<int>(Qv::ViewportScrollAction::Zoom), {}});

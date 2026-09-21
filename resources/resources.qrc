@@ -4,4 +4,7 @@
         <file>Lato-Regular.ttf</file>
         <file>MaterialIconsOutlined-Regular.otf</file>
     </qresource>
+    <qresource prefix="/">
+        <file alias="logo.png">../img/logo.png</file>
+    </qresource>
 </RCC>

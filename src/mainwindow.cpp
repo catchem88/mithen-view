@@ -5,9 +5,12 @@
 #include "qvrenamedialog.h"
 #include "qvmenu.h"
 #include "qvmovie.h"
+#include "qvocr.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QImageWriter>
+#include <QPushButton>
 #include <QString>
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
@@ -99,13 +102,52 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     // Hide fullscreen label by default
     ui->fullscreenLabel->hide();
 
+    //Toast for short messages, shown over the bottom of the image
+    toast = new TitlebarBubble(graphicsView);
+    toast->setContentsMargins(10, 5, 10, 5);
+    toast->setForegroundRole(QPalette::Text);
+    toast->setAttribute(Qt::WA_TransparentForMouseEvents);
+    toastOpacityEffect = new QGraphicsOpacityEffect(toast);
+    toast->setGraphicsEffect(toastOpacityEffect);
+    toast->hide();
+
+    toastHideTimer = new QTimer(this);
+    toastHideTimer->setSingleShot(true);
+    toastHideTimer->setInterval(2500);
+
+    toastHideAnimation = new QPropertyAnimation(toastOpacityEffect, "opacity", this);
+    toastHideAnimation->setDuration(250);
+    toastHideAnimation->setStartValue(1.0);
+    toastHideAnimation->setEndValue(0.0);
+
+    connect(toastHideTimer, &QTimer::timeout, toastHideAnimation, [this]() {
+        toastHideAnimation->start();
+    });
+    connect(toastHideAnimation, &QPropertyAnimation::finished, toast, &QLabel::hide);
+
     // Connect graphicsview signals
     connect(graphicsView, &QVGraphicsView::fileChanged, this, &MainWindow::fileChanged);
     connect(&graphicsView->getLoadedMovie(), &QVMovie::frameChanged, this, [this](const int frameNumber) {
         if (info->isVisible())
             info->setFrameInfo(graphicsView->getLoadedMovie().frameCount(), frameNumber);
     });
+    connect(graphicsView, &QVGraphicsView::transformChanged, this, [this]() {
+        buildWindowTitle();
+        if (info->isVisible())
+            refreshProperties();
+    });
+    connect(graphicsView, &QVGraphicsView::cropApplied, this, [this]() {
+        //Fit the window to the cropped image unless it is maximized/fullscreen
+        if(!isMaximized() && !isFullScreen()) {
+            setWindowSize(true);
+        }
+    });
     connect(graphicsView, &QVGraphicsView::zoomLevelChanged, this, &MainWindow::zoomLevelChanged);
+    connect(graphicsView, &QVGraphicsView::ocrBoxClicked, this, [this](const QString &text) {
+        QGuiApplication::clipboard()->setText(text);
+        graphicsView->showOcrToast(tr("Text copied"));
+    });
+    connect(graphicsView, &QVGraphicsView::ocrStateChanged, this, &MainWindow::disableActions);
     connect(graphicsView, &QVGraphicsView::calculatedZoomModeChanged, this, &MainWindow::syncCalculatedZoomMode);
     connect(graphicsView, &QVGraphicsView::navigationResetsZoomChanged, this, &MainWindow::syncNavigationResetsZoom);
     connect(graphicsView, &QVGraphicsView::sortParametersChanged, this, &MainWindow::syncSortParameters);
@@ -114,6 +156,15 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     // Initialize escape shortcut - close window on Esc
     escShortcut = new QShortcut(Qt::Key_Escape, this);
     connect(escShortcut, &QShortcut::activated, this, [this](){
+        //Esc closes the OCR results (and does nothing while a recognition is running)
+        if(graphicsView->getIsShowingOcr()) {
+            graphicsView->cancelOcr();
+            return;
+        }
+        if(graphicsView->getIsOcrRunning()) {
+            return;
+        }
+
         close();
     });
 
@@ -139,12 +190,11 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     contextMenu = new QVMenu(this);
     contextMenu->setProperty("isContextMenu", true);
 
-    actionManager.addCloneOfAction(contextMenu, "open");
-    actionManager.addCloneOfAction(contextMenu, "openurl");
     contextMenu->addMenu(actionManager.buildRecentsMenu(contextMenu));
     contextMenu->addMenu(actionManager.buildOpenWithMenu(contextMenu));
     actionManager.addCloneOfAction(contextMenu, "opencontainingfolder");
     actionManager.addCloneOfAction(contextMenu, "showfileinfo");
+    actionManager.addCloneOfAction(contextMenu, "slideshow");
     contextMenu->addSeparator();
     actionManager.addCloneOfAction(contextMenu, "rename");
     actionManager.addCloneOfAction(contextMenu, "delete");
@@ -152,9 +202,9 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
     actionManager.addCloneOfAction(contextMenu, "nextfile");
     actionManager.addCloneOfAction(contextMenu, "previousfile");
     contextMenu->addSeparator();
+    actionManager.addCloneOfAction(contextMenu, "ocr");
+    contextMenu->addMenu(actionManager.buildTransformMenu(contextMenu));
     contextMenu->addMenu(actionManager.buildViewMenu(contextMenu));
-    contextMenu->addMenu(actionManager.buildToolsMenu(contextMenu));
-    contextMenu->addMenu(actionManager.buildHelpMenu(contextMenu));
 
     connect(contextMenu, &QMenu::triggered, this, [this](QAction *triggeredAction){
         ActionManager::actionTriggered(triggeredAction, this);
@@ -245,6 +295,16 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
+    //While OCR is active the right-click closes the results instead of opening the menu
+    if(graphicsView->getIsOcrRunning() || graphicsView->getIsShowingOcr()) {
+        if(graphicsView->getIsShowingOcr()) {
+            graphicsView->cancelOcr();
+        }
+
+        event->accept();
+        return;
+    }
+
     contextMenu->popup(event->globalPos());
 
     QMainWindow::contextMenuEvent(event);
@@ -277,6 +337,17 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    //A recognition in progress cannot be cancelled, so the window cannot be closed yet
+    if(graphicsView->getIsOcrRunning()) {
+        event->ignore();
+        return;
+    }
+
+    if(!confirmUnsavedTransform()) {
+        event->ignore();
+        return;
+    }
+
     isClosing = true;
 
     if (qvApp->getIsSessionStateSaveRequested())
@@ -429,8 +500,114 @@ void MainWindow::pauseChanged()
 
 void MainWindow::openFile(const QString &fileName, const QString &baseDir, const std::optional<int> initialFrameNumber)
 {
+    if(!confirmUnsavedTransform()) {
+        return;
+    }
     graphicsView->loadFile(fileName, baseDir, initialFrameNumber);
     cancelSlideshow();
+}
+
+bool MainWindow::confirmUnsavedTransform()
+{
+    if(!graphicsView->hasUnsavedTransform()) {
+        return true;
+    }
+
+    //Overwriting is only possible when Qt can write the source format (not e.g. SVG or GIF)
+    const bool canOverwrite = graphicsView->canSaveTransformedImage();
+
+    QMessageBox messageBox(QMessageBox::Question,tr("Unsaved Transform"),
+        tr("Do you want to save this transformation?"),QMessageBox::NoButton,this);
+    auto *saveAsButton = messageBox.addButton(tr("Save As..."),QMessageBox::AcceptRole);
+    QPushButton *overwriteButton = nullptr;
+    if(canOverwrite) {
+        overwriteButton = messageBox.addButton(tr("Overwrite"),QMessageBox::DestructiveRole);
+    }
+    auto *discardButton = messageBox.addButton(tr("Discard"),QMessageBox::RejectRole);
+    messageBox.setDefaultButton(saveAsButton);
+    messageBox.setEscapeButton(discardButton);
+    messageBox.exec();
+
+    if(messageBox.clickedButton() == discardButton) {
+        //Throw the transforms away and show the image exactly as it is on disk
+        graphicsView->resetTransformation();
+        graphicsView->clearImageModified();
+        const QString path = getCurrentFileDetails().fileInfo.absoluteFilePath();
+        if(!path.isEmpty()) {
+            graphicsView->loadFile(path);
+            cancelSlideshow();
+        }
+        return true;
+    }
+    if(messageBox.clickedButton() == saveAsButton) {
+        return saveCurrentImage(true);
+    }
+    if(messageBox.clickedButton() == overwriteButton) {
+        return saveCurrentImage(false);
+    }
+    return false;
+}
+
+bool MainWindow::saveCurrentImage(const bool saveAs)
+{
+    QString fileName = getCurrentFileDetails().fileInfo.absoluteFilePath();
+    QSettings settings;
+    settings.beginGroup("recents");
+
+    //The source format cannot always be written (e.g. SVG or GIF), so save to a new file instead
+    const bool alwaysAskForFile = saveAs || !graphicsView->canSaveTransformedImage();
+
+    if(alwaysAskForFile || fileName.isEmpty()) {
+        const QFileInfo sourceFileInfo = getCurrentFileDetails().fileInfo;
+        //Default to the source format when Qt can write it, otherwise PNG
+        const QString sourceSuffix = sourceFileInfo.suffix().toLower();
+        const bool canWriteSource = QImageWriter::supportedImageFormats().contains(sourceSuffix.toUtf8());
+        const QString defaultSuffix = canWriteSource ? sourceSuffix : QStringLiteral("png");
+
+        QFileDialog dialog(this,tr("Save Image As..."));
+        dialog.setDirectory(settings.value("lastFileDialogDir",QDir::homePath()).toString());
+        dialog.setNameFilters(qvApp->getNameFilterList());
+        if(canWriteSource) {
+            dialog.selectFile(sourceFileInfo.fileName());
+        }
+        else {
+            dialog.selectFile(sourceFileInfo.completeBaseName() + "." + defaultSuffix);
+        }
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setDefaultSuffix(defaultSuffix);
+        if(dialog.exec() != QFileDialog::Accepted) {
+            return false;
+        }
+        fileName = dialog.selectedFiles().value(0);
+        if(fileName.isEmpty()) {
+            return false;
+        }
+        settings.setValue("lastFileDialogDir",QFileInfo(fileName).absolutePath());
+    }
+
+    //Take the format from the file name, defaulting to PNG when there is no extension
+    QString format = QFileInfo(fileName).suffix().toLower();
+    if(format.isEmpty()) {
+        format = "png";
+        fileName += ".png";
+    }
+
+    const QImage image = graphicsView->getCurrentTransformedImage();
+    if(image.isNull() || !image.save(fileName,format.toUtf8().constData(),100)) {
+        QMessageBox::warning(this,tr("Error"),tr("Failed to save the image."));
+        return false;
+    }
+
+    //The saved file now contains the transforms, so drop them and show the saved file
+    graphicsView->resetTransformation();
+    graphicsView->clearImageModified();
+    qvApp->invalidateFolderListings();
+
+    if(graphicsView->getCurrentFileDetails().fileInfo.absoluteFilePath() != fileName) {
+        graphicsView->loadFile(fileName);
+        cancelSlideshow();
+    }
+    return true;
 }
 
 void MainWindow::settingsUpdated()
@@ -533,14 +710,27 @@ void MainWindow::syncSortParameters()
 
 void MainWindow::disableActions()
 {
+    //While OCR is active nothing else can be triggered: only copying all lines stays available
+    const bool isOcrActive = graphicsView->getIsOcrRunning() || graphicsView->getIsShowingOcr();
+    const bool isOcrResultShown = graphicsView->getIsShowingOcr();
+
     const auto &actionLibrary = qvApp->getActionManager().getActionLibrary();
     for (const auto &action : actionLibrary)
     {
         const auto &data = action->data().toStringList();
         const auto &clonesOfAction = qvApp->getActionManager().getAllClonesOfAction(data.first(), this);
 
+        if (isOcrActive)
+        {
+            const bool isCopyOcrText = data.first() == "copyocrtext";
+            for (const auto &clone : clonesOfAction)
+            {
+                clone->setEnabled(isCopyOcrText && isOcrResultShown);
+            }
+        }
+
         // Enable this window's actions when a file is loaded
-        if (data.last().contains("disable"))
+        else if (data.last().contains("disable"))
         {
             for (const auto &clone : clonesOfAction)
             {
@@ -569,6 +759,20 @@ void MainWindow::disableActions()
                 {
                     clone->setEnabled(true);
                 }
+                else if (cloneData.last() == "ocrdisable")
+                {
+                    clone->setEnabled(graphicsView->getIsShowingOcr());
+                }
+            }
+        }
+
+        //Actions without a disable rule are always available, which also restores them
+        //after the OCR overlay disabled everything
+        else
+        {
+            for (const auto &clone : clonesOfAction)
+            {
+                clone->setEnabled(true);
             }
         }
     }
@@ -576,7 +780,7 @@ void MainWindow::disableActions()
     const auto &openWithMenus = qvApp->getActionManager().getAllClonesOfMenu("openwith", this);
     for (const auto &menu : openWithMenus)
     {
-        menu->setEnabled(getIsPixmapLoaded());
+        menu->setEnabled(!isOcrActive && getIsPixmapLoaded());
     }
 }
 
@@ -632,7 +836,7 @@ void MainWindow::refreshProperties()
     const QVImageCore::FileDetails &fileDetails = getCurrentFileDetails();
     info->setInfo(
         fileDetails.fileInfo,
-        fileDetails.baseImageSize,
+        graphicsView->getCurrentImageSize(),
         fileDetails.isMovieLoaded ? graphicsView->getLoadedMovie().frameCount() : fileDetails.frameCount,
         fileDetails.isMovieLoaded ? graphicsView->getLoadedMovie().currentFrameNumber() : fileDetails.frameNumber
     );
@@ -645,12 +849,12 @@ void MainWindow::buildWindowTitle()
     {
         const QVImageCore::FileDetails &fileDetails = getCurrentFileDetails();
         const bool hasError = fileDetails.errorData.has_value();
-        auto getFileName = [&]() { return fileDetails.fileInfo.fileName(); };
+        auto getFileName = [&]() { return fileDetails.fileInfo.fileName() + (graphicsView->hasUnsavedTransform() ? "*" : ""); };
         auto getZoomLevel = [&]() { return QString::number((hasError ? 1.0 : graphicsView->getZoomLevel()) * 100.0, 'f', 1) + "%"; };
         auto getImageIndex = [&]() { return QString::number(fileDetails.loadedIndexInFolder + 1); };
         auto getImageCount = [&]() { return QString::number(fileDetails.folderFileInfoList.count()); };
-        auto getImageWidth = [&]() { return QString::number(hasError ? 0 : fileDetails.baseImageSize.width()); };
-        auto getImageHeight = [&]() { return QString::number(hasError ? 0 : fileDetails.baseImageSize.height()); };
+        auto getImageWidth = [&]() { return QString::number(hasError ? 0 : graphicsView->getCurrentImageSize().width()); };
+        auto getImageHeight = [&]() { return QString::number(hasError ? 0 : graphicsView->getCurrentImageSize().height()); };
         auto getFileSize = [&]() { return QVInfoDialog::formatBytes(hasError ? 0 : fileDetails.fileInfo.size()); };
         switch (qvApp->getSettingsManager().getEnum<Qv::TitleBarText>("titlebarmode")) {
         case Qv::TitleBarText::Minimal:
@@ -724,6 +928,24 @@ void MainWindow::updateMenuBarVisible()
     bool hideWhenImmersive = true;
     const auto isImmersive = [&]() { return getTitlebarHidden() || windowState().testFlag(Qt::WindowFullScreen); };
     menuBar()->setVisible(alwaysVisible || (menuBarEnabled && !(hideWhenImmersive && isImmersive())));
+}
+
+void MainWindow::revealToast(const QString &text)
+{
+    if(text.isEmpty()) {
+        return;
+    }
+
+    toast->setText(text);
+    toast->adjustSize();
+    toast->move((graphicsView->width() - toast->width()) / 2,
+        graphicsView->height() - toast->height() - 24);
+
+    toastHideTimer->stop();
+    toastHideAnimation->stop();
+    toastOpacityEffect->setOpacity(toastHideAnimation->startValue().toDouble());
+    toast->show();
+    toastHideTimer->start();
 }
 
 void MainWindow::updateTitlebarBubbleText()
@@ -839,7 +1061,7 @@ void MainWindow::setWindowSize(const bool isReapplying,const bool isExplicitRequ
     //Use the target screen's DPI for calculations
     const qreal dpi = currentScreen->devicePixelRatio();
     const QSize screenSize = currentScreen->availableSize();
-    const QSize nativeSize = graphicsView->getCurrentFileDetails().baseImageSize;
+        const QSize nativeSize = graphicsView->getCurrentImageSize();
 
     const bool useOneToOne = qvApp->getSettingsManager().getBoolean("onetoonepixelsizing");
     qreal scaleDpi = 1.0;
@@ -1365,18 +1587,53 @@ void MainWindow::setNavigationResetsZoom(const bool value)
     graphicsView->setNavigationResetsZoom(value);
 }
 
+void MainWindow::cropImage()
+{
+    //Crop is done interactively on the image: the user drags the box and presses Enter
+    graphicsView->startCrop();
+}
+
+void MainWindow::resizeImage(const qreal factor)
+{
+    graphicsView->resizeImage(factor);
+
+    //Fit the window to the new image size, but leave maximized/fullscreen windows alone
+    if(!isMaximized() && !isFullScreen()) {
+        setWindowSize(true);
+    }
+}
+
+void MainWindow::revertTransform()
+{
+    //Nothing to revert: use the default zoom instead of doing nothing
+    if(!graphicsView->hasUnsavedTransform()) {
+        defaultZoom();
+        return;
+    }
+
+    //Reverting keeps the current zoom level
+    graphicsView->revertTransform();
+}
+
+void MainWindow::defaultZoom()
+{
+    //Behave like a freshly opened image: default zoom mode and the window sized to the image
+    //(maximized and fullscreen windows keep their state)
+    graphicsView->setCalculatedZoomMode(graphicsView->getDefaultCalculatedZoomMode());
+    setWindowSize(true);
+    graphicsView->centerImage();
+}
+
 void MainWindow::rotateRight()
 {
     graphicsView->rotateImage(90);
     graphicsView->fitOrConstrainImage();
-    setWindowSize(true);
 }
 
 void MainWindow::rotateLeft()
 {
     graphicsView->rotateImage(-90);
     graphicsView->fitOrConstrainImage();
-    setWindowSize(true);
 }
 
 void MainWindow::mirror()
@@ -1396,6 +1653,65 @@ void MainWindow::resetTransformation()
     graphicsView->resetTransformation();
     graphicsView->fitOrConstrainImage();
     setWindowSize(true);
+}
+
+void MainWindow::ocr()
+{
+    if(graphicsView->getIsOcrRunning() || graphicsView->getIsShowingOcr() || graphicsView->getIsCropping()) {
+        return;
+    }
+
+    if(!QVOcr::isAvailable()) {
+        QMessageBox::warning(this,tr("OCR"),
+            tr("No OCR language is available. Add a language with OCR support in the Windows language settings."));
+        return;
+    }
+
+    const QImage image = graphicsView->getCurrentTransformedImage();
+    if(image.isNull()) {
+        return;
+    }
+
+    graphicsView->startOcr();
+
+    auto *watcher = new QFutureWatcher<QVOcrResult>(this);
+    connect(watcher,&QFutureWatcher<QVOcrResult>::finished,this,[this,watcher]{
+        const QVOcrResult result = watcher->result();
+        watcher->deleteLater();
+
+        //The run was cancelled (navigation, next file, retriggered OCR)
+        if(!graphicsView->getIsOcrRunning()) {
+            return;
+        }
+
+        if(!result.isSuccessful) {
+            graphicsView->cancelOcr();
+            QMessageBox::warning(this,tr("OCR"),tr("Text recognition failed."));
+            return;
+        }
+
+        if(result.boxes.isEmpty()) {
+            graphicsView->cancelOcr();
+            revealToast(tr("OCR cannot find any text in this image"));
+            return;
+        }
+
+        graphicsView->finishOcr(result.boxes);
+    });
+    watcher->setFuture(QtConcurrent::run([image]{
+        return QVOcr::recognize(image);
+    }));
+}
+
+void MainWindow::copyOcrText()
+{
+    const QString text = graphicsView->getOcrText();
+    if(text.isEmpty()) {
+        return;
+    }
+
+    QGuiApplication::clipboard()->setText(text);
+    graphicsView->showOcrToast(tr("Copied all text"));
 }
 
 void MainWindow::scrollImage(int deltaX, int deltaY)
@@ -1430,6 +1746,12 @@ void MainWindow::randomFile()
 
 void MainWindow::saveFrameAs()
 {
+    //Anything with unsaved transforms is saved through the unsaved-transform prompt
+    if(graphicsView->hasUnsavedTransform()) {
+        confirmUnsavedTransform();
+        return;
+    }
+
     QSettings settings;
     settings.beginGroup("recents");
     if (!getIsMovieLoaded())

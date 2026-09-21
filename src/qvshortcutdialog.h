@@ -28,14 +28,21 @@ signals:
 private slots:
     void buttonBoxClicked(QAbstractButton *button);
 
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 private:
     void done(int r) override;
+
+    QStringList collectShortcuts(const QString &keySequenceString) const;
+    void updateShortcutListLabel();
 
     Ui::QVShortcutDialog *ui;
 
     ShortcutManager::SShortcut shortcutObject;
     int index {0};
     GetTransientShortcutCallback getTransientShortcutCallback;
+    QStringList pendingShortcuts;
 };
 
 #endif // QVSHORTCUTDIALOG_H

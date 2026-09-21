@@ -10,6 +10,8 @@
 #include <QMessageBox>
 #include <QtMath>
 #include <QGestureEvent>
+#include <QImageWriter>
+#include <QProgressBar>
 #include <QScrollBar>
 
 QVGraphicsView::QVGraphicsView(QWidget *parent) : QGraphicsView(parent)
@@ -39,6 +41,7 @@ QVGraphicsView::QVGraphicsView(QWidget *parent) : QGraphicsView(parent)
     connect(&imageCore, &QVImageCore::animatedFrameChanged, this, &QVGraphicsView::animatedFrameChanged);
     connect(&imageCore, &QVImageCore::fileChanging, this, &QVGraphicsView::beforeLoad);
     connect(&imageCore, &QVImageCore::fileChanged, this, &QVGraphicsView::postLoad);
+    connect(&imageCore, &QVImageCore::imageChanged, this, &QVGraphicsView::imageChanged);
     connect(&imageCore, &QVImageCore::sortParametersChanged, this, [this]{emit sortParametersChanged();});
 
     expensiveScaleTimer = new QTimer(this);
@@ -54,6 +57,13 @@ QVGraphicsView::QVGraphicsView(QWidget *parent) : QGraphicsView(parent)
     hideCursorTimer->setSingleShot(true);
     hideCursorTimer->setInterval(1000);
     connect(hideCursorTimer, &QTimer::timeout, this, [this]{setCursorVisible(false);});
+
+    ocrToastTimer = new QTimer(this);
+    ocrToastTimer->setSingleShot(true);
+    connect(ocrToastTimer, &QTimer::timeout, this, [this]{
+        ocrToastMessage.clear();
+        viewport()->update();
+    });
 
     loadedPixmapItem = new QGraphicsPixmapItem();
     scene->addItem(loadedPixmapItem);
@@ -79,6 +89,8 @@ void QVGraphicsView::resizeEvent(QResizeEvent *event)
         scrollHelper->move(QPointF(sizeDelta.width(), sizeDelta.height()) / -2.0);
         fitOrConstrainImage();
     }
+
+    updateOcrBusyIndicator();
 }
 
 void QVGraphicsView::paintEvent(QPaintEvent *event)
@@ -119,6 +131,66 @@ void QVGraphicsView::dragLeaveEvent(QDragLeaveEvent *event)
 
 void QVGraphicsView::mousePressEvent(QMouseEvent *event)
 {
+    //While OCR is active, a right-click closes the results and a left-click inside a box
+    //copies its text. Every other click is ignored.
+    if (isOcrRunning || isShowingOcr)
+    {
+        if (isShowingOcr && event->button() == Qt::RightButton)
+        {
+            cancelOcr();
+            event->accept();
+            return;
+        }
+
+        if (isShowingOcr && event->button() == Qt::LeftButton)
+        {
+            const int boxIndex = getOcrBoxAt(event->pos());
+            if (boxIndex >= 0)
+            {
+                emit ocrBoxClicked(ocrBoxes.at(boxIndex).text);
+            }
+        }
+
+        event->accept();
+        return;
+    }
+
+    //While cropping, drag the selection or one of its edges
+    if (isCropping)
+    {
+        if (event->button() == Qt::LeftButton)
+        {
+            cropHandle = getCropHandleAt(event->pos());
+            cropDragStartPos = event->pos();
+            cropDragStartRect = cropRect;
+        }
+        event->accept();
+        return;
+    }
+
+    //While OCR is active, a click inside a box copies its text and a right-click closes the results
+    if (isOcrRunning || isShowingOcr)
+    {
+        if (isShowingOcr && event->button() == Qt::RightButton)
+        {
+            cancelOcr();
+            event->accept();
+            return;
+        }
+
+        if (isShowingOcr && event->button() == Qt::LeftButton)
+        {
+            const int boxIndex = getOcrBoxAt(event->pos());
+            if (boxIndex >= 0)
+            {
+                emit ocrBoxClicked(ocrBoxes.at(boxIndex).text);
+            }
+        }
+
+        event->accept();
+        return;
+    }
+
     const auto initializeDrag = [this, event](const Qv::ViewportDragAction action, const bool delayStart = false) {
         pressedMouseButton = event->button();
         mousePressModifiers = event->modifiers();
@@ -139,6 +211,31 @@ void QVGraphicsView::mousePressEvent(QMouseEvent *event)
             return;
 
         resetDragState();
+    }
+
+    //Extra mouse buttons navigate to the previous/next file
+    if (event->button() == Qt::BackButton || event->button() == Qt::ForwardButton)
+    {
+        const QString actionName = event->button() == Qt::BackButton ? "previousfile" : "nextfile";
+        if (auto *action = qvApp->getActionManager().getAction(actionName))
+            action->trigger();
+        event->accept();
+        return;
+    }
+
+    //Right-button drag gestures (navigation and/or zoom)
+    if (event->button() == Qt::RightButton && (gestureNavigationEnabled || gestureZoomEnabled))
+    {
+        pressedMouseButton = event->button();
+        mousePressModifiers = event->modifiers();
+        isDelayingDrag = false;
+        isSystemWindowDragActive = false;
+        isGestureDrag = true;
+        gesturePerformed = false;
+        gestureStartPos = event->pos();
+        gestureStartZoomLevel = zoomLevel;
+        event->accept();
+        return;
     }
 
     if (event->button() == Qt::LeftButton)
@@ -187,6 +284,39 @@ void QVGraphicsView::mousePressEvent(QMouseEvent *event)
 
 void QVGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
+    //While OCR is active no dragging is allowed, only the press itself was handled
+    if (isOcrRunning || isShowingOcr)
+    {
+        event->accept();
+        return;
+    }
+
+    //While cropping, a release just ends the current drag
+    if (isCropping)
+    {
+        cropHandle = CropHandle::None;
+        event->accept();
+        return;
+    }
+
+    //Finish a right-button gesture
+    if (isGestureDrag && event->button() == Qt::RightButton)
+    {
+        const QPoint delta = event->pos() - gestureStartPos;
+        const bool isHorizontal = qAbs(delta.x()) >= qAbs(delta.y());
+        const bool shouldNavigate = isHorizontal && gestureNavigationEnabled && qAbs(delta.x()) > 15;
+
+        isGestureDrag = false;
+        resetDragState();
+
+        if(shouldNavigate) {
+            gesturePerformed = true;
+            goToFile(delta.x() > 0 ? Qv::GoToFileMode::Next : Qv::GoToFileMode::Previous);
+        }
+
+        event->accept();
+        return;
+    }
     if (pressedMouseButton != Qt::NoButton)
     {
         // If some other button initiated the drag, ignore this button release
@@ -210,6 +340,94 @@ void QVGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 void QVGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     setCursorVisible(true);
+
+    //While showing OCR results, highlight the box under the cursor
+    if (isShowingOcr && !(event->buttons() & Qt::LeftButton))
+    {
+        const int boxIndex = getOcrBoxAt(event->pos());
+        if (boxIndex != hoveredOcrBox)
+        {
+            hoveredOcrBox = boxIndex;
+            viewport()->setCursor(boxIndex >= 0 ? Qt::PointingHandCursor : Qt::ArrowCursor);
+            viewport()->update();
+        }
+    }
+
+    //While cropping, move or resize the selection
+    if (isCropping)
+    {
+        if ((event->buttons() & Qt::LeftButton) && cropHandle != CropHandle::None)
+        {
+            const QPoint delta = event->pos() - cropDragStartPos;
+            QRect newRect = cropDragStartRect;
+            if (cropHandle == CropHandle::Move)
+            {
+                newRect.translate(delta);
+            }
+            else
+            {
+                const bool fromLeft = cropHandle == CropHandle::Left || cropHandle == CropHandle::TopLeft || cropHandle == CropHandle::BottomLeft;
+                const bool fromRight = cropHandle == CropHandle::Right || cropHandle == CropHandle::TopRight || cropHandle == CropHandle::BottomRight;
+                const bool fromTop = cropHandle == CropHandle::Top || cropHandle == CropHandle::TopLeft || cropHandle == CropHandle::TopRight;
+                const bool fromBottom = cropHandle == CropHandle::Bottom || cropHandle == CropHandle::BottomLeft || cropHandle == CropHandle::BottomRight;
+                if(fromLeft) { newRect.setLeft(newRect.left() + delta.x()); }
+                if(fromRight) { newRect.setRight(newRect.right() + delta.x()); }
+                if(fromTop) { newRect.setTop(newRect.top() + delta.y()); }
+                if(fromBottom) { newRect.setBottom(newRect.bottom() + delta.y()); }
+            }
+
+            //Keep the selection inside the image
+            cropRect = newRect.normalized().intersected(getImageViewportRect().intersected(viewport()->rect()));
+            viewport()->update();
+        }
+        else
+        {
+            //Show a suitable cursor while hovering the selection
+            switch (getCropHandleAt(event->pos()))
+            {
+            case CropHandle::Move:
+                viewport()->setCursor(Qt::SizeAllCursor);
+                break;
+            case CropHandle::TopLeft:
+            case CropHandle::BottomRight:
+                viewport()->setCursor(Qt::SizeFDiagCursor);
+                break;
+            case CropHandle::TopRight:
+            case CropHandle::BottomLeft:
+                viewport()->setCursor(Qt::SizeBDiagCursor);
+                break;
+            case CropHandle::Left:
+            case CropHandle::Right:
+                viewport()->setCursor(Qt::SizeHorCursor);
+                break;
+            case CropHandle::Top:
+            case CropHandle::Bottom:
+                viewport()->setCursor(Qt::SizeVerCursor);
+                break;
+            default:
+                viewport()->setCursor(Qt::CrossCursor);
+                break;
+            }
+        }
+        event->accept();
+        return;
+    }
+
+    //Right-button gestures: horizontal movement is decided on release, vertical movement zooms
+    if (isGestureDrag)
+    {
+        const QPoint delta = event->pos() - gestureStartPos;
+        const bool isHorizontal = qAbs(delta.x()) >= qAbs(delta.y());
+        if(!isHorizontal && gestureZoomEnabled && qAbs(delta.y()) > 5) {
+            //Zoom about the point where the gesture started; dragging up zooms in
+            const qreal relativeLevel = qPow(1.005,-delta.y());
+            const qreal absoluteLevel = std::clamp(gestureStartZoomLevel * relativeLevel,0.01,100.0);
+            zoomAbsolute(absoluteLevel,gestureStartPos,false);
+            gesturePerformed = true;
+        }
+        event->accept();
+        return;
+    }
 
     if (pressedMouseButton != Qt::NoButton)
     {
@@ -253,6 +471,13 @@ void QVGraphicsView::mouseMoveEvent(QMouseEvent *event)
 
 void QVGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    //While OCR is active no click action is allowed
+    if (isOcrRunning || isShowingOcr)
+    {
+        event->accept();
+        return;
+    }
+
     if (event->button() == Qt::MouseButton::LeftButton)
     {
         const bool isAltAction = event->modifiers().testFlag(Qt::ControlModifier);
@@ -273,6 +498,13 @@ bool QVGraphicsView::event(QEvent *event)
 {
     if (event->type() == QEvent::Gesture)
     {
+        //While OCR is active gestures are ignored
+        if (isOcrRunning || isShowingOcr)
+        {
+            event->accept();
+            return true;
+        }
+
         QGestureEvent *gestureEvent = static_cast<QGestureEvent*>(event);
         if (QGesture *pinch = gestureEvent->gesture(Qt::PinchGesture))
         {
@@ -285,17 +517,43 @@ bool QVGraphicsView::event(QEvent *event)
             return true;
         }
     }
-    else if (event->type() == QEvent::ShortcutOverride && !turboNavMode.has_value())
+    else if (event->type() == QEvent::ShortcutOverride)
     {
         const QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        const ActionManager &actionManager = qvApp->getActionManager();
-        if (actionManager.wouldTriggerAction(keyEvent, "previousfile") ||
-            actionManager.wouldTriggerAction(keyEvent, "nextfile") ||
-            actionManager.wouldTriggerAction(keyEvent, "randomfile"))
+
+        //While OCR is active nothing but copying the results is allowed, so every other
+        //shortcut is silently swallowed
+        if (isOcrRunning || isShowingOcr)
         {
-            // Accept event to override shortcut and deliver as key press instead
+            const ActionManager &actionManager = qvApp->getActionManager();
+            if (isShowingOcr && actionManager.wouldTriggerAction(keyEvent, "copyocrtext"))
+            {
+                return false;
+            }
+
             event->accept();
             return true;
+        }
+
+        //Keep Enter/Esc for an active crop instead of letting the shortcuts fire
+        if (isCropping &&
+            (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Escape))
+        {
+            event->accept();
+            return true;
+        }
+
+        if (!turboNavMode.has_value())
+        {
+            const ActionManager &actionManager = qvApp->getActionManager();
+            if (actionManager.wouldTriggerAction(keyEvent, "previousfile") ||
+                actionManager.wouldTriggerAction(keyEvent, "nextfile") ||
+                actionManager.wouldTriggerAction(keyEvent, "randomfile"))
+            {
+                // Accept event to override shortcut and deliver as key press instead
+                event->accept();
+                return true;
+            }
         }
     }
     else if (event->type() == QEvent::KeyRelease && turboNavMode.has_value())
@@ -329,6 +587,13 @@ void QVGraphicsView::focusOutEvent(QFocusEvent *event)
 
 void QVGraphicsView::wheelEvent(QWheelEvent *event)
 {
+    //While OCR is active scrolling and zooming are ignored
+    if (isOcrRunning || isShowingOcr)
+    {
+        event->accept();
+        return;
+    }
+
     const QPoint eventPos = event->position().toPoint();
     const bool isAltAction = event->modifiers().testFlag(Qt::ControlModifier);
     const Qv::ViewportScrollAction horizontalAction = isAltAction ? altHorizontalScrollAction : horizontalScrollAction;
@@ -357,6 +622,35 @@ void QVGraphicsView::wheelEvent(QWheelEvent *event)
 
 void QVGraphicsView::keyPressEvent(QKeyEvent *event)
 {
+    //While cropping, Enter applies the crop and Esc cancels it
+    if (isCropping)
+    {
+        if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        {
+            finishCrop();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_Escape)
+        {
+            cancelCrop();
+            event->accept();
+            return;
+        }
+    }
+
+    //While OCR is active, Esc closes the results and every other key is ignored
+    if (isOcrRunning || isShowingOcr)
+    {
+        if (isShowingOcr && event->key() == Qt::Key_Escape)
+        {
+            cancelOcr();
+        }
+
+        event->accept();
+        return;
+    }
+
     if (turboNavMode.has_value())
     {
         if (ActionManager::wouldTriggerAction(event, navPrevShortcuts) ||
@@ -419,6 +713,12 @@ void QVGraphicsView::keyPressEvent(QKeyEvent *event)
 
 void QVGraphicsView::contextMenuEvent(QContextMenuEvent *event)
 {
+    //Do not pop the context menu right after a gesture was performed
+    if(gesturePerformed) {
+        gesturePerformed = false;
+        event->accept();
+        return;
+    }
     // contextMenuEvent fires regardless of whether the original mouse event was already
     // handled, hence this special case to suppress it if a drag is in progress
     if (pressedMouseButton != Qt::NoButton && event->reason() == QContextMenuEvent::Mouse)
@@ -638,6 +938,12 @@ void QVGraphicsView::reloadFile()
 
 void QVGraphicsView::beforeLoad()
 {
+    //Transforms belong to a single image: never carry them over to the next one
+    resetTransformation();
+
+    //OCR results belong to a single image as well
+    cancelOcr();
+
     // If a prior pixmap is still loaded, capture its content rect
     if (getCurrentFileDetails().isPixmapLoaded)
         lastImageContentRect = getContentRect();
@@ -845,6 +1151,393 @@ void QVGraphicsView::removeExpensiveScaling()
     setTransformScale(newTransformScale);
     appliedDpiAdjustment = dpiAdjustment;
     appliedExpensiveScaleZoomLevel = 0.0;
+}
+
+bool QVGraphicsView::hasUnsavedTransform() const
+{
+    if (imageCore.getImageModified())
+        return true;
+
+    //Rotation/mirroring are kept in the view transform until the image is saved
+    return !getUnspecializedTransform().isIdentity();
+}
+
+QImage QVGraphicsView::getCurrentTransformedImage() const
+{
+    if (!getCurrentFileDetails().isPixmapLoaded)
+        return QImage();
+
+    const QImage image = imageCore.getLoadedPixmap().toImage();
+    const QTransform transform = getUnspecializedTransform();
+    if (transform.isIdentity())
+        return image;
+
+    return image.transformed(transform);
+}
+
+bool QVGraphicsView::canSaveTransformedImage() const
+{
+    const QString suffix = getCurrentFileDetails().fileInfo.suffix().toLower();
+    if (suffix.isEmpty())
+        return false;
+
+    return QImageWriter::supportedImageFormats().contains(suffix.toUtf8());
+}
+
+QSize QVGraphicsView::getCurrentImageSize() const
+{
+    if (!getCurrentFileDetails().isPixmapLoaded)
+        return QSize();
+
+    return getUnspecializedTransform().mapRect(QRectF(QPoint(), getCurrentFileDetails().loadedPixmapSize)).size().toSize();
+}
+
+void QVGraphicsView::revertTransform()
+{
+    if (!hasUnsavedTransform())
+        return;
+
+    //Pixel data edits (crop/resize) can only be undone by loading the file again
+    if (imageCore.getImageModified())
+    {
+        imageCore.clearImageModified();
+        const QString path = getCurrentFileDetails().fileInfo.absoluteFilePath();
+        if (!path.isEmpty())
+        {
+            //Reload without touching the zoom level or the window size
+            setLoadIsFromSessionRestore(true);
+            loadFile(path);
+            return;
+        }
+    }
+
+    resetTransformation();
+}
+
+void QVGraphicsView::startOcr()
+{
+    cancelOcr();
+
+    isOcrRunning = true;
+
+    if (ocrBusyIndicator == nullptr)
+    {
+        ocrBusyIndicator = new QProgressBar(viewport());
+        ocrBusyIndicator->setRange(0,0);
+        ocrBusyIndicator->setTextVisible(false);
+        ocrBusyIndicator->setFixedSize(220,14);
+        ocrBusyIndicator->setAttribute(Qt::WA_TransparentForMouseEvents);
+    }
+
+    updateOcrBusyIndicator();
+    ocrBusyIndicator->show();
+
+    viewport()->update();
+    emit ocrStateChanged();
+}
+
+void QVGraphicsView::finishOcr(const QList<QVOcrBox> &boxes)
+{
+    if (ocrBusyIndicator != nullptr)
+    {
+        ocrBusyIndicator->hide();
+    }
+
+    isOcrRunning = false;
+    isShowingOcr = true;
+    ocrBoxes = boxes;
+    hoveredOcrBox = -1;
+
+    viewport()->setCursor(Qt::ArrowCursor);
+    viewport()->update();
+    emit ocrStateChanged();
+}
+
+void QVGraphicsView::cancelOcr()
+{
+    if (ocrBusyIndicator != nullptr)
+    {
+        ocrBusyIndicator->hide();
+    }
+
+    if (!isOcrRunning && !isShowingOcr)
+    {
+        return;
+    }
+
+    isOcrRunning = false;
+    isShowingOcr = false;
+    ocrBoxes.clear();
+    hoveredOcrBox = -1;
+    ocrToastMessage.clear();
+    if (ocrToastTimer != nullptr)
+    {
+        ocrToastTimer->stop();
+    }
+
+    viewport()->setCursor(Qt::ArrowCursor);
+    viewport()->update();
+    emit ocrStateChanged();
+}
+
+QString QVGraphicsView::getOcrText() const
+{
+    QStringList lines;
+    for (const QVOcrBox &box : ocrBoxes)
+    {
+        lines.append(box.text);
+    }
+
+    return lines.join('\n');
+}
+
+void QVGraphicsView::showOcrToast(const QString &message,const int timeoutMs)
+{
+    ocrToastMessage = message;
+    ocrToastTimer->start(timeoutMs);
+    viewport()->update();
+}
+
+void QVGraphicsView::updateOcrBusyIndicator()
+{
+    if (ocrBusyIndicator == nullptr)
+    {
+        return;
+    }
+
+    const QRect viewportRect = viewport()->rect();
+    ocrBusyIndicator->move(viewportRect.center().x() - ocrBusyIndicator->width() / 2,
+        viewportRect.center().y() - ocrBusyIndicator->height() / 2);
+}
+
+//Maps a box from the recognized (transformed) image back to viewport coordinates
+QRect QVGraphicsView::getOcrBoxViewportRect(const QRect &imageRect) const
+{
+    const QSize imageSize = getCurrentFileDetails().loadedPixmapSize;
+    const QSize itemSize = loadedPixmapItem->boundingRect().size().toSize();
+    if (imageRect.isEmpty() || imageSize.isEmpty() || itemSize.isEmpty())
+    {
+        return QRect();
+    }
+
+    //The OCR image had the rotation/mirroring baked in, so undo that first
+    const QTransform unspecialized = getUnspecializedTransform();
+    const QRectF pixmapRect = unspecialized.inverted().mapRect(QRectF(imageRect));
+
+    //The item may hold a pre-scaled pixmap while expensive scaling is applied
+    const qreal scaleX = qreal(itemSize.width()) / imageSize.width();
+    const qreal scaleY = qreal(itemSize.height()) / imageSize.height();
+    const QRectF itemRect(pixmapRect.x() * scaleX,pixmapRect.y() * scaleY,
+        pixmapRect.width() * scaleX,pixmapRect.height() * scaleY);
+
+    return mapFromScene(loadedPixmapItem->mapToScene(itemRect)).boundingRect();
+}
+
+int QVGraphicsView::getOcrBoxAt(const QPoint &pos) const
+{
+    int smallestIndex = -1;
+    int smallestArea = 0;
+    for (int i = 0; i < ocrBoxes.size(); i++)
+    {
+        const QRect box = getOcrBoxViewportRect(ocrBoxes.at(i).rect);
+        if (!box.contains(pos))
+        {
+            continue;
+        }
+
+        const int area = box.width() * box.height();
+        if (smallestIndex < 0 || area < smallestArea)
+        {
+            smallestIndex = i;
+            smallestArea = area;
+        }
+    }
+
+    return smallestIndex;
+}
+
+void QVGraphicsView::startCrop()
+{
+    if (!getCurrentFileDetails().isPixmapLoaded || getCurrentFileDetails().isMovieLoaded || isOcrRunning || isShowingOcr)
+        return;
+
+    const QRect imageRect = getImageViewportRect().intersected(viewport()->rect());
+    if (imageRect.isEmpty())
+        return;
+
+    isCropping = true;
+    cropHandle = CropHandle::None;
+
+    //Start a little inside the image so every edge handle is reachable
+    const int inset = qMin(20,qMin(imageRect.width(),imageRect.height()) / 4);
+    cropRect = imageRect.adjusted(inset,inset,-inset,-inset);
+
+    viewport()->setCursor(Qt::CrossCursor);
+    viewport()->update();
+}
+
+void QVGraphicsView::finishCrop()
+{
+    if (!isCropping)
+        return;
+
+    isCropping = false;
+    cropHandle = CropHandle::None;
+    viewport()->setCursor(Qt::ArrowCursor);
+    viewport()->update();
+
+    //The item holds the pixmap that is actually displayed, which is pre-scaled while expensive
+    //scaling is applied, so the selection is mapped through it rather than assuming that scene
+    //coordinates are always image pixels
+    const QRectF itemSelection = loadedPixmapItem->mapFromScene(mapToScene(cropRect)).boundingRect();
+    const QSize itemSize = loadedPixmapItem->boundingRect().size().toSize();
+    const QSize imageSize = getCurrentFileDetails().loadedPixmapSize;
+    if(itemSize.isEmpty() || imageSize.isEmpty()) {
+        return;
+    }
+
+    const qreal scaleX = qreal(imageSize.width()) / itemSize.width();
+    const qreal scaleY = qreal(imageSize.height()) / itemSize.height();
+    const QRect imageRect(QPoint(),imageSize);
+    const QRect cropImageRect = QRectF(itemSelection.x() * scaleX,itemSelection.y() * scaleY,
+        itemSelection.width() * scaleX,itemSelection.height() * scaleY).toAlignedRect().intersected(imageRect);
+    if(cropImageRect.isEmpty() || cropImageRect == imageRect) {
+        return;
+    }
+
+    imageCore.cropImage(cropImageRect);
+    fitOrConstrainImage();
+
+    emit cropApplied();
+}
+
+void QVGraphicsView::cancelCrop()
+{
+    if (!isCropping)
+        return;
+
+    isCropping = false;
+    cropHandle = CropHandle::None;
+    viewport()->setCursor(Qt::ArrowCursor);
+    viewport()->update();
+}
+
+QVGraphicsView::CropHandle QVGraphicsView::getCropHandleAt(const QPoint &pos) const
+{
+    const int margin = 10;
+    if (!cropRect.adjusted(-margin,-margin,margin,margin).contains(pos))
+        return CropHandle::None;
+
+    const bool onLeft = qAbs(pos.x() - cropRect.left()) <= margin;
+    const bool onRight = qAbs(pos.x() - cropRect.right()) <= margin;
+    const bool onTop = qAbs(pos.y() - cropRect.top()) <= margin;
+    const bool onBottom = qAbs(pos.y() - cropRect.bottom()) <= margin;
+
+    if(onLeft && onTop) { return CropHandle::TopLeft; }
+    if(onRight && onTop) { return CropHandle::TopRight; }
+    if(onLeft && onBottom) { return CropHandle::BottomLeft; }
+    if(onRight && onBottom) { return CropHandle::BottomRight; }
+    if(onLeft) { return CropHandle::Left; }
+    if(onRight) { return CropHandle::Right; }
+    if(onTop) { return CropHandle::Top; }
+    if(onBottom) { return CropHandle::Bottom; }
+    if(cropRect.contains(pos)) { return CropHandle::Move; }
+    return CropHandle::None;
+}
+
+void QVGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsView::drawForeground(painter, rect);
+
+    if(!isCropping && !isOcrRunning && !isShowingOcr) {
+        return;
+    }
+
+    painter->save();
+    painter->resetTransform();
+
+    if(isCropping)
+    {
+        //Darken everything outside the selection
+        QRegion outside(viewport()->rect());
+        outside -= QRegion(cropRect);
+        painter->setClipRegion(outside);
+        painter->fillRect(viewport()->rect(),QColor(0,0,0,128));
+        painter->setClipping(false);
+
+        //Selection outline and drag handles
+        painter->setPen(QPen(QColorConstants::White,1));
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRect(cropRect);
+
+        const int handleSize = 8;
+        const QList<QPoint> handlePoints {
+            cropRect.topLeft(), cropRect.topRight(), cropRect.bottomLeft(), cropRect.bottomRight(),
+            QPoint(cropRect.center().x(),cropRect.top()), QPoint(cropRect.center().x(),cropRect.bottom()),
+            QPoint(cropRect.left(),cropRect.center().y()), QPoint(cropRect.right(),cropRect.center().y())
+        };
+        painter->setBrush(QColorConstants::White);
+        painter->setPen(Qt::NoPen);
+        for(const QPoint &point : handlePoints) {
+            painter->drawRect(QRect(point - QPoint(handleSize / 2,handleSize / 2),QSize(handleSize,handleSize)));
+        }
+
+        drawOverlayToast(painter,tr("Press Enter to apply the crop, Esc to cancel"));
+    }
+    else
+    {
+        //Darken the image while recognizing and while the results are shown
+        const QRect imageRect = getImageViewportRect();
+        painter->setClipRect(imageRect);
+        painter->fillRect(imageRect,QColor(0,0,0,isShowingOcr ? 160 : 128));
+        painter->setClipping(false);
+
+        if(isShowingOcr)
+        {
+            //Bright boxes over every recognized line
+            for(int i = 0; i < ocrBoxes.size(); i++)
+            {
+                const QRect box = getOcrBoxViewportRect(ocrBoxes.at(i).rect);
+                if(box.isEmpty()) {
+                    continue;
+                }
+
+                painter->setPen(QPen(QColorConstants::White,1));
+                painter->setBrush(i == hoveredOcrBox ? QColor(255,255,255,120) : QColor(255,255,255,50));
+                painter->drawRect(box);
+            }
+
+            drawOverlayToast(painter,ocrToastMessage.isEmpty()
+                ? tr("Click to copy text, or CTRL+C to copy all text. Esc or right-click to close")
+                : ocrToastMessage);
+        }
+    }
+
+    painter->restore();
+}
+
+void QVGraphicsView::drawOverlayToast(QPainter *painter,const QString &text) const
+{
+    painter->setFont(font());
+    const QFontMetrics metrics(painter->font());
+    const QRect textRect = metrics.boundingRect(text).adjusted(-10,-6,10,6);
+    const QRect toastRect = textRect.translated(viewport()->rect().center().x() - textRect.width() / 2,
+                                                viewport()->rect().bottom() - textRect.height() - 20);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(0,0,0,180));
+    painter->drawRoundedRect(toastRect,4,4);
+    painter->setPen(QColorConstants::White);
+    painter->drawText(toastRect,Qt::AlignCenter,text);
+}
+
+void QVGraphicsView::imageChanged()
+{
+    //The image data was modified in memory (crop/resize): show it and keep the zoom sensible
+    cancelOcr();
+    removeExpensiveScaling();
+    fitOrConstrainImage();
+    expensiveScaleTimer->start();
+    emit transformChanged();
 }
 
 void QVGraphicsView::animatedFrameChanged(QRect rect)
@@ -1082,6 +1775,12 @@ void QVGraphicsView::setLoadIsFromSessionRestore(const bool value)
 
 void QVGraphicsView::goToFile(const Qv::GoToFileMode mode, const int index)
 {
+    //Ask about unsaved transforms before navigating away from the current image
+    MainWindow *mainWindow = getMainWindow();
+    if(mainWindow && !mainWindow->confirmUnsavedTransform()) {
+        return;
+    }
+
     const QVImageCore::GoToFileResult result = imageCore.goToFile(mode, index);
 
     if (result.reachedEnd)
@@ -1355,6 +2054,10 @@ void QVGraphicsView::settingsUpdated(const bool isInitialLoad)
     altMiddleClickAction = settingsManager.getEnum<Qv::ViewportClickAction>("viewportaltmiddleclickaction");
     middleDragAction = settingsManager.getEnum<Qv::ViewportDragAction>("viewportmiddledragaction");
     altMiddleDragAction = settingsManager.getEnum<Qv::ViewportDragAction>("viewportaltmiddledragaction");
+
+    //mouse gestures
+    gestureNavigationEnabled = settingsManager.getBoolean("gesturenavigationenabled");
+    gestureZoomEnabled = settingsManager.getBoolean("gesturezoomenabled");
     verticalScrollAction = settingsManager.getEnum<Qv::ViewportScrollAction>("viewportverticalscrollaction");
     horizontalScrollAction = settingsManager.getEnum<Qv::ViewportScrollAction>("viewporthorizontalscrollaction");
     altVerticalScrollAction = settingsManager.getEnum<Qv::ViewportScrollAction>("viewportaltverticalscrollaction");
@@ -1413,6 +2116,8 @@ void QVGraphicsView::rotateImage(const int relativeAngle)
     const bool isMirroredOrFlipped = t.isRotating() ? ((t.m12() < 0) == (t.m21() < 0)) : ((t.m11() < 0) != (t.m22() < 0));
     setTransformWithNormalization(transform().rotate(relativeAngle * (isMirroredOrFlipped ? -1 : 1)));
     matchContentCenter(oldRect);
+
+    emit transformChanged();
 }
 
 void QVGraphicsView::mirrorImage()
@@ -1421,6 +2126,8 @@ void QVGraphicsView::mirrorImage()
     const int rotateCorrection = transform().isRotating() ? -1 : 1;
     setTransformWithNormalization(transform().scale(-1 * rotateCorrection, 1 * rotateCorrection));
     matchContentCenter(oldRect);
+
+    emit transformChanged();
 }
 
 void QVGraphicsView::flipImage()
@@ -1429,6 +2136,8 @@ void QVGraphicsView::flipImage()
     const int rotateCorrection = transform().isRotating() ? -1 : 1;
     setTransformWithNormalization(transform().scale(1 * rotateCorrection, -1 * rotateCorrection));
     matchContentCenter(oldRect);
+
+    emit transformChanged();
 }
 
 void QVGraphicsView::resetTransformation()
@@ -1438,4 +2147,6 @@ void QVGraphicsView::resetTransformation()
     const qreal scale = qFabs(t.isRotating() ? t.m21() : t.m11());
     setTransformWithNormalization(QTransform::fromScale(scale, scale));
     matchContentCenter(oldRect);
+
+    emit transformChanged();
 }

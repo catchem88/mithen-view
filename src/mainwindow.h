@@ -118,6 +118,16 @@ public:
 
     void resetTransformation();
 
+    void cropImage();
+
+    void resizeImage(const qreal factor);
+
+    void revertTransform();
+
+    void defaultZoom();
+
+    bool saveCurrentImage(const bool saveAs);
+
     void scrollImage(int deltaX, int deltaY);
 
     void firstFile();
@@ -131,6 +141,13 @@ public:
     void randomFile();
 
     void saveFrameAs();
+
+    void ocr();
+
+    void copyOcrText();
+
+    //Returns false when the user cancelled while the image had unsaved transforms
+    bool confirmUnsavedTransform();
 
     void pause();
 
@@ -217,6 +234,8 @@ private:
 
     void revealTitlebarBubble();
 
+    void revealToast(const QString &text);
+
     Ui::MainWindow *ui;
     QVGraphicsView *graphicsView;
 
@@ -224,6 +243,11 @@ private:
     QGraphicsOpacityEffect *titlebarBubbleOpacityEffect;
     QTimer *titlebarBubbleHideTimer;
     QPropertyAnimation *titlebarBubbleHideAnimation;
+
+    QLabel *toast;
+    QGraphicsOpacityEffect *toastOpacityEffect;
+    QTimer *toastHideTimer;
+    QPropertyAnimation *toastHideAnimation;
 
     QMenu *contextMenu;
     QMenu *virtualMenu;

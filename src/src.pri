@@ -12,6 +12,7 @@ SOURCES += \
     $$PWD/qvinfodialog.cpp \
     $$PWD/qvimagecore.cpp \
     $$PWD/qvimageloader.cpp \
+    $$PWD/qvocr.cpp \
     $$PWD/qvmovie.cpp \
     $$PWD/qvshortcutdialog.cpp \
     $$PWD/qvwindows11style.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     $$PWD/qvinfodialog.h \
     $$PWD/qvimagecore.h \
     $$PWD/qvimageloader.h \
+    $$PWD/qvocr.h \
     $$PWD/qvmovie.h \
     $$PWD/qvshortcutdialog.h \
     $$PWD/qvwindows11style.h \

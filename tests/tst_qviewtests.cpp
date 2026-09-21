@@ -40,6 +40,7 @@ class ActionManagerTests : public QObject
 private slots:
     void testMultiFrameView();
     void testClonedActionsUntracked();
+    void testOcrOverlayState();
 };
 
 static QString createTestImage(const QTemporaryDir &dir, const QString &name, const QColor color)
@@ -729,6 +730,83 @@ void ActionManagerTests::testClonedActionsUntracked()
     // Make sure the count has not changed from the initial
     QCOMPARE(qvApp->getActionManager().getAllInstancesOfAction("fullscreen").length(), fullscreenCount);
     QCOMPARE(qvApp->getActionManager().getAllInstancesOfAction("open").length(), openCount);
+}
+
+void ActionManagerTests::testOcrOverlayState()
+{
+    QTemporaryDir dir;
+    MainWindow window;
+    window.show();
+    auto *view = window.findChild<QVGraphicsView *>();
+    QVERIFY(view);
+
+    QSignalSpy files(view, &QVGraphicsView::fileChanged);
+    QSignalSpy ocrStates(view, &QVGraphicsView::ocrStateChanged);
+
+    const QString path = createTestImage(dir, "ocr", Qt::white);
+    QVERIFY(!path.isEmpty());
+    view->loadFile(path);
+    QTRY_COMPARE(files.size(), 1);
+
+    QVERIFY(!view->getIsOcrRunning());
+    QVERIFY(!view->getIsShowingOcr());
+    QVERIFY(view->getOcrText().isEmpty());
+
+    //Recognizing dims the image, shows the busy indicator and blocks closing
+    view->startOcr();
+    QVERIFY(view->getIsOcrRunning());
+    QVERIFY(!view->getIsShowingOcr());
+    QCOMPARE(ocrStates.size(), 1);
+    const auto copyActions = qvApp->getActionManager().getAllClonesOfAction("copyocrtext", &window);
+    QVERIFY(!copyActions.isEmpty());
+    for (auto *action : copyActions)
+        QVERIFY(!action->isEnabled());
+
+    //When the results are shown, the recognized lines can be copied as a whole
+    const QList<QVOcrBox> boxes {
+        {QRect(1, 2, 30, 10), QStringLiteral("Hello")},
+        {QRect(4, 20, 20, 8), QStringLiteral("World")}
+    };
+    view->finishOcr(boxes);
+    QVERIFY(!view->getIsOcrRunning());
+    QVERIFY(view->getIsShowingOcr());
+    QCOMPARE(view->getOcrText(), QStringLiteral("Hello\nWorld"));
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("copyocrtext", &window))
+        QVERIFY(action->isEnabled());
+    //Everything else is disabled while OCR is active
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("ocr", &window))
+        QVERIFY(!action->isEnabled());
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("nextfile", &window))
+        QVERIFY(!action->isEnabled());
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("fullscreen", &window))
+        QVERIFY(!action->isEnabled());
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("options", &window))
+        QVERIFY(!action->isEnabled());
+
+    //Esc closes the overlay without closing the window
+    QTest::keyClick(view, Qt::Key_Escape);
+    QVERIFY(!view->getIsShowingOcr());
+    QVERIFY(view->getOcrText().isEmpty());
+    QVERIFY(window.isVisible());
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("copyocrtext", &window))
+        QVERIFY(!action->isEnabled());
+    for (auto *action : qvApp->getActionManager().getAllClonesOfAction("nextfile", &window))
+        QVERIFY(action->isEnabled());
+    //Actions without a disable rule are restored as well
+    const auto optionsActions = qvApp->getActionManager().getAllClonesOfAction("options", &window);
+    QVERIFY(!optionsActions.isEmpty());
+    for (auto *action : optionsActions)
+        QVERIFY(action->isEnabled());
+
+    //Navigating away cancels a recognition that is still running
+    view->startOcr();
+    QVERIFY(view->getIsOcrRunning());
+    const QString secondPath = createTestImage(dir, "ocr2", Qt::black);
+    QVERIFY(!secondPath.isEmpty());
+    view->loadFile(secondPath);
+    QTRY_COMPARE(files.size(), 2);
+    QVERIFY(!view->getIsOcrRunning());
+    QVERIFY(!view->getIsShowingOcr());
 }
 
 int main(int argc, char *argv[])

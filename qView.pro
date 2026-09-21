@@ -1,5 +1,5 @@
 TARGET = wView
-VERSION = 8.0
+VERSION = 1.1.0
 
 QT += core gui network widgets svg
 
@@ -7,8 +7,8 @@ TEMPLATE = app
 
 QMAKE_PROJECT_DEPTH = 0
 
-# allows use of version variable elsewhere
-DEFINES += "VERSION=$$VERSION"
+# allows use of the version string elsewhere (WVIEW_VERSION is a quoted string literal)
+DEFINES += WVIEW_VERSION=\\\"$$VERSION\\\"
 
 # build folder organization
 DESTDIR = bin
@@ -40,7 +40,7 @@ CONFIG(debug, debug|release) {
 win32 {
     # To build without win32: qmake CONFIG+=NO_WIN32
     !CONFIG(NO_WIN32) {
-        LIBS += -lshell32 -luser32 -lole32 -loleaut32 -luuid -lshlwapi -lgdi32 -ldwmapi
+        LIBS += -lshell32 -luser32 -lole32 -loleaut32 -luuid -lshlwapi -lgdi32 -ldwmapi -lwindowsapp
         DEFINES += WIN32_LOADED
         message("Linked to win32 api")
     }

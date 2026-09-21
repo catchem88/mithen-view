@@ -3,6 +3,8 @@
 
 #include "qvapplication.h"
 
+#include <QPixmap>
+
 QVAboutDialog::QVAboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QVAboutDialog)
@@ -20,13 +22,14 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
     qvApp->ensureFontLoaded(":/fonts/Lato-Regular.ttf");
 
     int modifier = 0;
-    const QFont font1 = QFont("Lato", 72, QFont::Light);
-    ui->logoLabel->setFont(font1);
+
+    //show the wView logo
+    ui->logoLabel->setPixmap(QPixmap(":/logo.png").scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     //set subtitle font & text
     QFont font2 = QFont("Lato", 18 + modifier);
     font2.setStyleName("Regular");
-    QString subtitleText = tr("Version 1.0.0");
+    QString subtitleText = tr("wView v%1").arg(QString::fromLatin1(WVIEW_VERSION));
     ui->subtitleLabel->setFont(font2);
     ui->subtitleLabel->setText(subtitleText);
 

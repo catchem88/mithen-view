@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("wView");
     QCoreApplication::setApplicationName("wView-JDP");
-    QCoreApplication::setApplicationVersion(QString::number(VERSION));
+    QCoreApplication::setApplicationVersion(QString::fromLatin1(WVIEW_VERSION));
 
     SettingsManager::migrateOldSettings();
 

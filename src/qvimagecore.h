@@ -65,6 +65,11 @@ public:
 
     QPixmap scaleExpensively(const QSizeF desiredSize);
 
+    void resizeImage(const qreal factor);
+    void cropImage(const QRect &rect);
+    bool getImageModified() const { return imageModified; }
+    void clearImageModified() { imageModified = false; }
+
     const QPixmap& getLoadedPixmap() const { return loadedPixmap; }
     const QVMovie& getLoadedMovie() const { return loadedMovie; }
     const FileDetails& getCurrentFileDetails() const { return currentFileDetails; }
@@ -76,6 +81,11 @@ signals:
     void fileChanging();
 
     void fileChanged();
+
+    //Emitted when the loaded image was modified in memory (crop/resize)
+    void imageChanged();
+
+    void imageModifiedChanged();
 
     void sortParametersChanged();
 
@@ -91,6 +101,8 @@ protected:
 
 private:
     void jumpToImageFrame(int direction);
+
+    void applyImageEdit(const QImage &newImage);
 
     QVFileEnumerator fileEnumerator {this};
     QVImageLoader imageLoader {this};
@@ -111,6 +123,7 @@ private:
     bool pendingLoadDebouncesPreloading {false};
     bool fileOrLoadPending {false};
     bool folderInfoDirty {false};
+    bool imageModified {false};
 };
 
 #endif // QVIMAGECORE_H

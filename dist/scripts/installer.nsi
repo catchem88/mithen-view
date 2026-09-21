@@ -15,11 +15,12 @@ InstallDirRegKey HKLM "Software\wView" "InstallDir"
 RequestExecutionLevel admin
 
 ; Version info
-VIProductVersion "8.0.0.0"
+VIProductVersion "1.1.0.0"
 VIAddVersionKey "ProductName" "wView"
 VIAddVersionKey "FileDescription" "wView Image Viewer"
 VIAddVersionKey "LegalCopyright" "Copyright 2026 wView contributors"
-VIAddVersionKey "FileVersion" "8.0.0.0"
+VIAddVersionKey "FileVersion" "1.1.0.0"
+VIAddVersionKey "ProductVersion" "1.1.0.0"
 
 ; MUI settings
 !define MUI_ABORTWARNING
@@ -110,6 +111,13 @@ Section "Install"
     ; Create uninstaller
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
+    ; Offer to replace existing settings (custom shortcuts, options, ...) with the new defaults
+    EnumRegKey $0 HKCU "Software\wView\wView-JDP" 0
+    StrCmp $0 "" doneSettingsReset
+        MessageBox MB_YESNO|MB_ICONQUESTION "Replace all existing wView settings with the new defaults?$\n$\nChoose No to keep your current settings and shortcuts." IDNO doneSettingsReset
+        DeleteRegKey HKCU "Software\wView\wView-JDP"
+    doneSettingsReset:
+
     ; Create start menu shortcuts
     CreateDirectory "$SMPROGRAMS\wView"
     CreateShortCut "$SMPROGRAMS\wView\wView.lnk" "$INSTDIR\wView.exe"
@@ -120,7 +128,7 @@ Section "Install"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "DisplayName" "wView"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "UninstallString" '"$INSTDIR\uninstall.exe"'
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "InstallLocation" "$INSTDIR"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "DisplayVersion" "8.0.0"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "DisplayVersion" "1.1.0"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "Publisher" "wView contributors"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\wView" "NoRepair" 1
