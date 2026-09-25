@@ -27,7 +27,8 @@ RequestExecutionLevel admin
 VIProductVersion "1.1.0.0"
 VIAddVersionKey "ProductName" "MithenView"
 VIAddVersionKey "FileDescription" "MithenView Image Viewer"
-VIAddVersionKey "LegalCopyright" "Copyright 2026 MithenView contributors"
+VIAddVersionKey "CompanyName" "MithenApps"
+VIAddVersionKey "LegalCopyright" "Copyright 2026 MithenApps"
 VIAddVersionKey "FileVersion" "1.1.0.0"
 VIAddVersionKey "ProductVersion" "1.1.0.0"
 
@@ -202,11 +203,12 @@ Section "Install"
     WriteRegStr HKCU "Software\mithen-view" "InstallDir" "$INSTDIR"
     WriteRegStr HKLM "Software\mithen-view" "InstallDir" "$INSTDIR"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "DisplayName" "MithenView"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "DisplayIcon" "$INSTDIR\mithen-view.exe,0"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "UninstallString" '"$INSTDIR\uninstall.exe"'
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "QuietUninstallString" '"$INSTDIR\uninstall.exe" /S'
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "InstallLocation" "$INSTDIR"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "DisplayVersion" "1.1.0"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "Publisher" "MithenView contributors"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "Publisher" "MithenApps"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "NoRepair" 1
 SectionEnd

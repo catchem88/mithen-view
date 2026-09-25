@@ -46,7 +46,8 @@ win32 {
     }
 
     RC_ICONS = "dist/win/mithen-view.ico"
-    QMAKE_TARGET_COPYRIGHT = "Copyright \\251 2026 jurplel and MithenView contributors"
+    QMAKE_TARGET_COMPANY = "MithenApps"
+    QMAKE_TARGET_COPYRIGHT = "Copyright \\251 2026 jurplel and MithenApps"
     QMAKE_TARGET_DESCRIPTION = "MithenView"
 }
 

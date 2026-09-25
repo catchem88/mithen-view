@@ -41,7 +41,7 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
                                   R"(Project: <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/catchem88/mithen-view">GitHub</a><br>)"
                                   R"(Derivative of unofficial qView (jdpurcell): <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/jdpurcell/qView">GitHub</a><br>)"
                                   R"(Derivative of official qView (jurplel): <a style="color: #03A9F4; text-decoration:none;" href="https://interversehq.com/qview/">Website</a>, <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/jurplel/qView">GitHub</a><br>)"
-                                  "Copyright © %3 jurplel, jdpurcell, and MithenView contributors")
+                                  "Copyright © %3 jurplel, jdpurcell, and MithenApps")
                                   .arg(QT_VERSION_STR, QSysInfo::buildCpuArchitecture(), "2018-2026");
 
     ui->infoLabel2->setFont(font4);
