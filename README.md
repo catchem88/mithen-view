@@ -39,9 +39,8 @@ MithenView is a lightweight image viewer, with basic editing feature & OCR for W
 * No lingering background service. Closed when it's closed.
 * No tracking of what "recent" files you opened. (lighter, privacy reasons)
 * No update checking (use it as a tool, update it when you find issues only)
+* Uninstalls cleanly, no leftovers
 * Prioritizing user-ergonomics
-* Checkout [MithenPlayer](https://github.com/catchem88/mithen-player), lightweight media player!
-* Checkout [MithenPDF](https://github.com/catchem88/mithen-player), lightweight PDF reader & editor!
 ## Credits
 * [jurplel](https://github.com/jurplel) - original author of [qView](https://github.com/jurplel/qView), which MithenView is derived from.
 * [jdpurcell](https://github.com/jdpurcell) - maintainer of the [qView fork](https://github.com/jdpurcell/qView) that MithenView is based on.
