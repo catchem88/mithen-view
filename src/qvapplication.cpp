@@ -259,7 +259,7 @@ void QVApplication::defineFilterLists()
     {
         const auto fileExtension = "." + QString::fromUtf8(byteArray);
 
-        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in wView
+        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in MithenView
         if (fileExtension == ".pdf")
             continue;
 
@@ -293,7 +293,7 @@ void QVApplication::defineFilterLists()
     {
         const QString mimeType = QString::fromUtf8(byteArray);
 
-        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in wView
+        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in MithenView
         if (mimeType == "application/pdf")
             continue;
 

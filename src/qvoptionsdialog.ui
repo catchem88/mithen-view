@@ -641,7 +641,7 @@
           <item row="7" column="1">
            <widget class="QCheckBox" name="loopFoldersCheckbox">
             <property name="toolTip">
-             <string>Controls whether or not wView should go back to the first item after reaching the end of a folder</string>
+             <string>Controls whether or not MithenView should go back to the first item after reaching the end of a folder</string>
             </property>
             <property name="text">
              <string>&amp;Loop through folders</string>

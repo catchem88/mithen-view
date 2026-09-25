@@ -969,8 +969,8 @@ void QVGraphicsView::postLoad()
     if (!fileDetails.fileInfo.filePath().isEmpty() && !fileDetails.errorData.has_value())
         qvApp->getActionManager().addFileToRecentsList(fileDetails.fileInfo);
 
-    emit fileChanged(loadIsFromSessionRestore);
-
+    //Reset the zoom mode before the window sizing logic runs: the fileChanged handler
+    //may maximize the window and recalculate the zoom against the stale mode otherwise
     if (!loadIsFromSessionRestore && !isPendingMaximize && !isSmallImageMode)
     {
         if (navigationResetsZoom && calculatedZoomMode != defaultCalculatedZoomMode)
@@ -978,6 +978,8 @@ void QVGraphicsView::postLoad()
         else
             fitOrConstrainImage();
     }
+
+    emit fileChanged(loadIsFromSessionRestore);
     loadIsFromSessionRestore = false;
 
     expensiveScaleTimer->start();

@@ -26,7 +26,7 @@ QVWelcomeDialog::QVWelcomeDialog(QWidget *parent) :
     //set subtitle font & text
     QFont font2 = QFont("Lato", 14 + modifier);
     font2.setStyleName("Regular");
-    const QString subtitleText = tr("Thank you for downloading wView.<br>Here's a few tips to get you started:");
+    const QString subtitleText = tr("Thank you for downloading MithenView.<br>Here's a few tips to get you started:");
     ui->subtitleLabel->setFont(font2);
     ui->subtitleLabel->setText(subtitleText);
 

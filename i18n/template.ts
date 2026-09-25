@@ -609,17 +609,17 @@ No write permission or file is read-only.</source>
     <name>QVAboutDialog</name>
     <message>
         <location filename="../src/qvaboutdialog.ui" line="20"/>
-        <source>About wView</source>
+        <source>About MithenView</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="32"/>
-        <source>wView v%1</source>
+        <source>MithenView v%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="39"/>
-        <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Derivative of unofficial qView (jdpurcell): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jdpurcell/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Derivative of official qView (jurplel): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and wView contributors</source>
+        <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Project: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/catchem88/mithen-view&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Derivative of unofficial qView (jdpurcell): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jdpurcell/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Derivative of official qView (jurplel): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and MithenView contributors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -982,7 +982,7 @@ No write permission or file is read-only.</source>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="644"/>
-        <source>Controls whether or not wView should go back to the first item after reaching the end of a folder</source>
+        <source>Controls whether or not MithenView should go back to the first item after reaching the end of a folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1205,7 +1205,7 @@ No write permission or file is read-only.</source>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.cpp" line="506"/>
-        <source>You must restart wView for the setting change to take effect.</source>
+        <source>You must restart MithenView for the setting change to take effect.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

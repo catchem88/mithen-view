@@ -30,11 +30,11 @@ QString SettingsManager::getInstalledLanguage() const
     // The installer ships a catalog for the language chosen during installation, so the language
     // is resolved from what is actually installed next to the executable.
     QStringList available;
-    const auto entries = QDir(translationsPath()).entryList({"wView_*.qm"}, QDir::Files);
+    const auto entries = QDir(translationsPath()).entryList({"mithen-view_*.qm"}, QDir::Files);
     for (const auto &entry : entries)
     {
         QString language = entry;
-        language.remove(0, 6);
+        language.remove(0, 12);
         language.remove(language.length() - 3, 3);
         available.append(language);
     }
@@ -75,7 +75,7 @@ void SettingsManager::loadTranslations()
     if (qtTranslator.load(QLocale(language), "qtbase", "_", path))
         QCoreApplication::installTranslator(&qtTranslator);
 
-    if (appTranslator.load("wView_" + language + ".qm", path))
+    if (appTranslator.load("mithen-view_" + language + ".qm", path))
         QCoreApplication::installTranslator(&appTranslator);
 }
 

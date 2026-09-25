@@ -503,7 +503,7 @@ void QVOptionsDialog::restartNotifyForCheckbox(const QString &key, const Qt::Che
 {
     const bool savedValue = qvApp->getSettingsManager().getBoolean(key);
     if (static_cast<bool>(state) != savedValue)
-        QMessageBox::information(this, tr("Restart Required"), tr("You must restart wView for the setting change to take effect."));
+        QMessageBox::information(this, tr("Restart Required"), tr("You must restart MithenView for the setting change to take effect."));
 }
 
 void QVOptionsDialog::titlebarComboBoxCurrentIndexChanged(int index)

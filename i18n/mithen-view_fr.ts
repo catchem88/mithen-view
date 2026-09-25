@@ -613,18 +613,18 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
     <name>QVAboutDialog</name>
     <message>
         <location filename="../src/qvaboutdialog.ui" line="20"/>
-        <source>About wView</source>
-        <translation>À propos de wView</translation>
+        <source>About MithenView</source>
+        <translation>À propos de MithenView</translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="32"/>
-        <source>wView v%1</source>
-        <translation>wView v%1</translation>
+        <source>MithenView v%1</source>
+        <translation>MithenView v%1</translation>
     </message>
     <message>
         <location filename="../src/qvaboutdialog.cpp" line="39"/>
-        <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Derivative of unofficial qView (jdpurcell): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jdpurcell/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Derivative of official qView (jurplel): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and wView contributors</source>
-        <translation>Compilé avec Qt %1 (%2)&lt;br&gt;Sous licence GNU GPLv3&lt;br&gt;Dérivé de qView non officiel (jdpurcell) : &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jdpurcell/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Dérivé de qView officiel (jurplel) : &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Copyright © %3 jurplel, jdpurcell et les contributeurs de wView</translation>
+        <source>Built with Qt %1 (%2)&lt;br&gt;Licensed under the GNU GPLv3&lt;br&gt;Project: &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/catchem88/mithen-view&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Derivative of unofficial qView (jdpurcell): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jdpurcell/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Derivative of official qView (jurplel): &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Copyright © %3 jurplel, jdpurcell, and MithenView contributors</source>
+        <translation>Compilé avec Qt %1 (%2)&lt;br&gt;Sous licence GNU GPLv3&lt;br&gt;Projet : &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/catchem88/mithen-view&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Dérivé de qView non officiel (jdpurcell) : &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jdpurcell/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Dérivé de qView officiel (jurplel) : &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://interversehq.com/qview/&quot;&gt;Website&lt;/a&gt;, &lt;a style=&quot;color: #03A9F4; text-decoration:none;&quot; href=&quot;https://github.com/jurplel/qView&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;Copyright © %3 jurplel, jdpurcell et les contributeurs de MithenView</translation>
     </message>
 </context>
 <context>
@@ -992,8 +992,8 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="644"/>
-        <source>Controls whether or not wView should go back to the first item after reaching the end of a folder</source>
-        <translation>Détermine si wView revient au premier élément après avoir atteint la fin d&apos;un dossier</translation>
+        <source>Controls whether or not MithenView should go back to the first item after reaching the end of a folder</source>
+        <translation>Détermine si MithenView revient au premier élément après avoir atteint la fin d&apos;un dossier</translation>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.ui" line="826"/>
@@ -1215,8 +1215,8 @@ Pas d&apos;autorisation d&apos;écriture ou le fichier est en lecture seule.</tr
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.cpp" line="506"/>
-        <source>You must restart wView for the setting change to take effect.</source>
-        <translation>Vous devez redémarrer wView pour que la modification du paramètre prenne effet.</translation>
+        <source>You must restart MithenView for the setting change to take effect.</source>
+        <translation>Vous devez redémarrer MithenView pour que la modification du paramètre prenne effet.</translation>
     </message>
     <message>
         <location filename="../src/qvoptionsdialog.cpp" line="612"/>

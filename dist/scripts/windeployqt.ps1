@@ -20,7 +20,7 @@ if ($isCrossCompile) {
 } else {
     $argQtPaths = $null
 }
-& $winDeployQt $argQtPaths --no-compiler-runtime --no-translations "bin\wView.exe"
+& $winDeployQt $argQtPaths --no-compiler-runtime --no-translations "bin\mithen-view.exe"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "windeployqt failed"

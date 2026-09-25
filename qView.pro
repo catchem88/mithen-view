@@ -1,4 +1,4 @@
-TARGET = wView
+TARGET = mithen-view
 VERSION = 1.1.0
 
 QT += core gui network widgets svg
@@ -7,8 +7,8 @@ TEMPLATE = app
 
 QMAKE_PROJECT_DEPTH = 0
 
-# allows use of the version string elsewhere (WVIEW_VERSION is a quoted string literal)
-DEFINES += WVIEW_VERSION=\\\"$$VERSION\\\"
+# allows use of the version string elsewhere (MITHEINVIEW_VERSION is a quoted string literal)
+DEFINES += MITHEINVIEW_VERSION=\\\"$$VERSION\\\"
 
 # build folder organization
 DESTDIR = bin
@@ -45,9 +45,9 @@ win32 {
         message("Linked to win32 api")
     }
 
-    RC_ICONS = "dist/win/wView.ico"
-    QMAKE_TARGET_COPYRIGHT = "Copyright \\251 2026 jurplel and wView contributors"
-    QMAKE_TARGET_DESCRIPTION = "wView"
+    RC_ICONS = "dist/win/mithen-view.ico"
+    QMAKE_TARGET_COPYRIGHT = "Copyright \\251 2026 jurplel and MithenView contributors"
+    QMAKE_TARGET_DESCRIPTION = "MithenView"
 }
 
 # The following define makes your compiler emit warnings if you use
@@ -70,7 +70,7 @@ include(src/src.pri)
 # during installation. Only that language is installed, and nothing is embedded in the executable.
 CONFIG += lrelease
 
-TRANSLATIONS += $$files(i18n/wView_*.ts)
+TRANSLATIONS += $$files(i18n/mithen-view_*.ts)
 
 lupdate_only {
     TRANSLATIONS += i18n/template.ts

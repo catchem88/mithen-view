@@ -41,6 +41,7 @@ private slots:
     void testMultiFrameView();
     void testClonedActionsUntracked();
     void testOcrOverlayState();
+    void testNavigationZoomAfterSmallImage();
 };
 
 static QString createTestImage(const QTemporaryDir &dir, const QString &name, const QColor color)
@@ -807,6 +808,38 @@ void ActionManagerTests::testOcrOverlayState()
     QTRY_COMPARE(files.size(), 2);
     QVERIFY(!view->getIsOcrRunning());
     QVERIFY(!view->getIsShowingOcr());
+
+    //Close so the cloned actions are untracked instead of dangling after destruction
+    window.close();
+}
+
+void ActionManagerTests::testNavigationZoomAfterSmallImage()
+{
+    QTemporaryDir dir;
+    MainWindow window;
+    window.show();
+    auto *view = window.findChild<QVGraphicsView *>();
+    QVERIFY(view);
+    view->setNavigationResetsZoom(true);
+
+    //A small image is auto-shown at original size with the window fitted to it
+    const QString smallPath = createTestImage(dir, "small", Qt::red);
+    QVERIFY(!smallPath.isEmpty());
+    QSignalSpy files(view, &QVGraphicsView::fileChanged);
+    view->loadFile(smallPath);
+    QTRY_COMPARE(files.size(), 1);
+    QCOMPARE(view->getZoomLevel(), 1.0);
+
+    //Navigating to an image that maximizes the window must reset the zoom to the
+    //default mode instead of carrying over the stale original-size zoom
+    QImage big(3000, 2000, QImage::Format_RGB32);
+    big.fill(Qt::blue);
+    const QString bigPath = dir.filePath("big.png");
+    QVERIFY(big.save(bigPath));
+    view->loadFile(bigPath);
+    QTRY_COMPARE(files.size(), 2);
+    QTRY_VERIFY(view->getCalculatedZoomMode() == view->getDefaultCalculatedZoomMode());
+    QVERIFY(view->getZoomLevel() < 1.0);
 }
 
 int main(int argc, char *argv[])

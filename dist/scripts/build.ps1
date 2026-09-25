@@ -37,7 +37,7 @@ if ($os -eq 'Win32NT' -or $env:OS -eq 'Windows_NT') {
     New-Item -ItemType Directory -Path "build/thumbnail" -Force | Out-Null
     Push-Location "build/thumbnail"
     try {
-        qmake ../../thumbnail/wviewthumbnail.pro
+        qmake ../../thumbnail/mithenviewthumbnail.pro
         if ($LASTEXITCODE -ne 0) {
             Write-Error "qmake failed for the thumbnail provider"
             exit 1
@@ -51,7 +51,7 @@ if ($os -eq 'Win32NT' -or $env:OS -eq 'Windows_NT') {
         Pop-Location
     }
     # The import library is only needed at link time
-    Remove-Item "bin/wViewThumbnail.lib","bin/wViewThumbnail.exp" -Force -ErrorAction SilentlyContinue
+    Remove-Item "bin/MithenViewThumbnail.lib","bin/MithenViewThumbnail.exp" -Force -ErrorAction SilentlyContinue
 }
 
 # Stage translation catalogs for the installer. Only the language chosen during installation
@@ -60,12 +60,12 @@ $translationsDir = "dist/win/translations"
 Remove-Item $translationsDir -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path $translationsDir -Force | Out-Null
 
-$wViewCatalogs = Get-ChildItem -Path ".qm" -Filter "wView_*.qm" -ErrorAction SilentlyContinue
-if (-not $wViewCatalogs) {
+$mithenViewCatalogs = Get-ChildItem -Path ".qm" -Filter "mithen-view_*.qm" -ErrorAction SilentlyContinue
+if (-not $mithenViewCatalogs) {
     Write-Error "No translation catalogs were built"
     exit 1
 }
-$wViewCatalogs | Copy-Item -Destination $translationsDir -Force
+$mithenViewCatalogs | Copy-Item -Destination $translationsDir -Force
 
 $qtTranslationsDir = (qmake -query QT_INSTALL_TRANSLATIONS).Trim()
 foreach ($language in @('de','es','fr','ja','ko','ru','zh_CN')) {

@@ -1,4 +1,4 @@
-// wView Shell Thumbnail Provider
+// MithenView Shell Thumbnail Provider
 // In-process COM server that supplies Windows Explorer with native thumbnails for image files.
 // Uses Windows Imaging Component directly so it has no dependency on the Qt runtime.
 
@@ -22,17 +22,17 @@ namespace
 {
 
 // {7A2E5C31-9B4D-4E8A-9C1F-3D6B7E0A4F52}
-const CLSID CLSID_wViewThumbnailProvider =
+const CLSID CLSID_MithenViewThumbnailProvider =
     {0x7a2e5c31, 0x9b4d, 0x4e8a, {0x9c, 0x1f, 0x3d, 0x6b, 0x7e, 0x0a, 0x4f, 0x52}};
 
 // {E357FCCD-A995-4576-B01F-234630154E96} - the shell's IThumbnailProvider handler key
 const wchar_t *const kThumbnailProviderHandlerKey = L"{e357fccd-a995-4576-b01f-234630154e96}";
 
 // Value name used to remember a competing per-user handler that this provider replaced
-const wchar_t *const kThumbnailProviderBackupValue = L"wViewPreviousThumbnailHandler";
+const wchar_t *const kThumbnailProviderBackupValue = L"MithenViewPreviousThumbnailHandler";
 
 // Value name under which the original DACL of a protected handler key is stored for restore
-const wchar_t *const kThumbnailProviderOriginalDaclValue = L"wViewOriginalDacl";
+const wchar_t *const kThumbnailProviderOriginalDaclValue = L"MithenViewOriginalDacl";
 
 // Rights denied to the current user on a protected handler key so that other software
 // (e.g. Google Drive, which re-asserts its broken handler every ~45s) cannot overwrite it
@@ -484,13 +484,13 @@ HRESULT RegisterAll(const HKEY rootKey)
     if (GetModuleFileNameW(g_hInstance, modulePath, ARRAYSIZE(modulePath)) == 0)
         return HRESULT_FROM_WIN32(GetLastError());
 
-    HRESULT hr = RegisterInprocServer(rootKey, CLSID_wViewThumbnailProvider, modulePath, L"wView Thumbnail Provider");
+    HRESULT hr = RegisterInprocServer(rootKey, CLSID_MithenViewThumbnailProvider, modulePath, L"MithenView Thumbnail Provider");
     if (FAILED(hr))
         return hr;
 
     for (size_t i = 0; i < ARRAYSIZE(kSupportedExtensions); i++)
     {
-        hr = RegisterShellExtension(rootKey, CLSID_wViewThumbnailProvider, kSupportedExtensions[i]);
+        hr = RegisterShellExtension(rootKey, CLSID_MithenViewThumbnailProvider, kSupportedExtensions[i]);
         if (FAILED(hr))
             return hr;
     }
@@ -501,7 +501,7 @@ HRESULT RegisterAll(const HKEY rootKey)
 void UnregisterAll(const HKEY rootKey)
 {
     wchar_t clsidString[64] = {};
-    if (StringFromGUID2(CLSID_wViewThumbnailProvider, clsidString, ARRAYSIZE(clsidString)) == 0)
+    if (StringFromGUID2(CLSID_MithenViewThumbnailProvider, clsidString, ARRAYSIZE(clsidString)) == 0)
         return;
 
     wchar_t subKey[MAX_PATH] = {};
@@ -619,7 +619,7 @@ void RestoreHandlerKey(const wchar_t *hiveSubKey)
 void OverrideExtensionLevelHandlers()
 {
     wchar_t clsidString[64] = {};
-    if (StringFromGUID2(CLSID_wViewThumbnailProvider, clsidString, ARRAYSIZE(clsidString)) == 0)
+    if (StringFromGUID2(CLSID_MithenViewThumbnailProvider, clsidString, ARRAYSIZE(clsidString)) == 0)
         return;
 
     for (size_t i = 0; i < ARRAYSIZE(kSupportedExtensions); i++)
@@ -666,7 +666,7 @@ void OverrideExtensionLevelHandlers()
 void UnregisterExtensionLevelOverrides()
 {
     wchar_t clsidString[64] = {};
-    if (StringFromGUID2(CLSID_wViewThumbnailProvider, clsidString, ARRAYSIZE(clsidString)) == 0)
+    if (StringFromGUID2(CLSID_MithenViewThumbnailProvider, clsidString, ARRAYSIZE(clsidString)) == 0)
         return;
 
     for (size_t i = 0; i < ARRAYSIZE(kSupportedExtensions); i++)
@@ -715,7 +715,7 @@ void UnregisterExtensionLevelOverrides()
 
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void **ppv)
 {
-    if (!IsEqualCLSID(rclsid, CLSID_wViewThumbnailProvider))
+    if (!IsEqualCLSID(rclsid, CLSID_MithenViewThumbnailProvider))
         return CLASS_E_CLASSNOTAVAILABLE;
 
     CClassFactory *pFactory = new (std::nothrow) CClassFactory();

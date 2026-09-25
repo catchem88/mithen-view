@@ -23,13 +23,13 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
 
     int modifier = 0;
 
-    //show the wView logo
+    //show the MithenView logo
     ui->logoLabel->setPixmap(QPixmap(":/logo.png").scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     //set subtitle font & text
     QFont font2 = QFont("Lato", 18 + modifier);
     font2.setStyleName("Regular");
-    QString subtitleText = tr("wView v%1").arg(QString::fromLatin1(WVIEW_VERSION));
+    QString subtitleText = tr("MithenView v%1").arg(QString::fromLatin1(MITHEINVIEW_VERSION));
     ui->subtitleLabel->setFont(font2);
     ui->subtitleLabel->setText(subtitleText);
 
@@ -38,9 +38,10 @@ QVAboutDialog::QVAboutDialog(QWidget *parent) :
     font4.setStyleName("Regular");
     const QString labelText2 = tr("Built with Qt %1 (%2)<br>"
                                   "Licensed under the GNU GPLv3<br>"
+                                  R"(Project: <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/catchem88/mithen-view">GitHub</a><br>)"
                                   R"(Derivative of unofficial qView (jdpurcell): <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/jdpurcell/qView">GitHub</a><br>)"
                                   R"(Derivative of official qView (jurplel): <a style="color: #03A9F4; text-decoration:none;" href="https://interversehq.com/qview/">Website</a>, <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/jurplel/qView">GitHub</a><br>)"
-                                  "Copyright © %3 jurplel, jdpurcell, and wView contributors")
+                                  "Copyright © %3 jurplel, jdpurcell, and MithenView contributors")
                                   .arg(QT_VERSION_STR, QSysInfo::buildCpuArchitecture(), "2018-2026");
 
     ui->infoLabel2->setFont(font4);

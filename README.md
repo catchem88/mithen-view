@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="img/logo.png" alt="wView logo" width="180">
+  <img src="img/logo.png" alt="MithenView logo" width="180">
 </p>
 
-<h1 align="center">wView</h1>
+<h1 align="center">MithenView</h1>
 
 <div align="center">
-wView is a lightweight image viewer, with basic editing feature & OCR for Windows. A Windows focused fork of <a href="https://github.com/jdpurcell/qView">jdpurcell's qView</a>, which is derived from <a href="https://github.com/jurplel/qView">jurplel's qView</a>.
+MithenView is a lightweight image viewer, with basic editing feature & OCR for Windows. A Windows focused fork of <a href="https://github.com/jdpurcell/qView">jdpurcell's qView</a>, which is derived from <a href="https://github.com/jurplel/qView">jurplel's qView</a>.
 </div>
 
 ## Additional features in this fork
@@ -33,6 +33,15 @@ wView is a lightweight image viewer, with basic editing feature & OCR for Window
 ![screenshot](docs/screenshot.png)
 ## Supported platforms
 * Windows 10+ (x64 or ARM64 binaries). You may need to install the [Visual C++ runtime](https://aka.ms/vs/17/release/vc_redist.x64.exe) if you don't have it already.
+## Part of MithenApps
+* No telemetry
+* No changing language after installation (lighter)
+* No lingering background service. Closed when it's closed.
+* No tracking of what "recent" files you opened. (lighter, privacy reasons)
+* No update checking (use it as a tool, update it when you find issues only)
+* Prioritizing user-ergonomics
+* Checkout [MithenPlayer](https://github.com/catchem88/mithen-player), lightweight media player!
+* Checkout [MithenPDF](https://github.com/catchem88/mithen-player), lightweight PDF reader & editor!
 ## Credits
-* [jurplel](https://github.com/jurplel) - original author of [qView](https://github.com/jurplel/qView), which wView is derived from.
-* [jdpurcell](https://github.com/jdpurcell) - maintainer of the [qView fork](https://github.com/jdpurcell/qView) that wView is based on.
+* [jurplel](https://github.com/jurplel) - original author of [qView](https://github.com/jurplel/qView), which MithenView is derived from.
+* [jdpurcell](https://github.com/jdpurcell) - maintainer of the [qView fork](https://github.com/jdpurcell/qView) that MithenView is based on.

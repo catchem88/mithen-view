@@ -1,6 +1,6 @@
 <#
-    Builds the complete wView release: bin\wView.exe (plus the Explorer thumbnail provider)
-    and the one-file installer res\wView-setup.exe.
+    Builds the complete MithenView release: bin\mithen-view.exe (plus the Explorer thumbnail provider)
+    and the one-file installer res\MithenView-setup.exe.
 
     Prerequisites: Qt on PATH (6.8.2 msvc2022_64 with the qtimageformats module),
     Visual Studio 2022 Build Tools, NSIS.
@@ -77,6 +77,6 @@ if ($LASTEXITCODE -ne 0) {
 
 # --- Result ------------------------------------------------------------------
 
-$installer = Get-Item "res/wView-setup.exe"
-$app = Get-Item "bin/wView.exe"
+$installer = Get-Item "res/MithenView-setup.exe"
+$app = Get-Item "bin/mithen-view.exe"
 Write-Host ("`nDone:`n  {0}  ({1:N0} bytes)`n  {2}  ({3:N0} bytes)" -f $installer.FullName, $installer.Length, $app.FullName, $app.Length) -ForegroundColor Green

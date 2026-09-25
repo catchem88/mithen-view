@@ -1,4 +1,4 @@
-LIBRARY wViewThumbnail
+LIBRARY MithenViewThumbnail
 
 EXPORTS
     DllGetClassObject   PRIVATE

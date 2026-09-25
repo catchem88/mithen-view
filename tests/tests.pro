@@ -1,7 +1,7 @@
 QT += core testlib gui network widgets
 
 VERSION = 1.1.0
-DEFINES += WVIEW_VERSION=\\\"$$VERSION\\\"
+DEFINES += MITHEINVIEW_VERSION=\\\"$$VERSION\\\"
 
 CONFIG += qt console warn_on depend_includepath testcase
 CONFIG -= app_bundle

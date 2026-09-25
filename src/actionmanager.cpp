@@ -289,7 +289,7 @@ QMenu *ActionManager::buildResizeMenu(QWidget *parent)
     resizeMenu->menuAction()->setData("resizemenu");
     if (isContextMenu)
         resizeMenu->setProperty("isContextMenu", true);
-    if (isContextMenu && qvApp->getShowContextMenuIcons())
+    if (isContextMenu ? qvApp->getShowContextMenuIcons() : qvApp->getShowMainMenuIcons())
         resizeMenu->setIcon(qvApp->iconFromFont(Qv::MaterialIcon::SettingsOverscan));
 
     addCloneOfAction(resizeMenu, "resize90");
@@ -601,7 +601,7 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
     } else if (key == "options") {
         qvApp->openOptionsDialog(relevantWindow);
     } else if (key == "github") {
-        QDesktopServices::openUrl(QUrl("https://github.com/catchem88/wView/releases"));
+        QDesktopServices::openUrl(QUrl("https://github.com/catchem88/mithen-view/releases"));
     } else if (key == "about") {
         qvApp->openAboutDialog(relevantWindow);
     } else if (key == "clearrecents") {

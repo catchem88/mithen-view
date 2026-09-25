@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>About wView</string>
+    <string>About MithenView</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

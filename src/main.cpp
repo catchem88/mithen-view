@@ -13,9 +13,9 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("wView");
-    QCoreApplication::setApplicationName("wView-JDP");
-    QCoreApplication::setApplicationVersion(QString::fromLatin1(WVIEW_VERSION));
+    QCoreApplication::setOrganizationName("mithen-view");
+    QCoreApplication::setApplicationName("mithen-view-JDP");
+    QCoreApplication::setApplicationVersion(QString::fromLatin1(MITHEINVIEW_VERSION));
 
     SettingsManager::migrateOldSettings();
 
@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument(QObject::tr("file"), QObject::tr("The file to open."));
     parser.process(app);
 
-    // Single-instance support: check if another wView instance is already running
-    const QString serverName = "wView-single-instance-" + QCoreApplication::organizationName();
+    // Single-instance support: check if another MithenView instance is already running
+    const QString serverName = "mithen-view-single-instance-" + QCoreApplication::organizationName();
     QLocalSocket instanceSocket;
     instanceSocket.connectToServer(serverName);
 

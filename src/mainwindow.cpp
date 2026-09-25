@@ -281,6 +281,15 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
 
 MainWindow::~MainWindow()
 {
+    if (!isClosing)
+    {
+        //A window destroyed without a close event must not leave dangling
+        //cloned actions and an active-windows entry behind
+        qvApp->deleteFromActiveWindows(this);
+        qvApp->getActionManager().untrackClonedActions(contextMenu);
+        qvApp->getActionManager().untrackClonedActions(menuBar());
+        qvApp->getActionManager().untrackClonedActions(virtualMenu);
+    }
     delete ui;
 }
 
@@ -844,7 +853,7 @@ void MainWindow::refreshProperties()
 
 void MainWindow::buildWindowTitle()
 {
-    QString newString = "wView";
+    QString newString = "MithenView";
     if (getCurrentFileDetails().fileInfo.isFile())
     {
         const QVImageCore::FileDetails &fileDetails = getCurrentFileDetails();
@@ -870,7 +879,7 @@ void MainWindow::buildWindowTitle()
         case Qv::TitleBarText::Verbose:
         {
             newString = getZoomLevel() + " - " + getImageIndex() + "/" + getImageCount() + " - " + getFileName() + " - " +
-                        getImageWidth() + "x" + getImageHeight() + " - " + getFileSize() + " - wView";
+                        getImageWidth() + "x" + getImageHeight() + " - " + getFileSize() + " - MithenView";
             break;
         }
         case Qv::TitleBarText::Custom:

@@ -43,6 +43,8 @@ CMakeLists.txt.user*
 # Custom
 *.exe
 .vscode
+.code-workspace
+*.code-workspace
 .ai/
 .qm/
 .kilo/
