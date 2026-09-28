@@ -1670,12 +1670,6 @@ void MainWindow::ocr()
         return;
     }
 
-    if(!QVOcr::isAvailable()) {
-        QMessageBox::warning(this,tr("OCR"),
-            tr("No OCR language is available. Add a language with OCR support in the Windows language settings."));
-        return;
-    }
-
     const QImage image = graphicsView->getCurrentTransformedImage();
     if(image.isNull()) {
         return;
@@ -1701,7 +1695,16 @@ void MainWindow::ocr()
 
         if(result.boxes.isEmpty()) {
             graphicsView->cancelOcr();
-            revealToast(tr("OCR cannot find any text in this image"));
+
+            //QR codes are recognized without an OCR language, so only mention the
+            //missing language when text recognition itself could not run
+            if(!QVOcr::isAvailable()) {
+                QMessageBox::warning(this,tr("OCR"),
+                    tr("No OCR language is available. Add a language with OCR support in the Windows language settings."));
+            }
+            else {
+                revealToast(tr("OCR cannot find any text in this image"));
+            }
             return;
         }
 

@@ -1,5 +1,7 @@
 #include "qvocr.h"
 
+#include "quirc/quirc.h"
+
 #include <QtGlobal>
 #include <QtMath>
 
@@ -21,6 +23,76 @@ namespace
 {
     //Only lines with more than this many characters are reported
     const int minimumTextLength = 3;
+
+    //Decodes QR codes with quirc and appends them as boxes in the coordinates of the given image
+    void decodeQrCodes(const QImage &image,const qreal scale,QList<QVOcrBox> &boxes)
+    {
+        const QImage gray = image.convertToFormat(QImage::Format_Grayscale8);
+        if (gray.isNull())
+        {
+            return;
+        }
+
+        struct quirc *qr = quirc_new();
+        if (qr == nullptr)
+        {
+            return;
+        }
+
+        if (quirc_resize(qr,gray.width(),gray.height()) < 0)
+        {
+            quirc_destroy(qr);
+            return;
+        }
+
+        int width = 0;
+        int height = 0;
+        uint8_t *buffer = quirc_begin(qr,&width,&height);
+        if (buffer != nullptr)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                std::memcpy(buffer + size_t(y) * size_t(width),gray.constScanLine(y),size_t(width));
+            }
+        }
+        quirc_end(qr);
+
+        const int count = quirc_count(qr);
+        for (int i = 0; i < count; i++)
+        {
+            struct quirc_code code;
+            struct quirc_data data;
+            quirc_extract(qr,i,&code);
+            if (quirc_decode(&code,&data) != QUIRC_SUCCESS)
+            {
+                continue;
+            }
+
+            //The box is the bounding rectangle of the code's four corners
+            int left = code.corners[0].x;
+            int top = code.corners[0].y;
+            int right = left;
+            int bottom = top;
+            for (int corner = 1; corner < 4; corner++)
+            {
+                left = qMin(left,code.corners[corner].x);
+                top = qMin(top,code.corners[corner].y);
+                right = qMax(right,code.corners[corner].x);
+                bottom = qMax(bottom,code.corners[corner].y);
+            }
+
+            const QRect rect(qRound(left / scale),qRound(top / scale),
+                qRound((right - left) / scale),qRound((bottom - top) / scale));
+            if (rect.isEmpty())
+            {
+                continue;
+            }
+
+            boxes.append({rect,QString::fromUtf8(reinterpret_cast<const char *>(data.payload),data.payload_len)});
+        }
+
+        quirc_destroy(qr);
+    }
 
 #ifdef WIN32_LOADED
     winrt::Windows::Media::Ocr::OcrEngine createOcrEngine()
@@ -90,13 +162,6 @@ QVOcrResult QVOcr::recognize(const QImage &image)
 #ifdef WIN32_LOADED
     try
     {
-        const winrt::Windows::Media::Ocr::OcrEngine engine = createOcrEngine();
-        if (engine == nullptr)
-        {
-            result.errorMessage = QStringLiteral("no engine");
-            return result;
-        }
-
         //The OCR engine reads BGRA8 pixels only
         const QImage source = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
         const qreal scale = getOcrScale(source.size());
@@ -105,59 +170,66 @@ QVOcrResult QVOcr::recognize(const QImage &image)
             : source.scaled(qRound(source.width() * scale),qRound(source.height() * scale),
                 Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
 
-        const int width = prepared.width();
-        const int height = prepared.height();
-        const int stride = width * 4;
-
-        std::vector<uint8_t> pixels(size_t(stride) * size_t(height));
-        for (int y = 0; y < height; y++)
+        //Text recognition needs an installed OCR language, QR codes do not
+        const winrt::Windows::Media::Ocr::OcrEngine engine = createOcrEngine();
+        if (engine != nullptr)
         {
-            std::memcpy(pixels.data() + size_t(y) * size_t(stride),prepared.constScanLine(y),size_t(stride));
-        }
+            const int width = prepared.width();
+            const int height = prepared.height();
+            const int stride = width * 4;
 
-        const winrt::Windows::Storage::Streams::IBuffer buffer =
-            winrt::Windows::Security::Cryptography::CryptographicBuffer::CreateFromByteArray(
-                winrt::array_view<const uint8_t>(pixels.data(),pixels.data() + pixels.size()));
-        const winrt::Windows::Graphics::Imaging::SoftwareBitmap bitmap =
-            winrt::Windows::Graphics::Imaging::SoftwareBitmap::CreateCopyFromBuffer(buffer,
-                winrt::Windows::Graphics::Imaging::BitmapPixelFormat::Bgra8,width,height,
-                winrt::Windows::Graphics::Imaging::BitmapAlphaMode::Premultiplied);
-
-        try
-        {
-            winrt::init_apartment(winrt::apartment_type::multi_threaded);
-        }
-        catch (...)
-        {
-            //The thread already has an apartment, which is fine
-        }
-
-        const winrt::Windows::Media::Ocr::OcrResult ocrResult = engine.RecognizeAsync(bitmap).get();
-        for (const winrt::Windows::Media::Ocr::OcrLine &line : ocrResult.Lines())
-        {
-            const QString text = QString::fromWCharArray(line.Text().c_str()).trimmed();
-            if (text.length() <= minimumTextLength)
+            std::vector<uint8_t> pixels(size_t(stride) * size_t(height));
+            for (int y = 0; y < height; y++)
             {
-                continue;
+                std::memcpy(pixels.data() + size_t(y) * size_t(stride),prepared.constScanLine(y),size_t(stride));
             }
 
-            //WinRT reports words only, so a line's box is the union of its words
-            QRect lineRect;
-            for (const winrt::Windows::Media::Ocr::OcrWord &word : line.Words())
+            const winrt::Windows::Storage::Streams::IBuffer buffer =
+                winrt::Windows::Security::Cryptography::CryptographicBuffer::CreateFromByteArray(
+                    winrt::array_view<const uint8_t>(pixels.data(),pixels.data() + pixels.size()));
+            const winrt::Windows::Graphics::Imaging::SoftwareBitmap bitmap =
+                winrt::Windows::Graphics::Imaging::SoftwareBitmap::CreateCopyFromBuffer(buffer,
+                    winrt::Windows::Graphics::Imaging::BitmapPixelFormat::Bgra8,width,height,
+                    winrt::Windows::Graphics::Imaging::BitmapAlphaMode::Premultiplied);
+
+            try
             {
-                const winrt::Windows::Foundation::Rect wordRect = word.BoundingRect();
-                const QRect mappedRect(qRound(wordRect.X / scale),qRound(wordRect.Y / scale),
-                    qRound(wordRect.Width / scale),qRound(wordRect.Height / scale));
-                lineRect = lineRect.isNull() ? mappedRect : lineRect.united(mappedRect);
+                winrt::init_apartment(winrt::apartment_type::multi_threaded);
+            }
+            catch (...)
+            {
+                //The thread already has an apartment, which is fine
             }
 
-            if (lineRect.isNull())
+            const winrt::Windows::Media::Ocr::OcrResult ocrResult = engine.RecognizeAsync(bitmap).get();
+            for (const winrt::Windows::Media::Ocr::OcrLine &line : ocrResult.Lines())
             {
-                continue;
-            }
+                const QString text = QString::fromWCharArray(line.Text().c_str()).trimmed();
+                if (text.length() <= minimumTextLength)
+                {
+                    continue;
+                }
 
-            result.boxes.append({lineRect,text});
+                //WinRT reports words only, so a line's box is the union of its words
+                QRect lineRect;
+                for (const winrt::Windows::Media::Ocr::OcrWord &word : line.Words())
+                {
+                    const winrt::Windows::Foundation::Rect wordRect = word.BoundingRect();
+                    const QRect mappedRect(qRound(wordRect.X / scale),qRound(wordRect.Y / scale),
+                        qRound(wordRect.Width / scale),qRound(wordRect.Height / scale));
+                    lineRect = lineRect.isNull() ? mappedRect : lineRect.united(mappedRect);
+                }
+
+                if (lineRect.isNull())
+                {
+                    continue;
+                }
+
+                result.boxes.append({lineRect,text});
+            }
         }
+
+        decodeQrCodes(prepared,scale,result.boxes);
 
         result.isSuccessful = true;
     }

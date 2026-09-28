@@ -10,6 +10,7 @@
 
 #include "qvapplication.h"
 #include "qvimageloader.h"
+#include "qvocr.h"
 
 class ImageLoaderTests : public QObject
 {
@@ -42,6 +43,7 @@ private slots:
     void testClonedActionsUntracked();
     void testOcrOverlayState();
     void testNavigationZoomAfterSmallImage();
+    void testQrCodeRecognition();
 };
 
 static QString createTestImage(const QTemporaryDir &dir, const QString &name, const QColor color)
@@ -840,6 +842,31 @@ void ActionManagerTests::testNavigationZoomAfterSmallImage()
     QTRY_COMPARE(files.size(), 2);
     QTRY_VERIFY(view->getCalculatedZoomMode() == view->getDefaultCalculatedZoomMode());
     QVERIFY(view->getZoomLevel() < 1.0);
+}
+
+void ActionManagerTests::testQrCodeRecognition()
+{
+    //A QR code generated for "MithenView QR test 12345", embedded to keep the test self-contained
+    const QByteArray png = QByteArray::fromBase64("iVBORw0KGgoAAAANSUhEUgAAAQgAAAEIAQAAAACLjVdSAAAA6klEQVR42u1Z2w7DUAgi+/9/Zuk8iluyNHsdnDa9GF5K0IMWvFsIIogggviOQK3rDRWbCPnA3fonBEQbzlnETNySj+vhJYu5nog3HyxxhI/++g6689GsFBFwrx9SRR/W+4t2XxCfu7RnvlSyYBVUZz6KiiHFvX60VZUdax9iysfx6lAxVR1x1cdwgvfGx1MfLYjOFJzMsfVj8qXkbnad9SGPSiWSqT9VjqC14l1PT0nleBFvfazUWRpJf1vFhHTOlzUfA9bNnQ/NP1ZL5z0fazNCMPOxtiJvht15Pgb9esl8LP/ngggiiJ8QT31KLMCDQVc9AAAAAElFTkSuQmCC");
+
+    QImage image;
+    QVERIFY(image.loadFromData(png,"PNG"));
+    QVERIFY(!image.isNull());
+
+    const QVOcrResult result = QVOcr::recognize(image);
+    QVERIFY(result.isSuccessful);
+
+    bool found = false;
+    for (const QVOcrBox &box : result.boxes)
+    {
+        if (box.text == QStringLiteral("MithenView QR test 12345"))
+        {
+            found = true;
+            QVERIFY(image.rect().contains(box.rect));
+            break;
+        }
+    }
+    QVERIFY2(found,"the QR payload was not decoded");
 }
 
 int main(int argc, char *argv[])

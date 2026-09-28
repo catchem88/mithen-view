@@ -22,7 +22,11 @@ SOURCES += \
     $$PWD/scrollhelper.cpp \
     $$PWD/settingsmanager.cpp \
     $$PWD/shortcutmanager.cpp \
-    $$PWD/simplefonticonengine.cpp
+    $$PWD/simplefonticonengine.cpp \
+    $$PWD/quirc/quirc.c \
+    $$PWD/quirc/decode.c \
+    $$PWD/quirc/identify.c \
+    $$PWD/quirc/version_db.c
 
 win32:!CONFIG(NO_WIN32):SOURCES += $$PWD/qvwin32functions.cpp
 
@@ -50,7 +54,9 @@ HEADERS += \
     $$PWD/scrollhelper.h \
     $$PWD/settingsmanager.h \
     $$PWD/shortcutmanager.h \
-    $$PWD/simplefonticonengine.h
+    $$PWD/simplefonticonengine.h \
+    $$PWD/quirc/quirc.h \
+    $$PWD/quirc/quirc_internal.h
 
 win32:!CONFIG(NO_WIN32):HEADERS += $$PWD/qvwin32functions.h
 

@@ -1,6 +1,6 @@
 QT += core testlib gui network widgets
 
-VERSION = 1.1.0
+VERSION = 1.2.0
 DEFINES += MITHEINVIEW_VERSION=\\\"$$VERSION\\\"
 
 CONFIG += qt console warn_on depend_includepath testcase
