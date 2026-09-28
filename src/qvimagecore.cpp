@@ -11,6 +11,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QRandomGenerator>
+#include <QtConcurrent/QtConcurrentRun>
 
 QVImageCore::QVImageCore(QObject *parent) : QObject(parent)
 {
@@ -58,6 +59,22 @@ QVImageCore::QVImageCore(QObject *parent) : QObject(parent)
         emit sortParametersChanged();
     });
 
+    //The folder list is built on a worker thread so a large folder (and the
+    //Explorer-order query) cannot freeze the UI while an image loads. setFuture
+    //replaces the watched future, so a superseded build is silently discarded.
+    connect(&folderInfoWatcher, &QFutureWatcher<QVFileEnumerator::CompatibleFileList>::finished, this, [this]{
+        if (folderInfoPendingDir.isEmpty())
+            return;
+
+        const QString builtDir = folderInfoPendingDir;
+        currentFileDetails.folderFileInfoList = folderInfoWatcher.result();
+        appliedFolderInfoDir = builtDir;
+        folderInfoPendingDir.clear();
+        currentFileDetails.updateLoadedIndexInFolder();
+        refreshDesiredImages();
+        emit folderInfoUpdated();
+    });
+
     for (auto const &screen : QGuiApplication::screens())
     {
         const QSize adjustedSize = screen->size() * screen->devicePixelRatio();
@@ -93,7 +110,12 @@ void QVImageCore::loadFile(const QString &fileName, const bool isReloading, cons
 
     if (fileInfo.isDir())
     {
-        updateFolderInfo(absolutePath);
+        //A directory open has no image to show while its list builds, so build it
+        //synchronously instead of through the async worker path
+        folderInfoPendingDir.clear();
+        folderInfoDirty = false;
+        currentFileDetails.folderFileInfoList = fileEnumerator.getCompatibleFiles(absolutePath);
+        appliedFolderInfoDir = absolutePath;
         if (currentFileDetails.folderFileInfoList.isEmpty())
             closeImage(true);
         else
@@ -207,6 +229,12 @@ void QVImageCore::closeImage(const bool stayInDir)
         emptyDetails.folderFileInfoList = currentFileDetails.folderFileInfoList;
         emptyDetails.loadedIndexInFolder = currentFileDetails.loadedIndexInFolder;
     }
+    else
+    {
+        //Discard any in-flight folder build; its result no longer belongs to this context
+        folderInfoPendingDir.clear();
+        appliedFolderInfoDir.clear();
+    }
     currentFileDetails = emptyDetails;
     loadEmptyPixmap();
 }
@@ -224,6 +252,11 @@ QVImageCore::GoToFileResult QVImageCore::goToFile(const Qv::GoToFileMode mode, c
 {
     GoToFileResult result;
     if (loadInProgress)
+        return result;
+
+    //Only navigate once the folder list of the current file's folder has been
+    //applied; a worker build for it may still be running right after an open
+    if (!isFolderInfoCurrent())
         return result;
 
     bool shouldRetryFolderInfoUpdate = false;
@@ -334,12 +367,24 @@ void QVImageCore::updateFolderInfo(QString dirPath)
             return;
     }
 
-    // Get file listing
-    currentFileDetails.folderFileInfoList = fileEnumerator.getCompatibleFiles(dirPath);
-    folderInfoDirty = false;
+    //The same folder is already being built
+    if (folderInfoPendingDir == dirPath)
+        return;
 
-    // Set current file index variable
-    currentFileDetails.updateLoadedIndexInFolder();
+    folderInfoDirty = false;
+    folderInfoPendingDir = dirPath;
+    folderInfoWatcher.setFuture(QtConcurrent::run([this, dirPath]{
+        return fileEnumerator.getCompatibleFiles(dirPath);
+    }));
+}
+
+bool QVImageCore::isFolderInfoCurrent() const
+{
+    if (appliedFolderInfoDir.isEmpty())
+        return false;
+
+    return QDir::cleanPath(currentFileDetails.fileInfo.path())
+        .compare(QDir::cleanPath(appliedFolderInfoDir), Qt::CaseInsensitive) == 0;
 }
 
 QList<QVImageLoader::DesiredImage> QVImageCore::getDesiredImages(const bool includePreloads) const
@@ -348,7 +393,7 @@ QList<QVImageLoader::DesiredImage> QVImageCore::getDesiredImages(const bool incl
     QList<QVImageLoader::DesiredImage> desiredImages {{absoluteTargetPath, 0}};
 
     const auto &fileList = currentFileDetails.folderFileInfoList;
-    if (!includePreloads || fileList.isEmpty() || preloadingMode == Qv::PreloadMode::Disabled)
+    if (!includePreloads || fileList.isEmpty() || preloadingMode == Qv::PreloadMode::Disabled || !isFolderInfoCurrent())
         return desiredImages;
 
     const int loadedIndex = currentFileDetails.loadedIndexInFolder;

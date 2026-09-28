@@ -148,6 +148,7 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
         graphicsView->showOcrToast(tr("Text copied"));
     });
     connect(graphicsView, &QVGraphicsView::ocrStateChanged, this, &MainWindow::disableActions);
+    connect(graphicsView, &QVGraphicsView::folderInfoUpdated, this, &MainWindow::disableActions);
     connect(graphicsView, &QVGraphicsView::calculatedZoomModeChanged, this, &MainWindow::syncCalculatedZoomMode);
     connect(graphicsView, &QVGraphicsView::navigationResetsZoomChanged, this, &MainWindow::syncNavigationResetsZoom);
     connect(graphicsView, &QVGraphicsView::sortParametersChanged, this, &MainWindow::syncSortParameters);

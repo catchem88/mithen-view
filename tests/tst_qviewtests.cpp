@@ -793,6 +793,10 @@ void ActionManagerTests::testOcrOverlayState()
     QVERIFY(window.isVisible());
     for (auto *action : qvApp->getActionManager().getAllClonesOfAction("copyocrtext", &window))
         QVERIFY(!action->isEnabled());
+    //The folder list is built on a worker thread, so the folder-dependent actions are
+    //re-enabled once the applied list arrives
+    QTRY_VERIFY(!qvApp->getActionManager().getAllClonesOfAction("nextfile", &window).isEmpty() &&
+        qvApp->getActionManager().getAllClonesOfAction("nextfile", &window).at(0)->isEnabled());
     for (auto *action : qvApp->getActionManager().getAllClonesOfAction("nextfile", &window))
         QVERIFY(action->isEnabled());
     //Actions without a disable rule are restored as well

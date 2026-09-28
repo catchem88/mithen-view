@@ -160,6 +160,9 @@ signals:
 
     void sortParametersChanged();
 
+    //Emitted when the folder list built on a worker thread has been applied
+    void folderInfoUpdated();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 

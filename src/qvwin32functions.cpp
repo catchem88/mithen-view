@@ -15,6 +15,7 @@
 #include <QVersionNumber>
 #include <QXmlStreamReader>
 #include <QWindow>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -243,20 +244,23 @@ QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
     // Normalize the target folder path for comparison
     const QString normalizedFolderPath = QDir::toNativeSeparators(folderPath).toLower();
 
-    // Iterate through windows to find one showing our folder
-    for (long i = 0; i < count; i++)
-    {
+    //Resolves one Explorer window and returns its sort order when that window shows the
+    //target folder. IFolderView::Items() can report a stale order (items added while the
+    //view is open are appended until it re-sorts), so query items by index instead, which
+    //reflects the order actually shown in Explorer.
+    const auto resolveWindow = [pShellWindows, &normalizedFolderPath](const long windowIndex) -> QStringList {
+        QStringList windowSortOrder;
+
         VARIANT vIndex;
         VariantInit(&vIndex);
         vIndex.vt = VT_I4;
-        vIndex.lVal = i;
+        vIndex.lVal = windowIndex;
 
         IDispatch *pDispatch = nullptr;
-        hr = pShellWindows->Item(vIndex, &pDispatch);
+        HRESULT hr = pShellWindows->Item(vIndex, &pDispatch);
         VariantClear(&vIndex);
-
         if (FAILED(hr) || !pDispatch)
-            continue;
+            return windowSortOrder;
 
         // Query for IWebBrowser2
         IWebBrowser2 *pBrowser = nullptr;
@@ -264,7 +268,7 @@ QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
         if (FAILED(hr) || !pBrowser)
         {
             pDispatch->Release();
-            continue;
+            return windowSortOrder;
         }
 
         // Get the document
@@ -274,7 +278,7 @@ QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
         {
             pBrowser->Release();
             pDispatch->Release();
-            continue;
+            return windowSortOrder;
         }
 
         // Get the shell browser via IServiceProvider; the document does not expose IShellBrowser directly
@@ -313,16 +317,10 @@ QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
                         WCHAR folderPathBuf[MAX_PATH];
                         if (SHGetPathFromIDListW(pidl, folderPathBuf))
                         {
-                            QString explorerPath = QString::fromWCharArray(folderPathBuf);
+                            const QString explorerPath = QString::fromWCharArray(folderPathBuf);
                             // Normalize paths for comparison
-                            QString normalizedExplorerPath = QDir::toNativeSeparators(explorerPath).toLower();
-
-                            if (normalizedExplorerPath == normalizedFolderPath)
+                            if (QDir::toNativeSeparators(explorerPath).toLower() == normalizedFolderPath)
                             {
-                                // Found the matching window, get the sort order. IFolderView::Items()
-                                // can report a stale order (items added while the view is open are
-                                // appended until it re-sorts), so query items by index instead, which
-                                // reflects the order actually shown in Explorer.
                                 int itemCount = 0;
                                 hr = pFolderView->ItemCount(SVGIO_ALLVIEW, &itemCount);
                                 if (SUCCEEDED(hr))
@@ -340,7 +338,7 @@ QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
                                         WCHAR filePath[MAX_PATH];
                                         if (SHGetPathFromIDListW(pidlToResolve, filePath))
                                         {
-                                            sortOrder.append(QString::fromWCharArray(filePath));
+                                            windowSortOrder.append(QString::fromWCharArray(filePath));
                                         }
                                         if (pidlFull)
                                             CoTaskMemFree(pidlFull);
@@ -361,9 +359,71 @@ QStringList QVWin32Functions::getExplorerSortOrder(const QString &folderPath)
         pDocDispatch->Release();
         pBrowser->Release();
         pDispatch->Release();
+        return windowSortOrder;
+    };
 
-        if (!sortOrder.isEmpty())
+    //Cheap pre-filter: locate the window showing our folder via IWebBrowser2::get_LocationURL,
+    //one COM call per window, instead of resolving the whole shell-view chain for every
+    //window. Views that do not report a plain file URL (libraries, search results, ...) are
+    //left to the full fallback walk below.
+    long candidateIndex = -1;
+    for (long i = 0; i < count; i++)
+    {
+        VARIANT vIndex;
+        VariantInit(&vIndex);
+        vIndex.vt = VT_I4;
+        vIndex.lVal = i;
+
+        IDispatch *pDispatch = nullptr;
+        hr = pShellWindows->Item(vIndex, &pDispatch);
+        VariantClear(&vIndex);
+        if (FAILED(hr) || !pDispatch)
+            continue;
+
+        IWebBrowser2 *pBrowser = nullptr;
+        hr = pDispatch->QueryInterface(IID_IWebBrowser2, (void**)&pBrowser);
+        if (FAILED(hr) || !pBrowser)
+        {
+            pDispatch->Release();
+            continue;
+        }
+
+        BSTR locationUrl = nullptr;
+        if (SUCCEEDED(pBrowser->get_LocationURL(&locationUrl)) && locationUrl)
+        {
+            const QString urlString = QString::fromWCharArray(locationUrl);
+            SysFreeString(locationUrl);
+            const QUrl url = QUrl::fromEncoded(urlString.toUtf8());
+            if (url.isLocalFile() &&
+                QDir::toNativeSeparators(url.toLocalFile()).toLower() == normalizedFolderPath)
+            {
+                candidateIndex = i;
+            }
+        }
+        pBrowser->Release();
+        pDispatch->Release();
+
+        if (candidateIndex != -1)
             break;
+    }
+
+    //Resolve the candidate window first; if that yields no order (stale URL, special
+    //view, ...) fall back to resolving every window as before
+    if (candidateIndex != -1)
+    {
+        sortOrder = resolveWindow(candidateIndex);
+    }
+
+    if (sortOrder.isEmpty())
+    {
+        for (long i = 0; i < count; i++)
+        {
+            if (i == candidateIndex)
+                continue;
+            sortOrder = resolveWindow(i);
+            if (!sortOrder.isEmpty())
+                break;
+        }
     }
 
     pShellWindows->Release();

@@ -43,6 +43,7 @@ QVGraphicsView::QVGraphicsView(QWidget *parent) : QGraphicsView(parent)
     connect(&imageCore, &QVImageCore::fileChanged, this, &QVGraphicsView::postLoad);
     connect(&imageCore, &QVImageCore::imageChanged, this, &QVGraphicsView::imageChanged);
     connect(&imageCore, &QVImageCore::sortParametersChanged, this, [this]{emit sortParametersChanged();});
+    connect(&imageCore, &QVImageCore::folderInfoUpdated, this, [this]{emit folderInfoUpdated();});
 
     expensiveScaleTimer = new QTimer(this);
     expensiveScaleTimer->setSingleShot(true);

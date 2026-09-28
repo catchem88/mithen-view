@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QTimer>
 #include <QColorSpace>
+#include <QFutureWatcher>
 
 class QVImageCore : public QObject
 {
@@ -89,6 +90,9 @@ signals:
 
     void sortParametersChanged();
 
+    //Emitted when a folder list built on a worker thread has been applied
+    void folderInfoUpdated();
+
 protected:
     void loadPixmap(const ReadData &readData);
     void loadEmptyPixmap();
@@ -104,9 +108,18 @@ private:
 
     void applyImageEdit(const QImage &newImage);
 
+    //Whether the applied folder list belongs to the folder of the currently loaded file
+    bool isFolderInfoCurrent() const;
+
     QVFileEnumerator fileEnumerator {this};
     QVImageLoader imageLoader {this};
     QTimer preloadDebounceTimer {this};
+
+    //The folder list is built on a worker thread so a large folder (and the
+    //Explorer-order query) cannot freeze the UI while an image loads
+    QFutureWatcher<QVFileEnumerator::CompatibleFileList> folderInfoWatcher {this};
+    QString appliedFolderInfoDir;
+    QString folderInfoPendingDir;
 
     QPixmap loadedPixmap;
     QVMovie loadedMovie;
