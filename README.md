@@ -13,6 +13,7 @@ MithenView is a lightweight image viewer, with basic editing feature & OCR for W
 * Follows Windows explorer sorting
 * Basic editing functions (Rotate, Mirror, Flip, Crop, Quick Resize)
 * OCR - Using native OcrEngine Class (Windows.Media.Ocr - WinRT Build 10240)
+* QR code scanning - built in to the OCR feature
 * Support Windows thumbnails (workaround for pesky Google Drive blocks PNG thumbnails on windows explorer)
 * Adds window size modes: `Auto` (default), `Maximize`, or `Fullscreen`.
 * Adds window positioning modes: `Centered` (default) or `Remember last position`, with multi-monitor and per-monitor DPI awareness.
