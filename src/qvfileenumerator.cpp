@@ -111,7 +111,9 @@ QVFileEnumerator::CompatibleFileList QVFileEnumerator::getCompatibleFiles(const 
     );
 
 #ifdef WIN32_LOADED
-    if (sortMode == Qv::SortMode::Name && !sortDescending)
+    //Follow Explorer's visible order for this folder for any sort configuration the
+    //user has set there; only the app-specific Random mode keeps its own shuffle
+    if (sortMode != Qv::SortMode::Random)
     {
         const QStringList explorerOrder = QVWin32Functions::getExplorerSortOrder(dirPath);
         if (!explorerOrder.isEmpty())
