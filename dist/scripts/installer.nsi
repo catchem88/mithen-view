@@ -211,6 +211,27 @@ Section "Install"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "Publisher" "MithenApps"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MithenView" "NoRepair" 1
+
+    ; Repair the Microsoft Edge HTML Document ProgID (HKCR\MSEdgeHTM). Cleanup and
+    ; debloat tools can strip its Application block, after which Windows hides the
+    ; "Always use this app" entry in the Open with menu for the extensions Edge owns
+    ; (.svg, .htm, .html, ...) and the default app can no longer be changed. Clearing
+    ; the key's values and re-importing the known-good definition restores the
+    ; association UI. Mirrors the fix at
+    ; https://www.winhelponline.com/blog/cant-change-default-app-svg-files/
+    ; Only applied when Edge is actually installed, so no stray ProgID is created.
+    IfFileExists "$PROGRAMFILES32\Microsoft\Edge\Application\msedge.exe" 0 mvedgeProgIdDone
+        nsExec::Exec '"$WINDIR\Sysnative\reg.exe" delete "HKCR\MSEdgeHTM" /va /f'
+        Pop $0
+        WriteRegStr HKCR "MSEdgeHTM" "" "Microsoft Edge HTML Document"
+        WriteRegStr HKCR "MSEdgeHTM" "AppUserModelId" "MSEdge"
+        WriteRegStr HKCR "MSEdgeHTM\Application" "AppUserModelId" "MSEdge"
+        WriteRegStr HKCR "MSEdgeHTM\Application" "ApplicationIcon" "$PROGRAMFILES32\Microsoft\Edge\Application\msedge.exe,0"
+        WriteRegStr HKCR "MSEdgeHTM\Application" "ApplicationName" "Microsoft Edge"
+        WriteRegStr HKCR "MSEdgeHTM\Application" "ApplicationDescription" "Browse the web"
+        WriteRegStr HKCR "MSEdgeHTM\Application" "ApplicationCompany" "Microsoft Corporation"
+        WriteRegStr HKCR "MSEdgeHTM\DefaultIcon" "" "$PROGRAMFILES32\Microsoft\Edge\Application\msedge.exe,0"
+    mvedgeProgIdDone:
 SectionEnd
 
 Section "Uninstall"

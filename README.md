@@ -28,6 +28,7 @@ MithenView is a lightweight image viewer, with basic editing feature & OCR for W
 * Streamlines the preferences: menubar enabled by default, verbose titlebar by default (no titlebar text in fullscreen), menu icons always shown, slideshow keep-on-top disabled by default, and deprecated or non-Windows settings removed.
 * Removes the update checker. Download the newest installer if you want to update.
 * Loads SVG files at their intrinsic size and re-renders them at the target resolution when zoomed, so they no longer pixelate.
+* Fixes SVG association cannot be changed from Microsoft Edge
 * Fixes single-instance activation (no taskbar flashing or inactive titlebar when opening an image from Windows File Explorer).
 * And many more!
 ## Screenshot
