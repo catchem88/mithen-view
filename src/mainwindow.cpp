@@ -1086,10 +1086,16 @@ void MainWindow::setWindowSize(const bool isReapplying,const bool isExplicitRequ
         }
     }
 
+    //Non-client chrome (title bar and borders) that surrounds the client area, so an
+    //image that only fits when that chrome is ignored still counts as bigger than the
+    //screen and opens maximized. Zero when the title bar is hidden or not yet created.
+    const int windowChromeWidth = qMax(0, frameGeometry().width() - width());
+    const int windowChromeHeight = qMax(0, frameGeometry().height() - height());
+
     //Check if image is bigger than the available screen in either dimension
     const bool isImageBiggerThanScreen =
-        nativeSize.width() > qRound(screenSize.width() * scaleDpi) ||
-        (nativeSize.height() + qRound(menuHeight * scaleDpi)) > qRound(screenSize.height() * scaleDpi);
+        (nativeSize.width() + qRound(windowChromeWidth * scaleDpi)) > qRound(screenSize.width() * scaleDpi) ||
+        (nativeSize.height() + qRound(menuHeight * scaleDpi) + qRound(windowChromeHeight * scaleDpi)) > qRound(screenSize.height() * scaleDpi);
 
     if(windowSizeMode == Qv::WindowSizeMode::Fullscreen) {
         if(!windowState().testFlag(Qt::WindowFullScreen)) {

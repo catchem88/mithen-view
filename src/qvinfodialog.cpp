@@ -9,6 +9,9 @@ static int getGcd (int a, int b) {
     return (b == 0) ? a : getGcd(b, a % b);
 }
 
+//Above this term count the reduced ratio is no longer readable (it equals the resolution)
+static constexpr int kMaxRatioTerm = 50;
+
 QVInfoDialog::QVInfoDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QVInfoDialog)
@@ -67,7 +70,20 @@ void QVInfoDialog::updateInfo()
         const qreal megapixels = (width * height) / 1000000.0;
         const int gcd = getGcd(width, height);
         ui->dimensionsLabel->setText(tr("%1 x %2 (%3 MP)").arg(QString::number(width), QString::number(height), QString::number(megapixels, 'f', 1)));
-        ui->ratioLabel->setText(QString::number(width / gcd) + ":" + QString::number(height / gcd));
+
+        //Show a reduced ratio while its terms stay readable (16:9, 4:3, ...); once they
+        //grow past the cutoff the reduced ratio is effectively the resolution again
+        //(e.g. a coprime 1911x1000), so fall back to a decimal ratio instead.
+        const int ratioWidth = width / gcd;
+        const int ratioHeight = height / gcd;
+        if (ratioWidth <= kMaxRatioTerm && ratioHeight <= kMaxRatioTerm)
+        {
+            ui->ratioLabel->setText(QString::number(ratioWidth) + ":" + QString::number(ratioHeight));
+        }
+        else
+        {
+            ui->ratioLabel->setText(QString::number(static_cast<qreal>(width) / height, 'f', 2) + ":1");
+        }
     }
     setFrameInfo(frameCount, frameNumber);
     window()->adjustSize();
