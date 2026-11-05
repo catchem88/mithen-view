@@ -9,359 +9,374 @@
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="204"/>
+        <location filename="../src/actionmanager.cpp" line="207"/>
         <source>&amp;Edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="240"/>
+        <location filename="../src/actionmanager.cpp" line="243"/>
         <source>&amp;View</source>
         <translation>表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="265"/>
+        <location filename="../src/actionmanager.cpp" line="268"/>
         <source>&amp;Transform</source>
         <translation>変換</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="288"/>
+        <location filename="../src/actionmanager.cpp" line="291"/>
         <source>&amp;Resize</source>
         <translation>リサイズ</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="308"/>
+        <location filename="../src/actionmanager.cpp" line="311"/>
         <source>&amp;Tools</source>
         <translation>ツール</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="335"/>
+        <location filename="../src/actionmanager.cpp" line="338"/>
         <source>&amp;Help</source>
         <translation>ヘルプ</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="352"/>
+        <location filename="../src/actionmanager.cpp" line="355"/>
         <source>Open &amp;Recent</source>
         <translation>最近使用したファイルを開く</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="367"/>
-        <location filename="../src/actionmanager.cpp" line="525"/>
+        <location filename="../src/actionmanager.cpp" line="370"/>
+        <location filename="../src/actionmanager.cpp" line="528"/>
         <source>Empty</source>
         <translation>空</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="515"/>
+        <location filename="../src/actionmanager.cpp" line="518"/>
         <source>Open With</source>
         <translation>別のアプリで開く</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="733"/>
+        <location filename="../src/actionmanager.cpp" line="742"/>
         <source>&amp;Quit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="738"/>
+        <location filename="../src/actionmanager.cpp" line="747"/>
         <source>Exit</source>
         <extracomment>The quit action is called &quot;Exit&quot; on windows</extracomment>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="741"/>
+        <location filename="../src/actionmanager.cpp" line="750"/>
         <source>New Window</source>
         <translation>新しいウインドウ</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="744"/>
+        <location filename="../src/actionmanager.cpp" line="753"/>
         <source>&amp;Open...</source>
         <translation>開く...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="747"/>
+        <location filename="../src/actionmanager.cpp" line="756"/>
         <source>Open &amp;URL...</source>
         <translation>URLから開く...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="750"/>
+        <location filename="../src/actionmanager.cpp" line="759"/>
         <source>Re&amp;load File</source>
         <translation>ファイルを再読み込み</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="754"/>
+        <location filename="../src/actionmanager.cpp" line="763"/>
+        <source>&amp;Print...</source>
+        <translation>印刷...</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="767"/>
         <source>Close Window</source>
         <translation>ウインドウを閉じる</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="758"/>
+        <location filename="../src/actionmanager.cpp" line="771"/>
         <source>Close All</source>
         <extracomment>Close all windows, that is</extracomment>
         <translation>すべて閉じる</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="761"/>
+        <location filename="../src/actionmanager.cpp" line="774"/>
         <source>Open Containing &amp;Folder</source>
         <translation>ファイルの場所を開く</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="763"/>
+        <location filename="../src/actionmanager.cpp" line="776"/>
         <source>Show in E&amp;xplorer</source>
         <extracomment>Open containing folder on windows</extracomment>
         <translation>エクスプローラーで表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="767"/>
+        <location filename="../src/actionmanager.cpp" line="780"/>
         <source>Show File &amp;Info</source>
         <translation>ファイル情報を表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="771"/>
+        <location filename="../src/actionmanager.cpp" line="784"/>
         <source>&amp;Move to Trash</source>
         <translation>ゴミ箱に移動</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="773"/>
+        <location filename="../src/actionmanager.cpp" line="786"/>
         <source>&amp;Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="778"/>
+        <location filename="../src/actionmanager.cpp" line="791"/>
         <source>Delete Permanently</source>
         <translation>完全に削除</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="782"/>
+        <location filename="../src/actionmanager.cpp" line="795"/>
         <source>&amp;Restore from Trash</source>
         <translation>ゴミ箱から戻す</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="784"/>
+        <location filename="../src/actionmanager.cpp" line="797"/>
         <source>&amp;Undo Delete</source>
         <translation>削除を元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="789"/>
+        <location filename="../src/actionmanager.cpp" line="802"/>
         <source>&amp;Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="793"/>
+        <location filename="../src/actionmanager.cpp" line="806"/>
         <source>&amp;Paste</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="796"/>
+        <location filename="../src/actionmanager.cpp" line="809"/>
         <source>R&amp;ename...</source>
         <translation>名前の変更...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="800"/>
+        <location filename="../src/actionmanager.cpp" line="813"/>
         <source>Zoom &amp;In</source>
         <translation>拡大</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="804"/>
+        <location filename="../src/actionmanager.cpp" line="817"/>
         <source>Zoom &amp;Out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="808"/>
+        <location filename="../src/actionmanager.cpp" line="821"/>
         <source>Set Zoom &amp;Level...</source>
         <translation>ズーム倍率を設定...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="812"/>
+        <location filename="../src/actionmanager.cpp" line="825"/>
         <source>Ori&amp;ginal Size</source>
         <translation>等倍</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="816"/>
+        <location filename="../src/actionmanager.cpp" line="829"/>
         <source>&amp;Zoom to Fit</source>
         <translation>全体表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="821"/>
+        <location filename="../src/actionmanager.cpp" line="834"/>
         <source>&amp;Default Zoom</source>
         <translation>デフォルトのズーム</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="825"/>
+        <location filename="../src/actionmanager.cpp" line="838"/>
         <source>Fill &amp;Window</source>
         <translation>ウィンドウいっぱいに表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="830"/>
+        <location filename="../src/actionmanager.cpp" line="843"/>
         <source>&amp;Navigation Resets Zoom</source>
         <translation>ナビゲーションでズームをリセット</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="835"/>
+        <location filename="../src/actionmanager.cpp" line="848"/>
         <source>Rotate &amp;Right</source>
         <translation>右に回転</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="839"/>
+        <location filename="../src/actionmanager.cpp" line="852"/>
         <source>Rotate &amp;Left</source>
         <translation>左に回転</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="843"/>
+        <location filename="../src/actionmanager.cpp" line="856"/>
         <source>&amp;Mirror</source>
         <translation>左右反転</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="847"/>
+        <location filename="../src/actionmanager.cpp" line="860"/>
         <source>&amp;Flip</source>
         <translation>上下反転</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="851"/>
+        <location filename="../src/actionmanager.cpp" line="864"/>
         <source>Reset &amp;Transformation</source>
         <translation>変換をリセット</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="855"/>
+        <location filename="../src/actionmanager.cpp" line="868"/>
         <source>Re&amp;vert Transformation</source>
         <translation>変換を元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="859"/>
+        <location filename="../src/actionmanager.cpp" line="872"/>
         <source>&amp;Crop</source>
         <translation>切り抜き</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="912"/>
+        <location filename="../src/actionmanager.cpp" line="925"/>
         <source>&amp;OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="916"/>
+        <location filename="../src/actionmanager.cpp" line="929"/>
         <source>Copy OCR &amp;Text</source>
         <translation>OCR テキストをコピー</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="961"/>
+        <location filename="../src/actionmanager.cpp" line="937"/>
+        <source>&amp;Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="941"/>
+        <source>Save &amp;As...</source>
+        <translation>名前を付けて保存...</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="982"/>
         <source>&amp;GitHub</source>
         <translation>GitHub</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="870"/>
+        <location filename="../src/actionmanager.cpp" line="883"/>
         <source>Scroll &amp;Up</source>
         <translation>上へスクロール</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="865"/>
+        <location filename="../src/actionmanager.cpp" line="878"/>
         <source>%1% Size</source>
         <translation>%1% にリサイズ</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="874"/>
+        <location filename="../src/actionmanager.cpp" line="887"/>
         <source>Scroll &amp;Down</source>
         <translation>下へスクロール</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="878"/>
+        <location filename="../src/actionmanager.cpp" line="891"/>
         <source>Window On To&amp;p</source>
         <translation>ウィンドウを最前面に表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="883"/>
+        <location filename="../src/actionmanager.cpp" line="896"/>
         <source>Hide Title&amp;bar</source>
         <translation>タイトルバーを隠す</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="887"/>
+        <location filename="../src/actionmanager.cpp" line="900"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>フルスクリーンで表示</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="892"/>
+        <location filename="../src/actionmanager.cpp" line="905"/>
         <source>&amp;First File</source>
         <translation>最初のファイル</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="896"/>
+        <location filename="../src/actionmanager.cpp" line="909"/>
         <source>Previous Fi&amp;le</source>
         <translation>前のファイル</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="900"/>
+        <location filename="../src/actionmanager.cpp" line="913"/>
         <source>&amp;Next File</source>
         <translation>次のファイル</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="904"/>
+        <location filename="../src/actionmanager.cpp" line="917"/>
         <source>Las&amp;t File</source>
         <translation>最後のファイル</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="908"/>
+        <location filename="../src/actionmanager.cpp" line="921"/>
         <source>&amp;Random File</source>
         <translation>ランダムなファイル</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="920"/>
+        <location filename="../src/actionmanager.cpp" line="933"/>
         <source>Save Frame &amp;As...</source>
         <translation>フレームを別名で保存...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="924"/>
+        <location filename="../src/actionmanager.cpp" line="945"/>
         <source>Pa&amp;use</source>
         <translation>一時停止</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="928"/>
+        <location filename="../src/actionmanager.cpp" line="949"/>
         <source>&amp;Next Frame</source>
         <translation>次のフレーム</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="932"/>
+        <location filename="../src/actionmanager.cpp" line="953"/>
         <source>&amp;Previous Frame</source>
         <translation>前のフレーム</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="936"/>
+        <location filename="../src/actionmanager.cpp" line="957"/>
         <source>&amp;Decrease Speed</source>
         <translation>速度を下げる</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="940"/>
+        <location filename="../src/actionmanager.cpp" line="961"/>
         <source>&amp;Reset Speed</source>
         <translation>速度を元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="944"/>
+        <location filename="../src/actionmanager.cpp" line="965"/>
         <source>&amp;Increase Speed</source>
         <translation>速度を上げる</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="948"/>
+        <location filename="../src/actionmanager.cpp" line="969"/>
         <source>Start S&amp;lideshow</source>
         <translation>スライドショーを開始</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="953"/>
+        <location filename="../src/actionmanager.cpp" line="974"/>
         <source>&amp;Settings</source>
         <extracomment>This is for the options dialog on windows</extracomment>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="957"/>
+        <location filename="../src/actionmanager.cpp" line="978"/>
         <source>&amp;About</source>
         <translation>詳細</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="965"/>
+        <location filename="../src/actionmanager.cpp" line="986"/>
         <source>Clear &amp;Menu</source>
         <extracomment>This is for clearing the recents menu</extracomment>
         <translation>履歴を消去</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="969"/>
+        <location filename="../src/actionmanager.cpp" line="990"/>
         <source>Other Application...</source>
         <extracomment>Open with other program for windows</extracomment>
         <translation>他のアプリケーション...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="970"/>
+        <location filename="../src/actionmanager.cpp" line="991"/>
         <source>Choose another app</source>
         <translation>他のアプリケーションで開く</translation>
     </message>
@@ -369,7 +384,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="457"/>
+        <location filename="../src/mainwindow.cpp" line="472"/>
         <source>Error occurred opening
 %3
 %2 (Error %1)</source>
@@ -378,220 +393,220 @@
 %2 (エラー %1)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="487"/>
         <source>Exit F&amp;ull Screen</source>
         <translation>フルスクリーンの解除</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="487"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>フルスクリーンで表示</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Res&amp;ume</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Pa&amp;use</source>
         <translation>一時停止</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1006"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Show Title&amp;bar</source>
         <translation>タイトルバーを表示</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1006"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Hide Title&amp;bar</source>
         <translation>タイトルバーを隠す</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="597"/>
-        <location filename="../src/mainwindow.cpp" line="1253"/>
-        <location filename="../src/mainwindow.cpp" line="1279"/>
-        <location filename="../src/mainwindow.cpp" line="1302"/>
-        <location filename="../src/mainwindow.cpp" line="1384"/>
-        <location filename="../src/mainwindow.cpp" line="1449"/>
-        <location filename="../src/mainwindow.cpp" line="1483"/>
-        <location filename="../src/mainwindow.cpp" line="1491"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
+        <location filename="../src/mainwindow.cpp" line="1294"/>
+        <location filename="../src/mainwindow.cpp" line="1320"/>
+        <location filename="../src/mainwindow.cpp" line="1343"/>
+        <location filename="../src/mainwindow.cpp" line="1425"/>
+        <location filename="../src/mainwindow.cpp" line="1490"/>
+        <location filename="../src/mainwindow.cpp" line="1524"/>
+        <location filename="../src/mainwindow.cpp" line="1532"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="148"/>
+        <location filename="../src/mainwindow.cpp" line="153"/>
         <source>Text copied</source>
         <translation>テキストをコピーしました</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="519"/>
+        <location filename="../src/mainwindow.cpp" line="534"/>
         <source>Unsaved Transform</source>
         <translation>未保存の変換</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="520"/>
+        <location filename="../src/mainwindow.cpp" line="535"/>
         <source>Do you want to save this transformation?</source>
         <translation>この変換を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="521"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Save As...</source>
         <translation>名前を付けて保存...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="524"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Overwrite</source>
         <translation>上書き</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="526"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Discard</source>
         <translation>破棄</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="567"/>
+        <location filename="../src/mainwindow.cpp" line="583"/>
         <source>Save Image As...</source>
         <translation>画像を名前を付けて保存...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="597"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
         <source>Failed to save the image.</source>
         <translation>画像を保存できませんでした。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1253"/>
+        <location filename="../src/mainwindow.cpp" line="1294"/>
         <source>Error: URL is invalid</source>
         <translation>エラー: URLが無効です</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1300"/>
         <source>Downloading image...</source>
         <translation>画像をダウンロードしています...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1300"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1263"/>
-        <location filename="../src/mainwindow.cpp" line="1318"/>
+        <location filename="../src/mainwindow.cpp" line="1304"/>
+        <location filename="../src/mainwindow.cpp" line="1359"/>
         <source>Open URL...</source>
         <translation>URLから開く...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1279"/>
+        <location filename="../src/mainwindow.cpp" line="1320"/>
         <source>Error </source>
         <translation>エラー </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1302"/>
+        <location filename="../src/mainwindow.cpp" line="1343"/>
         <source>Error: Invalid image</source>
         <translation>エラー: 不正な画像ファイル</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1319"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
         <source>URL of a supported image file:</source>
         <translation>対応する画像ファイルのURL:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1384"/>
+        <location filename="../src/mainwindow.cpp" line="1425"/>
         <source>Can&apos;t delete %1:
 No write permission or file is read-only.</source>
         <translation>%1 を削除できません:
 ファイルを変更する権限がないか、ファイルが読み取り専用です。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1391"/>
+        <location filename="../src/mainwindow.cpp" line="1432"/>
         <source>Are you sure you want to permanently delete %1? This can&apos;t be undone.</source>
         <translation>%1 を完全に削除しますか？この操作は元に戻せません。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1396"/>
+        <location filename="../src/mainwindow.cpp" line="1437"/>
         <source>Are you sure you want to move %1 to the Recycle Bin?</source>
         <translation>本当に %1 をごみ箱に移動しますか？</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1398"/>
+        <location filename="../src/mainwindow.cpp" line="1439"/>
         <source>Are you sure you want to move %1 to the Trash?</source>
         <translation>%1 をゴミ箱に移してよろしいですか？</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1402"/>
+        <location filename="../src/mainwindow.cpp" line="1443"/>
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1405"/>
+        <location filename="../src/mainwindow.cpp" line="1446"/>
         <source>Do not ask again</source>
         <translation>次回から表示しない</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1449"/>
+        <location filename="../src/mainwindow.cpp" line="1490"/>
         <source>Can&apos;t delete %1.</source>
         <translation>%1 を削除できません。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1483"/>
+        <location filename="../src/mainwindow.cpp" line="1524"/>
         <source>Can&apos;t undo deletion of %1:
 No write permission or file is read-only.</source>
         <translation>%1 の削除を元に戻せません:
 書き込み権限がない、またはファイルが読み取り専用になっています。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1491"/>
+        <location filename="../src/mainwindow.cpp" line="1532"/>
         <source>Failed undoing deletion of %1.</source>
         <translation>%1 の削除の取り消しに失敗しました。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1564"/>
+        <location filename="../src/mainwindow.cpp" line="1605"/>
         <source>Set Zoom Level</source>
         <translation>ズーム倍率を設定</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1564"/>
+        <location filename="../src/mainwindow.cpp" line="1605"/>
         <source>Zoom Level (%):</source>
         <translation>ズーム倍率（%）：</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1665"/>
-        <location filename="../src/mainwindow.cpp" line="1689"/>
+        <location filename="../src/mainwindow.cpp" line="1725"/>
+        <location filename="../src/mainwindow.cpp" line="1735"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1666"/>
+        <location filename="../src/mainwindow.cpp" line="1736"/>
         <source>No OCR language is available. Add a language with OCR support in the Windows language settings.</source>
         <translation>OCR 対応の言語がありません。Windows の言語設定で OCR 対応の言語を追加してください。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1689"/>
+        <location filename="../src/mainwindow.cpp" line="1725"/>
         <source>Text recognition failed.</source>
         <translation>テキストの認識に失敗しました。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1695"/>
+        <location filename="../src/mainwindow.cpp" line="1739"/>
         <source>OCR cannot find any text in this image</source>
         <translation>この画像には OCR で認識できるテキストがありません</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1714"/>
+        <location filename="../src/mainwindow.cpp" line="1759"/>
         <source>Copied all text</source>
         <translation>すべてのテキストをコピーしました</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1764"/>
+        <location filename="../src/mainwindow.cpp" line="1863"/>
         <source>Save Frame As...</source>
         <translation>フレームを別名で保存...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1810"/>
+        <location filename="../src/mainwindow.cpp" line="1909"/>
         <source>Stop S&amp;lideshow</source>
         <translation>スライドショーを停止</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1810"/>
+        <location filename="../src/mainwindow.cpp" line="1909"/>
         <source>Start S&amp;lideshow</source>
         <translation>スライドショーを開始</translation>
     </message>
@@ -668,12 +683,12 @@ No write permission or file is read-only.</source>
 <context>
     <name>QVGraphicsView</name>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1485"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1488"/>
         <source>Press Enter to apply the crop, Esc to cancel</source>
         <translation>Enter キーで切り抜きを適用、Esc キーでキャンセル</translation>
     </message>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1511"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1514"/>
         <source>Click to copy text, or CTRL+C to copy all text. Esc or right-click to close</source>
         <translation>クリックでテキストをコピー、Ctrl+C ですべてコピー。Esc または右クリックで閉じる</translation>
     </message>
@@ -743,12 +758,12 @@ No write permission or file is read-only.</source>
         <translation>リフレッシュ</translation>
     </message>
     <message>
-        <location filename="../src/qvinfodialog.cpp" line="56"/>
+        <location filename="../src/qvinfodialog.cpp" line="59"/>
         <source>%1 (%2 bytes)</source>
         <translation>%1 (%2 バイト)</translation>
     </message>
     <message>
-        <location filename="../src/qvinfodialog.cpp" line="69"/>
+        <location filename="../src/qvinfodialog.cpp" line="72"/>
         <source>%1 x %2 (%3 MP)</source>
         <translation>%1 x %2 (%3 MP)</translation>
     </message>
@@ -1510,276 +1525,291 @@ No write permission or file is read-only.</source>
     </message>
     <message>
         <location filename="../src/shortcutmanager.cpp" line="42"/>
+        <source>Print</source>
+        <translation>印刷</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="43"/>
+        <source>Save As</source>
+        <translation>名前を付けて保存</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="44"/>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="45"/>
         <source>Open Containing Folder</source>
         <translation>ファイルの場所を開く</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="43"/>
+        <location filename="../src/shortcutmanager.cpp" line="46"/>
         <source>Show in Explorer</source>
         <translation>エクスプローラーで表示</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="44"/>
+        <location filename="../src/shortcutmanager.cpp" line="47"/>
         <source>Show File Info</source>
         <translation>ファイル情報を表示</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="45"/>
+        <location filename="../src/shortcutmanager.cpp" line="48"/>
         <source>Restore from Trash</source>
         <translation>ゴミ箱から戻す</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="46"/>
+        <location filename="../src/shortcutmanager.cpp" line="49"/>
         <source>Undo Delete</source>
         <translation>削除を元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="47"/>
+        <location filename="../src/shortcutmanager.cpp" line="50"/>
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="48"/>
+        <location filename="../src/shortcutmanager.cpp" line="51"/>
         <source>Copy OCR Text</source>
         <translation>OCR テキストをコピー</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="49"/>
+        <location filename="../src/shortcutmanager.cpp" line="52"/>
         <source>Paste</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="50"/>
+        <location filename="../src/shortcutmanager.cpp" line="53"/>
         <source>Rename</source>
         <translation>名前の変更</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="55"/>
+        <location filename="../src/shortcutmanager.cpp" line="58"/>
         <source>Move to Trash</source>
         <translation>ゴミ箱に移動</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="56"/>
+        <location filename="../src/shortcutmanager.cpp" line="59"/>
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="57"/>
+        <location filename="../src/shortcutmanager.cpp" line="60"/>
         <source>Delete Permanently</source>
         <translation>完全に削除</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="58"/>
+        <location filename="../src/shortcutmanager.cpp" line="61"/>
         <source>First File</source>
         <translation>最初のファイル</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="59"/>
+        <location filename="../src/shortcutmanager.cpp" line="62"/>
         <source>Previous File</source>
         <translation>前のファイル</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="60"/>
+        <location filename="../src/shortcutmanager.cpp" line="63"/>
         <source>Next File</source>
         <translation>次のファイル</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="61"/>
+        <location filename="../src/shortcutmanager.cpp" line="64"/>
         <source>Last File</source>
         <translation>最後のファイル</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="62"/>
+        <location filename="../src/shortcutmanager.cpp" line="65"/>
         <source>Random File</source>
         <translation>ランダムなファイル</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="63"/>
+        <location filename="../src/shortcutmanager.cpp" line="66"/>
         <source>Zoom In</source>
         <translation>拡大</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="68"/>
+        <location filename="../src/shortcutmanager.cpp" line="71"/>
         <source>Zoom Out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="69"/>
+        <location filename="../src/shortcutmanager.cpp" line="72"/>
         <source>Set Zoom Level</source>
         <translation>ズーム倍率を設定</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="70"/>
+        <location filename="../src/shortcutmanager.cpp" line="73"/>
         <source>Original Size</source>
         <translation>等倍</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="71"/>
+        <location filename="../src/shortcutmanager.cpp" line="74"/>
         <source>Zoom to Fit</source>
         <translation>全体表示</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="72"/>
+        <location filename="../src/shortcutmanager.cpp" line="75"/>
         <source>Default Zoom</source>
         <translation>デフォルトのズーム</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="73"/>
+        <location filename="../src/shortcutmanager.cpp" line="76"/>
         <source>Fill Window</source>
         <translation>ウィンドウいっぱいに表示</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="74"/>
+        <location filename="../src/shortcutmanager.cpp" line="77"/>
         <source>Navigation Resets Zoom</source>
         <translation>ナビゲーションでズームをリセット</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="75"/>
+        <location filename="../src/shortcutmanager.cpp" line="78"/>
         <source>Rotate Right</source>
         <translation>右に回転</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="76"/>
+        <location filename="../src/shortcutmanager.cpp" line="79"/>
         <source>Rotate Left</source>
         <translation>左に回転</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="77"/>
+        <location filename="../src/shortcutmanager.cpp" line="80"/>
         <source>Mirror</source>
         <translation>左右反転</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="78"/>
+        <location filename="../src/shortcutmanager.cpp" line="81"/>
         <source>Flip</source>
         <translation>上下反転</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="79"/>
+        <location filename="../src/shortcutmanager.cpp" line="82"/>
         <source>Reset Transformation</source>
         <translation>変換をリセット</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="80"/>
+        <location filename="../src/shortcutmanager.cpp" line="83"/>
         <source>Revert Transformation</source>
         <translation>変換を元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="81"/>
+        <location filename="../src/shortcutmanager.cpp" line="84"/>
         <source>Crop</source>
         <translation>切り抜き</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="82"/>
+        <location filename="../src/shortcutmanager.cpp" line="85"/>
         <source>90% Size</source>
         <translation>90% にリサイズ</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="83"/>
+        <location filename="../src/shortcutmanager.cpp" line="86"/>
         <source>80% Size</source>
         <translation>80% にリサイズ</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="84"/>
+        <location filename="../src/shortcutmanager.cpp" line="87"/>
         <source>75% Size</source>
         <translation>75% にリサイズ</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="85"/>
+        <location filename="../src/shortcutmanager.cpp" line="88"/>
         <source>50% Size</source>
         <translation>50% にリサイズ</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="86"/>
+        <location filename="../src/shortcutmanager.cpp" line="89"/>
         <source>25% Size</source>
         <translation>25% にリサイズ</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="87"/>
+        <location filename="../src/shortcutmanager.cpp" line="90"/>
         <source>Scroll Up</source>
         <translation>上へスクロール</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="88"/>
+        <location filename="../src/shortcutmanager.cpp" line="91"/>
         <source>Scroll Down</source>
         <translation>下へスクロール</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="89"/>
+        <location filename="../src/shortcutmanager.cpp" line="92"/>
         <source>Window On Top</source>
         <translation>ウィンドウを最前面に表示</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="90"/>
+        <location filename="../src/shortcutmanager.cpp" line="93"/>
         <source>Toggle Titlebar Hidden</source>
         <translation>タイトルバーの表示/非表示を切り替え</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="91"/>
+        <location filename="../src/shortcutmanager.cpp" line="94"/>
         <source>Full Screen</source>
         <translation>全画面表示</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="92"/>
+        <location filename="../src/shortcutmanager.cpp" line="95"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="93"/>
+        <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Save Frame As</source>
         <translation>フレームを別名で保存</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="94"/>
+        <location filename="../src/shortcutmanager.cpp" line="97"/>
         <source>Pause</source>
         <translation>一時停止</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="95"/>
+        <location filename="../src/shortcutmanager.cpp" line="98"/>
         <source>Next Frame</source>
         <translation>次のフレーム</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="96"/>
+        <location filename="../src/shortcutmanager.cpp" line="99"/>
         <source>Previous Frame</source>
         <translation>前のフレーム</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="97"/>
+        <location filename="../src/shortcutmanager.cpp" line="100"/>
         <source>Decrease Speed</source>
         <translation>速度を下げる</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="98"/>
+        <location filename="../src/shortcutmanager.cpp" line="101"/>
         <source>Reset Speed</source>
         <translation>速度を元に戻す</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="99"/>
+        <location filename="../src/shortcutmanager.cpp" line="102"/>
         <source>Increase Speed</source>
         <translation>速度を上げる</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="100"/>
+        <location filename="../src/shortcutmanager.cpp" line="103"/>
         <source>Toggle Slideshow</source>
         <translation>スライドショーを切り替え</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="101"/>
+        <location filename="../src/shortcutmanager.cpp" line="104"/>
         <source>Settings</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="102"/>
+        <location filename="../src/shortcutmanager.cpp" line="105"/>
         <source>Close Window</source>
         <translation>ウインドウを閉じる</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="103"/>
+        <location filename="../src/shortcutmanager.cpp" line="106"/>
         <source>Quit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="105"/>
+        <location filename="../src/shortcutmanager.cpp" line="108"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>

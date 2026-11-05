@@ -203,6 +203,7 @@ namespace Qv
         Pause = 0xE034,
         PlayArrow = 0xE037,
         PlaylistRemove = 0xEB80,
+        Print = 0xE8AD,
         Refresh = 0xE5D5,
         Replay = 0xE042,
         RestoreFromTrash = 0xE938,

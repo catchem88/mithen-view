@@ -9,359 +9,374 @@
         <translation>파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="204"/>
+        <location filename="../src/actionmanager.cpp" line="207"/>
         <source>&amp;Edit</source>
         <translation>편집</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="240"/>
+        <location filename="../src/actionmanager.cpp" line="243"/>
         <source>&amp;View</source>
         <translation>보기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="265"/>
+        <location filename="../src/actionmanager.cpp" line="268"/>
         <source>&amp;Transform</source>
         <translation>변형</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="288"/>
+        <location filename="../src/actionmanager.cpp" line="291"/>
         <source>&amp;Resize</source>
         <translation>크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="308"/>
+        <location filename="../src/actionmanager.cpp" line="311"/>
         <source>&amp;Tools</source>
         <translation>도구</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="335"/>
+        <location filename="../src/actionmanager.cpp" line="338"/>
         <source>&amp;Help</source>
         <translation>도움말</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="352"/>
+        <location filename="../src/actionmanager.cpp" line="355"/>
         <source>Open &amp;Recent</source>
         <translation>마지막으로 연 파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="367"/>
-        <location filename="../src/actionmanager.cpp" line="525"/>
+        <location filename="../src/actionmanager.cpp" line="370"/>
+        <location filename="../src/actionmanager.cpp" line="528"/>
         <source>Empty</source>
         <translation>없음</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="515"/>
+        <location filename="../src/actionmanager.cpp" line="518"/>
         <source>Open With</source>
         <translation>다음으로 열기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="733"/>
+        <location filename="../src/actionmanager.cpp" line="742"/>
         <source>&amp;Quit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="738"/>
+        <location filename="../src/actionmanager.cpp" line="747"/>
         <source>Exit</source>
         <extracomment>The quit action is called &quot;Exit&quot; on windows</extracomment>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="741"/>
+        <location filename="../src/actionmanager.cpp" line="750"/>
         <source>New Window</source>
         <translation>새 창</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="744"/>
+        <location filename="../src/actionmanager.cpp" line="753"/>
         <source>&amp;Open...</source>
         <translation>열기...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="747"/>
+        <location filename="../src/actionmanager.cpp" line="756"/>
         <source>Open &amp;URL...</source>
         <translation>URL 열기...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="750"/>
+        <location filename="../src/actionmanager.cpp" line="759"/>
         <source>Re&amp;load File</source>
         <translation>파일 새로 고침</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="754"/>
+        <location filename="../src/actionmanager.cpp" line="763"/>
+        <source>&amp;Print...</source>
+        <translation>인쇄...</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="767"/>
         <source>Close Window</source>
         <translation>창 닫기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="758"/>
+        <location filename="../src/actionmanager.cpp" line="771"/>
         <source>Close All</source>
         <extracomment>Close all windows, that is</extracomment>
         <translation>모두 닫기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="761"/>
+        <location filename="../src/actionmanager.cpp" line="774"/>
         <source>Open Containing &amp;Folder</source>
         <translation>폴더에서 열기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="763"/>
+        <location filename="../src/actionmanager.cpp" line="776"/>
         <source>Show in E&amp;xplorer</source>
         <extracomment>Open containing folder on windows</extracomment>
         <translation>탐색기에서 보기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="767"/>
+        <location filename="../src/actionmanager.cpp" line="780"/>
         <source>Show File &amp;Info</source>
         <translation>파일 정보 보기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="771"/>
+        <location filename="../src/actionmanager.cpp" line="784"/>
         <source>&amp;Move to Trash</source>
         <translation>휴지통으로 이동</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="773"/>
+        <location filename="../src/actionmanager.cpp" line="786"/>
         <source>&amp;Delete</source>
         <translation>삭제</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="778"/>
+        <location filename="../src/actionmanager.cpp" line="791"/>
         <source>Delete Permanently</source>
         <translation>영구적으로 삭제</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="782"/>
+        <location filename="../src/actionmanager.cpp" line="795"/>
         <source>&amp;Restore from Trash</source>
         <translation>휴지통에서 복구하기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="784"/>
+        <location filename="../src/actionmanager.cpp" line="797"/>
         <source>&amp;Undo Delete</source>
         <translation>삭제 되돌리기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="789"/>
+        <location filename="../src/actionmanager.cpp" line="802"/>
         <source>&amp;Copy</source>
         <translation>복사하기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="793"/>
+        <location filename="../src/actionmanager.cpp" line="806"/>
         <source>&amp;Paste</source>
         <translation>붙여넣기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="796"/>
+        <location filename="../src/actionmanager.cpp" line="809"/>
         <source>R&amp;ename...</source>
         <translation>이름 변경...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="800"/>
+        <location filename="../src/actionmanager.cpp" line="813"/>
         <source>Zoom &amp;In</source>
         <translation>확대</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="804"/>
+        <location filename="../src/actionmanager.cpp" line="817"/>
         <source>Zoom &amp;Out</source>
         <translation>축소</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="808"/>
+        <location filename="../src/actionmanager.cpp" line="821"/>
         <source>Set Zoom &amp;Level...</source>
         <translation>확대/축소 수준 설정...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="812"/>
+        <location filename="../src/actionmanager.cpp" line="825"/>
         <source>Ori&amp;ginal Size</source>
         <translation>원본 크기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="816"/>
+        <location filename="../src/actionmanager.cpp" line="829"/>
         <source>&amp;Zoom to Fit</source>
         <translation>화면에 맞추기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="821"/>
+        <location filename="../src/actionmanager.cpp" line="834"/>
         <source>&amp;Default Zoom</source>
         <translation>기본 확대/축소</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="825"/>
+        <location filename="../src/actionmanager.cpp" line="838"/>
         <source>Fill &amp;Window</source>
         <translation>화면 가득 채우기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="830"/>
+        <location filename="../src/actionmanager.cpp" line="843"/>
         <source>&amp;Navigation Resets Zoom</source>
         <translation>탐색 시 확대/축소 초기화</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="835"/>
+        <location filename="../src/actionmanager.cpp" line="848"/>
         <source>Rotate &amp;Right</source>
         <translation>오른쪽으로 회전</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="839"/>
+        <location filename="../src/actionmanager.cpp" line="852"/>
         <source>Rotate &amp;Left</source>
         <translation>왼쪽으로 회전</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="843"/>
+        <location filename="../src/actionmanager.cpp" line="856"/>
         <source>&amp;Mirror</source>
         <translation>좌우반전</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="847"/>
+        <location filename="../src/actionmanager.cpp" line="860"/>
         <source>&amp;Flip</source>
         <translation>상하반전</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="851"/>
+        <location filename="../src/actionmanager.cpp" line="864"/>
         <source>Reset &amp;Transformation</source>
         <translation>변형 초기화</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="855"/>
+        <location filename="../src/actionmanager.cpp" line="868"/>
         <source>Re&amp;vert Transformation</source>
         <translation>변형 되돌리기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="859"/>
+        <location filename="../src/actionmanager.cpp" line="872"/>
         <source>&amp;Crop</source>
         <translation>자르기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="912"/>
+        <location filename="../src/actionmanager.cpp" line="925"/>
         <source>&amp;OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="916"/>
+        <location filename="../src/actionmanager.cpp" line="929"/>
         <source>Copy OCR &amp;Text</source>
         <translation>OCR 텍스트 복사</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="961"/>
+        <location filename="../src/actionmanager.cpp" line="937"/>
+        <source>&amp;Save</source>
+        <translation>저장</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="941"/>
+        <source>Save &amp;As...</source>
+        <translation>다른 이름으로 저장...</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="982"/>
         <source>&amp;GitHub</source>
         <translation>GitHub</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="870"/>
+        <location filename="../src/actionmanager.cpp" line="883"/>
         <source>Scroll &amp;Up</source>
         <translation>위로 스크롤</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="865"/>
+        <location filename="../src/actionmanager.cpp" line="878"/>
         <source>%1% Size</source>
         <translation>%1%로 크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="874"/>
+        <location filename="../src/actionmanager.cpp" line="887"/>
         <source>Scroll &amp;Down</source>
         <translation>아래로 스크롤</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="878"/>
+        <location filename="../src/actionmanager.cpp" line="891"/>
         <source>Window On To&amp;p</source>
         <translation>창을 항상 위로</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="883"/>
+        <location filename="../src/actionmanager.cpp" line="896"/>
         <source>Hide Title&amp;bar</source>
         <translation>제목 표시줄 숨기기</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="887"/>
+        <location filename="../src/actionmanager.cpp" line="900"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>전체 화면 시작</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="892"/>
+        <location filename="../src/actionmanager.cpp" line="905"/>
         <source>&amp;First File</source>
         <translation>처음 파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="896"/>
+        <location filename="../src/actionmanager.cpp" line="909"/>
         <source>Previous Fi&amp;le</source>
         <translation>이전 파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="900"/>
+        <location filename="../src/actionmanager.cpp" line="913"/>
         <source>&amp;Next File</source>
         <translation>다음 파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="904"/>
+        <location filename="../src/actionmanager.cpp" line="917"/>
         <source>Las&amp;t File</source>
         <translation>마지막 파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="908"/>
+        <location filename="../src/actionmanager.cpp" line="921"/>
         <source>&amp;Random File</source>
         <translation>무작위 파일</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="920"/>
+        <location filename="../src/actionmanager.cpp" line="933"/>
         <source>Save Frame &amp;As...</source>
         <translation>프레임을 다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="924"/>
+        <location filename="../src/actionmanager.cpp" line="945"/>
         <source>Pa&amp;use</source>
         <translation>일시중지</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="928"/>
+        <location filename="../src/actionmanager.cpp" line="949"/>
         <source>&amp;Next Frame</source>
         <translation>다음 프레임</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="932"/>
+        <location filename="../src/actionmanager.cpp" line="953"/>
         <source>&amp;Previous Frame</source>
         <translation>이전 프레임</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="936"/>
+        <location filename="../src/actionmanager.cpp" line="957"/>
         <source>&amp;Decrease Speed</source>
         <translation>속도 감소</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="940"/>
+        <location filename="../src/actionmanager.cpp" line="961"/>
         <source>&amp;Reset Speed</source>
         <translation>속도 초기화</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="944"/>
+        <location filename="../src/actionmanager.cpp" line="965"/>
         <source>&amp;Increase Speed</source>
         <translation>속도 증가</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="948"/>
+        <location filename="../src/actionmanager.cpp" line="969"/>
         <source>Start S&amp;lideshow</source>
         <translation>슬라이드쇼 시작</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="953"/>
+        <location filename="../src/actionmanager.cpp" line="974"/>
         <source>&amp;Settings</source>
         <extracomment>This is for the options dialog on windows</extracomment>
         <translation>설정</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="957"/>
+        <location filename="../src/actionmanager.cpp" line="978"/>
         <source>&amp;About</source>
         <translation>qView에 대해</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="965"/>
+        <location filename="../src/actionmanager.cpp" line="986"/>
         <source>Clear &amp;Menu</source>
         <extracomment>This is for clearing the recents menu</extracomment>
         <translation>목록 제거</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="969"/>
+        <location filename="../src/actionmanager.cpp" line="990"/>
         <source>Other Application...</source>
         <extracomment>Open with other program for windows</extracomment>
         <translation>다른 응용프로그램...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="970"/>
+        <location filename="../src/actionmanager.cpp" line="991"/>
         <source>Choose another app</source>
         <translation>다른 앱 선택</translation>
     </message>
@@ -369,7 +384,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="457"/>
+        <location filename="../src/mainwindow.cpp" line="472"/>
         <source>Error occurred opening
 %3
 %2 (Error %1)</source>
@@ -378,220 +393,220 @@
 %2 (오류 %1)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="487"/>
         <source>Exit F&amp;ull Screen</source>
         <translation>전체 화면 종료</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="487"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>전체 화면 시작</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Res&amp;ume</source>
         <translation>재시작</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Pa&amp;use</source>
         <translation>일시중지</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1006"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Show Title&amp;bar</source>
         <translation>제목 표시줄 보이기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1006"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Hide Title&amp;bar</source>
         <translation>제목 표시줄 숨기기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="597"/>
-        <location filename="../src/mainwindow.cpp" line="1253"/>
-        <location filename="../src/mainwindow.cpp" line="1279"/>
-        <location filename="../src/mainwindow.cpp" line="1302"/>
-        <location filename="../src/mainwindow.cpp" line="1384"/>
-        <location filename="../src/mainwindow.cpp" line="1449"/>
-        <location filename="../src/mainwindow.cpp" line="1483"/>
-        <location filename="../src/mainwindow.cpp" line="1491"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
+        <location filename="../src/mainwindow.cpp" line="1294"/>
+        <location filename="../src/mainwindow.cpp" line="1320"/>
+        <location filename="../src/mainwindow.cpp" line="1343"/>
+        <location filename="../src/mainwindow.cpp" line="1425"/>
+        <location filename="../src/mainwindow.cpp" line="1490"/>
+        <location filename="../src/mainwindow.cpp" line="1524"/>
+        <location filename="../src/mainwindow.cpp" line="1532"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="148"/>
+        <location filename="../src/mainwindow.cpp" line="153"/>
         <source>Text copied</source>
         <translation>텍스트를 복사했습니다</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="519"/>
+        <location filename="../src/mainwindow.cpp" line="534"/>
         <source>Unsaved Transform</source>
         <translation>저장되지 않은 변형</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="520"/>
+        <location filename="../src/mainwindow.cpp" line="535"/>
         <source>Do you want to save this transformation?</source>
         <translation>이 변형을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="521"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Save As...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="524"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Overwrite</source>
         <translation>덮어쓰기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="526"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Discard</source>
         <translation>버리기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="567"/>
+        <location filename="../src/mainwindow.cpp" line="583"/>
         <source>Save Image As...</source>
         <translation>이미지를 다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="597"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
         <source>Failed to save the image.</source>
         <translation>이미지를 저장하지 못했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1253"/>
+        <location filename="../src/mainwindow.cpp" line="1294"/>
         <source>Error: URL is invalid</source>
         <translation>오류: 유효하지 않은 URL</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1300"/>
         <source>Downloading image...</source>
         <translation>이미지를 내려받는 중...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1300"/>
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1263"/>
-        <location filename="../src/mainwindow.cpp" line="1318"/>
+        <location filename="../src/mainwindow.cpp" line="1304"/>
+        <location filename="../src/mainwindow.cpp" line="1359"/>
         <source>Open URL...</source>
         <translation>URL 열기...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1279"/>
+        <location filename="../src/mainwindow.cpp" line="1320"/>
         <source>Error </source>
         <translation>오류 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1302"/>
+        <location filename="../src/mainwindow.cpp" line="1343"/>
         <source>Error: Invalid image</source>
         <translation>오류: 유효하지 않은 이미지</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1319"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
         <source>URL of a supported image file:</source>
         <translation>지원되는 이미지 파일의 URL:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1384"/>
+        <location filename="../src/mainwindow.cpp" line="1425"/>
         <source>Can&apos;t delete %1:
 No write permission or file is read-only.</source>
         <translation>%1 삭제 불가:
 권한이 없거나 읽기 전용 파일입니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1391"/>
+        <location filename="../src/mainwindow.cpp" line="1432"/>
         <source>Are you sure you want to permanently delete %1? This can&apos;t be undone.</source>
         <translation>%1을(를) 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1396"/>
+        <location filename="../src/mainwindow.cpp" line="1437"/>
         <source>Are you sure you want to move %1 to the Recycle Bin?</source>
         <translation>%1 파일을 휴지통으로 이동하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1398"/>
+        <location filename="../src/mainwindow.cpp" line="1439"/>
         <source>Are you sure you want to move %1 to the Trash?</source>
         <translation>%1 파일을 휴지통으로 이동하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1402"/>
+        <location filename="../src/mainwindow.cpp" line="1443"/>
         <source>Delete</source>
         <translation>삭제</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1405"/>
+        <location filename="../src/mainwindow.cpp" line="1446"/>
         <source>Do not ask again</source>
         <translation>더이상 묻지 않기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1449"/>
+        <location filename="../src/mainwindow.cpp" line="1490"/>
         <source>Can&apos;t delete %1.</source>
         <translation>%1 삭제 불가.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1483"/>
+        <location filename="../src/mainwindow.cpp" line="1524"/>
         <source>Can&apos;t undo deletion of %1:
 No write permission or file is read-only.</source>
         <translation>%1 파일 삭제를 되돌릴 수 없음:
 권한이 없거나 읽기 전용 파일입니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1491"/>
+        <location filename="../src/mainwindow.cpp" line="1532"/>
         <source>Failed undoing deletion of %1.</source>
         <translation>%1 파일의 복구에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1564"/>
+        <location filename="../src/mainwindow.cpp" line="1605"/>
         <source>Set Zoom Level</source>
         <translation>확대/축소 수준 설정</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1564"/>
+        <location filename="../src/mainwindow.cpp" line="1605"/>
         <source>Zoom Level (%):</source>
         <translation>확대/축소 수준 (%):</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1665"/>
-        <location filename="../src/mainwindow.cpp" line="1689"/>
+        <location filename="../src/mainwindow.cpp" line="1725"/>
+        <location filename="../src/mainwindow.cpp" line="1735"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1666"/>
+        <location filename="../src/mainwindow.cpp" line="1736"/>
         <source>No OCR language is available. Add a language with OCR support in the Windows language settings.</source>
         <translation>사용 가능한 OCR 언어가 없습니다. Windows 언어 설정에서 OCR을 지원하는 언어를 추가하세요.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1689"/>
+        <location filename="../src/mainwindow.cpp" line="1725"/>
         <source>Text recognition failed.</source>
         <translation>텍스트 인식에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1695"/>
+        <location filename="../src/mainwindow.cpp" line="1739"/>
         <source>OCR cannot find any text in this image</source>
         <translation>이 이미지에서 OCR로 인식할 수 있는 텍스트를 찾지 못했습니다</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1714"/>
+        <location filename="../src/mainwindow.cpp" line="1759"/>
         <source>Copied all text</source>
         <translation>모든 텍스트를 복사했습니다</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1764"/>
+        <location filename="../src/mainwindow.cpp" line="1863"/>
         <source>Save Frame As...</source>
         <translation>프레임을 다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1810"/>
+        <location filename="../src/mainwindow.cpp" line="1909"/>
         <source>Stop S&amp;lideshow</source>
         <translation>슬라이드 쇼 중지</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1810"/>
+        <location filename="../src/mainwindow.cpp" line="1909"/>
         <source>Start S&amp;lideshow</source>
         <translation>슬라이드쇼 시작</translation>
     </message>
@@ -668,12 +683,12 @@ No write permission or file is read-only.</source>
 <context>
     <name>QVGraphicsView</name>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1485"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1488"/>
         <source>Press Enter to apply the crop, Esc to cancel</source>
         <translation>Enter 키로 자르기 적용, Esc 키로 취소</translation>
     </message>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1511"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1514"/>
         <source>Click to copy text, or CTRL+C to copy all text. Esc or right-click to close</source>
         <translation>클릭하면 텍스트 복사, Ctrl+C로 전체 복사. Esc 또는 마우스 오른쪽 클릭으로 닫기</translation>
     </message>
@@ -743,12 +758,12 @@ No write permission or file is read-only.</source>
         <translation>새로고침</translation>
     </message>
     <message>
-        <location filename="../src/qvinfodialog.cpp" line="56"/>
+        <location filename="../src/qvinfodialog.cpp" line="59"/>
         <source>%1 (%2 bytes)</source>
         <translation>%1 (%2 바이트)</translation>
     </message>
     <message>
-        <location filename="../src/qvinfodialog.cpp" line="69"/>
+        <location filename="../src/qvinfodialog.cpp" line="72"/>
         <source>%1 x %2 (%3 MP)</source>
         <translation>%1 x %2 (%3 메가픽셀)</translation>
     </message>
@@ -1510,276 +1525,291 @@ No write permission or file is read-only.</source>
     </message>
     <message>
         <location filename="../src/shortcutmanager.cpp" line="42"/>
+        <source>Print</source>
+        <translation>인쇄</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="43"/>
+        <source>Save As</source>
+        <translation>다른 이름으로 저장</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="44"/>
+        <source>Save</source>
+        <translation>저장</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="45"/>
         <source>Open Containing Folder</source>
         <translation>폴더에서 열기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="43"/>
+        <location filename="../src/shortcutmanager.cpp" line="46"/>
         <source>Show in Explorer</source>
         <translation>탐색기에서 보기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="44"/>
+        <location filename="../src/shortcutmanager.cpp" line="47"/>
         <source>Show File Info</source>
         <translation>파일 정보 보기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="45"/>
+        <location filename="../src/shortcutmanager.cpp" line="48"/>
         <source>Restore from Trash</source>
         <translation>휴지통에서 복구하기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="46"/>
+        <location filename="../src/shortcutmanager.cpp" line="49"/>
         <source>Undo Delete</source>
         <translation>삭제 되돌리기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="47"/>
+        <location filename="../src/shortcutmanager.cpp" line="50"/>
         <source>Copy</source>
         <translation>복사하기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="48"/>
+        <location filename="../src/shortcutmanager.cpp" line="51"/>
         <source>Copy OCR Text</source>
         <translation>OCR 텍스트 복사</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="49"/>
+        <location filename="../src/shortcutmanager.cpp" line="52"/>
         <source>Paste</source>
         <translation>붙여넣기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="50"/>
+        <location filename="../src/shortcutmanager.cpp" line="53"/>
         <source>Rename</source>
         <translation>이름 변경</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="55"/>
+        <location filename="../src/shortcutmanager.cpp" line="58"/>
         <source>Move to Trash</source>
         <translation>휴지통으로 이동</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="56"/>
+        <location filename="../src/shortcutmanager.cpp" line="59"/>
         <source>Delete</source>
         <translation>삭제</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="57"/>
+        <location filename="../src/shortcutmanager.cpp" line="60"/>
         <source>Delete Permanently</source>
         <translation>영구적으로 삭제</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="58"/>
+        <location filename="../src/shortcutmanager.cpp" line="61"/>
         <source>First File</source>
         <translation>처음 파일</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="59"/>
+        <location filename="../src/shortcutmanager.cpp" line="62"/>
         <source>Previous File</source>
         <translation>이전 파일</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="60"/>
+        <location filename="../src/shortcutmanager.cpp" line="63"/>
         <source>Next File</source>
         <translation>다음 파일</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="61"/>
+        <location filename="../src/shortcutmanager.cpp" line="64"/>
         <source>Last File</source>
         <translation>마지막 파일</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="62"/>
+        <location filename="../src/shortcutmanager.cpp" line="65"/>
         <source>Random File</source>
         <translation>무작위 파일</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="63"/>
+        <location filename="../src/shortcutmanager.cpp" line="66"/>
         <source>Zoom In</source>
         <translation>확대</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="68"/>
+        <location filename="../src/shortcutmanager.cpp" line="71"/>
         <source>Zoom Out</source>
         <translation>축소</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="69"/>
+        <location filename="../src/shortcutmanager.cpp" line="72"/>
         <source>Set Zoom Level</source>
         <translation>확대/축소 수준 설정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="70"/>
+        <location filename="../src/shortcutmanager.cpp" line="73"/>
         <source>Original Size</source>
         <translation>원본 크기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="71"/>
+        <location filename="../src/shortcutmanager.cpp" line="74"/>
         <source>Zoom to Fit</source>
         <translation>화면에 맞추기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="72"/>
+        <location filename="../src/shortcutmanager.cpp" line="75"/>
         <source>Default Zoom</source>
         <translation>기본 확대/축소</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="73"/>
+        <location filename="../src/shortcutmanager.cpp" line="76"/>
         <source>Fill Window</source>
         <translation>화면 가득 채우기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="74"/>
+        <location filename="../src/shortcutmanager.cpp" line="77"/>
         <source>Navigation Resets Zoom</source>
         <translation>탐색 시 확대/축소 초기화</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="75"/>
+        <location filename="../src/shortcutmanager.cpp" line="78"/>
         <source>Rotate Right</source>
         <translation>오른쪽으로 회전</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="76"/>
+        <location filename="../src/shortcutmanager.cpp" line="79"/>
         <source>Rotate Left</source>
         <translation>왼쪽으로 회전</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="77"/>
+        <location filename="../src/shortcutmanager.cpp" line="80"/>
         <source>Mirror</source>
         <translation>좌우반전</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="78"/>
+        <location filename="../src/shortcutmanager.cpp" line="81"/>
         <source>Flip</source>
         <translation>상하반전</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="79"/>
+        <location filename="../src/shortcutmanager.cpp" line="82"/>
         <source>Reset Transformation</source>
         <translation>변형 초기화</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="80"/>
+        <location filename="../src/shortcutmanager.cpp" line="83"/>
         <source>Revert Transformation</source>
         <translation>변형 되돌리기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="81"/>
+        <location filename="../src/shortcutmanager.cpp" line="84"/>
         <source>Crop</source>
         <translation>자르기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="82"/>
+        <location filename="../src/shortcutmanager.cpp" line="85"/>
         <source>90% Size</source>
         <translation>90%로 크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="83"/>
+        <location filename="../src/shortcutmanager.cpp" line="86"/>
         <source>80% Size</source>
         <translation>80%로 크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="84"/>
+        <location filename="../src/shortcutmanager.cpp" line="87"/>
         <source>75% Size</source>
         <translation>75%로 크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="85"/>
+        <location filename="../src/shortcutmanager.cpp" line="88"/>
         <source>50% Size</source>
         <translation>50%로 크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="86"/>
+        <location filename="../src/shortcutmanager.cpp" line="89"/>
         <source>25% Size</source>
         <translation>25%로 크기 조정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="87"/>
+        <location filename="../src/shortcutmanager.cpp" line="90"/>
         <source>Scroll Up</source>
         <translation>위로 스크롤</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="88"/>
+        <location filename="../src/shortcutmanager.cpp" line="91"/>
         <source>Scroll Down</source>
         <translation>아래로 스크롤</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="89"/>
+        <location filename="../src/shortcutmanager.cpp" line="92"/>
         <source>Window On Top</source>
         <translation>창을 항상 위로</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="90"/>
+        <location filename="../src/shortcutmanager.cpp" line="93"/>
         <source>Toggle Titlebar Hidden</source>
         <translation>제목 표시줄 숨기기 전환</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="91"/>
+        <location filename="../src/shortcutmanager.cpp" line="94"/>
         <source>Full Screen</source>
         <translation>전체화면</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="92"/>
+        <location filename="../src/shortcutmanager.cpp" line="95"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="93"/>
+        <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Save Frame As</source>
         <translation>프레임을 다른 이름으로 저장</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="94"/>
+        <location filename="../src/shortcutmanager.cpp" line="97"/>
         <source>Pause</source>
         <translation>일시중지</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="95"/>
+        <location filename="../src/shortcutmanager.cpp" line="98"/>
         <source>Next Frame</source>
         <translation>다음 프레임</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="96"/>
+        <location filename="../src/shortcutmanager.cpp" line="99"/>
         <source>Previous Frame</source>
         <translation>이전 프레임</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="97"/>
+        <location filename="../src/shortcutmanager.cpp" line="100"/>
         <source>Decrease Speed</source>
         <translation>속도 감소</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="98"/>
+        <location filename="../src/shortcutmanager.cpp" line="101"/>
         <source>Reset Speed</source>
         <translation>속도 초기화</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="99"/>
+        <location filename="../src/shortcutmanager.cpp" line="102"/>
         <source>Increase Speed</source>
         <translation>속도 증가</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="100"/>
+        <location filename="../src/shortcutmanager.cpp" line="103"/>
         <source>Toggle Slideshow</source>
         <translation>슬라이드쇼 토글</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="101"/>
+        <location filename="../src/shortcutmanager.cpp" line="104"/>
         <source>Settings</source>
         <translation>설정</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="102"/>
+        <location filename="../src/shortcutmanager.cpp" line="105"/>
         <source>Close Window</source>
         <translation>창 닫기</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="103"/>
+        <location filename="../src/shortcutmanager.cpp" line="106"/>
         <source>Quit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="105"/>
+        <location filename="../src/shortcutmanager.cpp" line="108"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>

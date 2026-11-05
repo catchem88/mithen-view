@@ -39,6 +39,9 @@ void ShortcutManager::initializeShortcutsList()
     shortcutsList.append({tr("Open"), "open", keyBindingsToStringList(QKeySequence::Open), {}});
     shortcutsList.append({tr("Open URL"), "openurl", QStringList(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O).toString()), {}});
     shortcutsList.append({tr("Reload File"), "reloadfile", keyBindingsToStringList(QKeySequence::Refresh), {}});
+    shortcutsList.append({tr("Print"), "print", keyBindingsToStringList(QKeySequence::Print), {}});
+    shortcutsList.append({tr("Save As"), "saveas", keyBindingsToStringList(QKeySequence::Save), {}});
+    shortcutsList.append({tr("Save"), "save", {}, {}});
     shortcutsList.append({tr("Open Containing Folder"), "opencontainingfolder", {}, {}});
     shortcutsList.last().readableName = tr("Show in Explorer");
     shortcutsList.append({tr("Show File Info"), "showfileinfo", QStringList(QKeySequence(Qt::Key_I).toString()), {}});
@@ -90,7 +93,7 @@ void ShortcutManager::initializeShortcutsList()
     shortcutsList.append({tr("Toggle Titlebar Hidden"), "toggletitlebar", {}, {}});
     shortcutsList.append({tr("Full Screen"), "fullscreen", QStringList({QKeySequence(Qt::Key_F11).toString(), QKeySequence(Qt::ALT | Qt::Key_Return).toString(), QKeySequence(Qt::Key_F).toString(), QKeySequence(Qt::CTRL | Qt::Key_3).toString()}), {}});
     shortcutsList.append({tr("OCR"), "ocr", QStringList(QKeySequence(Qt::Key_O).toString()), {}});
-    shortcutsList.append({tr("Save Frame As"), "saveframeas", keyBindingsToStringList(QKeySequence::Save), {}});
+    shortcutsList.append({tr("Save Frame As"), "saveframeas", {}, {}});
     shortcutsList.append({tr("Pause"), "pause", QStringList(QKeySequence(Qt::Key_Space).toString()), {}});
     shortcutsList.append({tr("Next Frame"), "nextframe", QStringList(QKeySequence(Qt::Key_Period).toString()), {}});
     shortcutsList.append({tr("Previous Frame"), "previousframe", QStringList(QKeySequence(Qt::Key_Comma).toString()), {}});

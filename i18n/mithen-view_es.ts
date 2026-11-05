@@ -9,359 +9,374 @@
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="204"/>
+        <location filename="../src/actionmanager.cpp" line="207"/>
         <source>&amp;Edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="240"/>
+        <location filename="../src/actionmanager.cpp" line="243"/>
         <source>&amp;View</source>
         <translation>Ver</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="265"/>
+        <location filename="../src/actionmanager.cpp" line="268"/>
         <source>&amp;Transform</source>
         <translation>Transformar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="288"/>
+        <location filename="../src/actionmanager.cpp" line="291"/>
         <source>&amp;Resize</source>
         <translation>Redimensionar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="308"/>
+        <location filename="../src/actionmanager.cpp" line="311"/>
         <source>&amp;Tools</source>
         <translation>Herramientas</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="335"/>
+        <location filename="../src/actionmanager.cpp" line="338"/>
         <source>&amp;Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="352"/>
+        <location filename="../src/actionmanager.cpp" line="355"/>
         <source>Open &amp;Recent</source>
         <translation>Abrir recientes</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="367"/>
-        <location filename="../src/actionmanager.cpp" line="525"/>
+        <location filename="../src/actionmanager.cpp" line="370"/>
+        <location filename="../src/actionmanager.cpp" line="528"/>
         <source>Empty</source>
         <translation>Vacío</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="515"/>
+        <location filename="../src/actionmanager.cpp" line="518"/>
         <source>Open With</source>
         <translation>Abrir con</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="733"/>
+        <location filename="../src/actionmanager.cpp" line="742"/>
         <source>&amp;Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="738"/>
+        <location filename="../src/actionmanager.cpp" line="747"/>
         <source>Exit</source>
         <extracomment>The quit action is called &quot;Exit&quot; on windows</extracomment>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="741"/>
+        <location filename="../src/actionmanager.cpp" line="750"/>
         <source>New Window</source>
         <translation>Ventana nueva</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="744"/>
+        <location filename="../src/actionmanager.cpp" line="753"/>
         <source>&amp;Open...</source>
         <translation>Abrir...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="747"/>
+        <location filename="../src/actionmanager.cpp" line="756"/>
         <source>Open &amp;URL...</source>
         <translation>Abrir un URL...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="750"/>
+        <location filename="../src/actionmanager.cpp" line="759"/>
         <source>Re&amp;load File</source>
         <translation>Recargar archivo</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="754"/>
+        <location filename="../src/actionmanager.cpp" line="763"/>
+        <source>&amp;Print...</source>
+        <translation>Imprimir...</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="767"/>
         <source>Close Window</source>
         <translation>Cerrar la ventana</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="758"/>
+        <location filename="../src/actionmanager.cpp" line="771"/>
         <source>Close All</source>
         <extracomment>Close all windows, that is</extracomment>
         <translation>Cerrar todas</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="761"/>
+        <location filename="../src/actionmanager.cpp" line="774"/>
         <source>Open Containing &amp;Folder</source>
         <translation>Abrir la carpeta contenedora</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="763"/>
+        <location filename="../src/actionmanager.cpp" line="776"/>
         <source>Show in E&amp;xplorer</source>
         <extracomment>Open containing folder on windows</extracomment>
         <translation>Mostrar en el explorador</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="767"/>
+        <location filename="../src/actionmanager.cpp" line="780"/>
         <source>Show File &amp;Info</source>
         <translation>Mostrar información del archivo</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="771"/>
+        <location filename="../src/actionmanager.cpp" line="784"/>
         <source>&amp;Move to Trash</source>
         <translation>Mover a la papelera</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="773"/>
+        <location filename="../src/actionmanager.cpp" line="786"/>
         <source>&amp;Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="778"/>
+        <location filename="../src/actionmanager.cpp" line="791"/>
         <source>Delete Permanently</source>
         <translation>Eliminar permanentemente</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="782"/>
+        <location filename="../src/actionmanager.cpp" line="795"/>
         <source>&amp;Restore from Trash</source>
         <translation>Restaurar de la papelera</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="784"/>
+        <location filename="../src/actionmanager.cpp" line="797"/>
         <source>&amp;Undo Delete</source>
         <translation>Deshacer el borrado</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="789"/>
+        <location filename="../src/actionmanager.cpp" line="802"/>
         <source>&amp;Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="793"/>
+        <location filename="../src/actionmanager.cpp" line="806"/>
         <source>&amp;Paste</source>
         <translation>Pegar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="796"/>
+        <location filename="../src/actionmanager.cpp" line="809"/>
         <source>R&amp;ename...</source>
         <translation>Cambiar nombre...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="800"/>
+        <location filename="../src/actionmanager.cpp" line="813"/>
         <source>Zoom &amp;In</source>
         <translation>Ampliar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="804"/>
+        <location filename="../src/actionmanager.cpp" line="817"/>
         <source>Zoom &amp;Out</source>
         <translation>Reducir</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="808"/>
+        <location filename="../src/actionmanager.cpp" line="821"/>
         <source>Set Zoom &amp;Level...</source>
         <translation>Establecer nivel de zoom...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="812"/>
+        <location filename="../src/actionmanager.cpp" line="825"/>
         <source>Ori&amp;ginal Size</source>
         <translation>Tamaño original</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="816"/>
+        <location filename="../src/actionmanager.cpp" line="829"/>
         <source>&amp;Zoom to Fit</source>
         <translation>Ajustar a la ventana</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="821"/>
+        <location filename="../src/actionmanager.cpp" line="834"/>
         <source>&amp;Default Zoom</source>
         <translation>Zoom predeterminado</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="825"/>
+        <location filename="../src/actionmanager.cpp" line="838"/>
         <source>Fill &amp;Window</source>
         <translation>Rellenar ventana</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="830"/>
+        <location filename="../src/actionmanager.cpp" line="843"/>
         <source>&amp;Navigation Resets Zoom</source>
         <translation>La navegación restablece el zoom</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="835"/>
+        <location filename="../src/actionmanager.cpp" line="848"/>
         <source>Rotate &amp;Right</source>
         <translation>Girar a la derecha</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="839"/>
+        <location filename="../src/actionmanager.cpp" line="852"/>
         <source>Rotate &amp;Left</source>
         <translation>Girar a la izquierda</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="843"/>
+        <location filename="../src/actionmanager.cpp" line="856"/>
         <source>&amp;Mirror</source>
         <translation>Reflejar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="847"/>
+        <location filename="../src/actionmanager.cpp" line="860"/>
         <source>&amp;Flip</source>
         <translation>Voltear</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="851"/>
+        <location filename="../src/actionmanager.cpp" line="864"/>
         <source>Reset &amp;Transformation</source>
         <translation>Restablecer transformación</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="855"/>
+        <location filename="../src/actionmanager.cpp" line="868"/>
         <source>Re&amp;vert Transformation</source>
         <translation>Revertir transformación</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="859"/>
+        <location filename="../src/actionmanager.cpp" line="872"/>
         <source>&amp;Crop</source>
         <translation>Recortar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="912"/>
+        <location filename="../src/actionmanager.cpp" line="925"/>
         <source>&amp;OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="916"/>
+        <location filename="../src/actionmanager.cpp" line="929"/>
         <source>Copy OCR &amp;Text</source>
         <translation>Copiar texto OCR</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="961"/>
+        <location filename="../src/actionmanager.cpp" line="937"/>
+        <source>&amp;Save</source>
+        <translation>Guardar</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="941"/>
+        <source>Save &amp;As...</source>
+        <translation>Guardar como...</translation>
+    </message>
+    <message>
+        <location filename="../src/actionmanager.cpp" line="982"/>
         <source>&amp;GitHub</source>
         <translation>GitHub</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="870"/>
+        <location filename="../src/actionmanager.cpp" line="883"/>
         <source>Scroll &amp;Up</source>
         <translation>Desplazar hacia &amp;arriba</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="865"/>
+        <location filename="../src/actionmanager.cpp" line="878"/>
         <source>%1% Size</source>
         <translation>Redimensionar al %1%</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="874"/>
+        <location filename="../src/actionmanager.cpp" line="887"/>
         <source>Scroll &amp;Down</source>
         <translation>Desplazar hacia a&amp;bajo</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="878"/>
+        <location filename="../src/actionmanager.cpp" line="891"/>
         <source>Window On To&amp;p</source>
         <translation>Mantener ventana en primer plano</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="883"/>
+        <location filename="../src/actionmanager.cpp" line="896"/>
         <source>Hide Title&amp;bar</source>
         <translation>Ocultar barra de título</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="887"/>
+        <location filename="../src/actionmanager.cpp" line="900"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>Entrar en pantalla completa</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="892"/>
+        <location filename="../src/actionmanager.cpp" line="905"/>
         <source>&amp;First File</source>
         <translation>Primer archivo</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="896"/>
+        <location filename="../src/actionmanager.cpp" line="909"/>
         <source>Previous Fi&amp;le</source>
         <translation>Archivo anterior</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="900"/>
+        <location filename="../src/actionmanager.cpp" line="913"/>
         <source>&amp;Next File</source>
         <translation>Archivo siguiente</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="904"/>
+        <location filename="../src/actionmanager.cpp" line="917"/>
         <source>Las&amp;t File</source>
         <translation>Último archivo</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="908"/>
+        <location filename="../src/actionmanager.cpp" line="921"/>
         <source>&amp;Random File</source>
         <translation>Archivo aleatorio</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="920"/>
+        <location filename="../src/actionmanager.cpp" line="933"/>
         <source>Save Frame &amp;As...</source>
         <translation>Guardar fotograma como...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="924"/>
+        <location filename="../src/actionmanager.cpp" line="945"/>
         <source>Pa&amp;use</source>
         <translation>Pausar</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="928"/>
+        <location filename="../src/actionmanager.cpp" line="949"/>
         <source>&amp;Next Frame</source>
         <translation>Fotograma siguiente</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="932"/>
+        <location filename="../src/actionmanager.cpp" line="953"/>
         <source>&amp;Previous Frame</source>
         <translation>Fotograma anterior</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="936"/>
+        <location filename="../src/actionmanager.cpp" line="957"/>
         <source>&amp;Decrease Speed</source>
         <translation>Reducir la velocidad</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="940"/>
+        <location filename="../src/actionmanager.cpp" line="961"/>
         <source>&amp;Reset Speed</source>
         <translation>Restablecer la velocidad</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="944"/>
+        <location filename="../src/actionmanager.cpp" line="965"/>
         <source>&amp;Increase Speed</source>
         <translation>Aumentar la velocidad</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="948"/>
+        <location filename="../src/actionmanager.cpp" line="969"/>
         <source>Start S&amp;lideshow</source>
         <translation>Iniciar la presentación</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="953"/>
+        <location filename="../src/actionmanager.cpp" line="974"/>
         <source>&amp;Settings</source>
         <extracomment>This is for the options dialog on windows</extracomment>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="957"/>
+        <location filename="../src/actionmanager.cpp" line="978"/>
         <source>&amp;About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="965"/>
+        <location filename="../src/actionmanager.cpp" line="986"/>
         <source>Clear &amp;Menu</source>
         <extracomment>This is for clearing the recents menu</extracomment>
         <translation>Borrar la lista</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="969"/>
+        <location filename="../src/actionmanager.cpp" line="990"/>
         <source>Other Application...</source>
         <extracomment>Open with other program for windows</extracomment>
         <translation>Otra aplicación...</translation>
     </message>
     <message>
-        <location filename="../src/actionmanager.cpp" line="970"/>
+        <location filename="../src/actionmanager.cpp" line="991"/>
         <source>Choose another app</source>
         <translation>Elegir otra aplicación</translation>
     </message>
@@ -369,7 +384,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="457"/>
+        <location filename="../src/mainwindow.cpp" line="472"/>
         <source>Error occurred opening
 %3
 %2 (Error %1)</source>
@@ -378,220 +393,220 @@
 %2 (Error %1)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="487"/>
         <source>Exit F&amp;ull Screen</source>
         <translation>Salir de pantalla completa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="487"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>Entrar en pantalla completa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Res&amp;ume</source>
         <translation>Continuar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Pa&amp;use</source>
         <translation>Pausar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1006"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Show Title&amp;bar</source>
         <translation>Mostrar barra de título</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1006"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Hide Title&amp;bar</source>
         <translation>Ocultar barra de título</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="597"/>
-        <location filename="../src/mainwindow.cpp" line="1253"/>
-        <location filename="../src/mainwindow.cpp" line="1279"/>
-        <location filename="../src/mainwindow.cpp" line="1302"/>
-        <location filename="../src/mainwindow.cpp" line="1384"/>
-        <location filename="../src/mainwindow.cpp" line="1449"/>
-        <location filename="../src/mainwindow.cpp" line="1483"/>
-        <location filename="../src/mainwindow.cpp" line="1491"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
+        <location filename="../src/mainwindow.cpp" line="1294"/>
+        <location filename="../src/mainwindow.cpp" line="1320"/>
+        <location filename="../src/mainwindow.cpp" line="1343"/>
+        <location filename="../src/mainwindow.cpp" line="1425"/>
+        <location filename="../src/mainwindow.cpp" line="1490"/>
+        <location filename="../src/mainwindow.cpp" line="1524"/>
+        <location filename="../src/mainwindow.cpp" line="1532"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="148"/>
+        <location filename="../src/mainwindow.cpp" line="153"/>
         <source>Text copied</source>
         <translation>Texto copiado</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="519"/>
+        <location filename="../src/mainwindow.cpp" line="534"/>
         <source>Unsaved Transform</source>
         <translation>Transformación sin guardar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="520"/>
+        <location filename="../src/mainwindow.cpp" line="535"/>
         <source>Do you want to save this transformation?</source>
         <translation>¿Quieres guardar esta transformación?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="521"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Save As...</source>
         <translation>Guardar como...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="524"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Overwrite</source>
         <translation>Sobrescribir</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="526"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Discard</source>
         <translation>Descartar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="567"/>
+        <location filename="../src/mainwindow.cpp" line="583"/>
         <source>Save Image As...</source>
         <translation>Guardar imagen como...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="597"/>
+        <location filename="../src/mainwindow.cpp" line="613"/>
         <source>Failed to save the image.</source>
         <translation>No se pudo guardar la imagen.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1253"/>
+        <location filename="../src/mainwindow.cpp" line="1294"/>
         <source>Error: URL is invalid</source>
         <translation>Error: URL no válido</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1300"/>
         <source>Downloading image...</source>
         <translation>Descargando la imagen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1300"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1263"/>
-        <location filename="../src/mainwindow.cpp" line="1318"/>
+        <location filename="../src/mainwindow.cpp" line="1304"/>
+        <location filename="../src/mainwindow.cpp" line="1359"/>
         <source>Open URL...</source>
         <translation>Abrir un URL...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1279"/>
+        <location filename="../src/mainwindow.cpp" line="1320"/>
         <source>Error </source>
         <translation>Error </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1302"/>
+        <location filename="../src/mainwindow.cpp" line="1343"/>
         <source>Error: Invalid image</source>
         <translation>Error: Imagen no válida</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1319"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
         <source>URL of a supported image file:</source>
         <translation>URL de un archivo de imagen compatible:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1384"/>
+        <location filename="../src/mainwindow.cpp" line="1425"/>
         <source>Can&apos;t delete %1:
 No write permission or file is read-only.</source>
         <translation>No se puede borrar %1:
 No se tiene permiso de escritura o el archivo es de solo lectura.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1391"/>
+        <location filename="../src/mainwindow.cpp" line="1432"/>
         <source>Are you sure you want to permanently delete %1? This can&apos;t be undone.</source>
         <translation>¿Seguro que quieres eliminar %1 permanentemente? Esta acción no se puede deshacer.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1396"/>
+        <location filename="../src/mainwindow.cpp" line="1437"/>
         <source>Are you sure you want to move %1 to the Recycle Bin?</source>
         <translation>¿Seguro que quiere mover %1 a la papelera de reciclaje?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1398"/>
+        <location filename="../src/mainwindow.cpp" line="1439"/>
         <source>Are you sure you want to move %1 to the Trash?</source>
         <translation>¿Seguro que quiere mover %1 a la papelera?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1402"/>
+        <location filename="../src/mainwindow.cpp" line="1443"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1405"/>
+        <location filename="../src/mainwindow.cpp" line="1446"/>
         <source>Do not ask again</source>
         <translation>No volver a preguntar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1449"/>
+        <location filename="../src/mainwindow.cpp" line="1490"/>
         <source>Can&apos;t delete %1.</source>
         <translation>No se puede borrar %1.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1483"/>
+        <location filename="../src/mainwindow.cpp" line="1524"/>
         <source>Can&apos;t undo deletion of %1:
 No write permission or file is read-only.</source>
         <translation>No se puede deshacer el borrado de %1:
 No tiene permiso de escritura o el archivo es de solo lectura.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1491"/>
+        <location filename="../src/mainwindow.cpp" line="1532"/>
         <source>Failed undoing deletion of %1.</source>
         <translation>Error al deshacer el borrado de %1.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1564"/>
+        <location filename="../src/mainwindow.cpp" line="1605"/>
         <source>Set Zoom Level</source>
         <translation>Establecer nivel de zoom</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1564"/>
+        <location filename="../src/mainwindow.cpp" line="1605"/>
         <source>Zoom Level (%):</source>
         <translation>Nivel de zoom (%):</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1665"/>
-        <location filename="../src/mainwindow.cpp" line="1689"/>
+        <location filename="../src/mainwindow.cpp" line="1725"/>
+        <location filename="../src/mainwindow.cpp" line="1735"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1666"/>
+        <location filename="../src/mainwindow.cpp" line="1736"/>
         <source>No OCR language is available. Add a language with OCR support in the Windows language settings.</source>
         <translation>No hay ningún idioma de OCR disponible. Añade un idioma con compatibilidad con OCR en la configuración de idioma de Windows.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1689"/>
+        <location filename="../src/mainwindow.cpp" line="1725"/>
         <source>Text recognition failed.</source>
         <translation>No se pudo reconocer el texto.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1695"/>
+        <location filename="../src/mainwindow.cpp" line="1739"/>
         <source>OCR cannot find any text in this image</source>
         <translation>El OCR no ha encontrado ningún texto en esta imagen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1714"/>
+        <location filename="../src/mainwindow.cpp" line="1759"/>
         <source>Copied all text</source>
         <translation>Todo el texto copiado</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1764"/>
+        <location filename="../src/mainwindow.cpp" line="1863"/>
         <source>Save Frame As...</source>
         <translation>Guardar fotograma como...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1810"/>
+        <location filename="../src/mainwindow.cpp" line="1909"/>
         <source>Stop S&amp;lideshow</source>
         <translation>Detener la presentación</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1810"/>
+        <location filename="../src/mainwindow.cpp" line="1909"/>
         <source>Start S&amp;lideshow</source>
         <translation>Iniciar la presentación</translation>
     </message>
@@ -668,12 +683,12 @@ No tiene permiso de escritura o el archivo es de solo lectura.</translation>
 <context>
     <name>QVGraphicsView</name>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1485"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1488"/>
         <source>Press Enter to apply the crop, Esc to cancel</source>
         <translation>Pulsa Intro para aplicar el recorte, Esc para cancelar</translation>
     </message>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1511"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1514"/>
         <source>Click to copy text, or CTRL+C to copy all text. Esc or right-click to close</source>
         <translation>Haz clic para copiar el texto, o Ctrl+C para copiar todo el texto. Esc o clic derecho para cerrar</translation>
     </message>
@@ -743,12 +758,12 @@ No tiene permiso de escritura o el archivo es de solo lectura.</translation>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../src/qvinfodialog.cpp" line="56"/>
+        <location filename="../src/qvinfodialog.cpp" line="59"/>
         <source>%1 (%2 bytes)</source>
         <translation>%1 (%2 bytes)</translation>
     </message>
     <message>
-        <location filename="../src/qvinfodialog.cpp" line="69"/>
+        <location filename="../src/qvinfodialog.cpp" line="72"/>
         <source>%1 x %2 (%3 MP)</source>
         <translation>%1 x %2 (%3 MP)</translation>
     </message>
@@ -1510,276 +1525,291 @@ No tiene permiso de escritura o el archivo es de solo lectura.</translation>
     </message>
     <message>
         <location filename="../src/shortcutmanager.cpp" line="42"/>
+        <source>Print</source>
+        <translation>Imprimir</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="43"/>
+        <source>Save As</source>
+        <translation>Guardar como</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="44"/>
+        <source>Save</source>
+        <translation>Guardar</translation>
+    </message>
+    <message>
+        <location filename="../src/shortcutmanager.cpp" line="45"/>
         <source>Open Containing Folder</source>
         <translation>Abrir la carpeta contenedora</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="43"/>
+        <location filename="../src/shortcutmanager.cpp" line="46"/>
         <source>Show in Explorer</source>
         <translation>Mostrar en el explorador</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="44"/>
+        <location filename="../src/shortcutmanager.cpp" line="47"/>
         <source>Show File Info</source>
         <translation>Mostrar información del archivo</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="45"/>
+        <location filename="../src/shortcutmanager.cpp" line="48"/>
         <source>Restore from Trash</source>
         <translation>Restaurar de la papelera</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="46"/>
+        <location filename="../src/shortcutmanager.cpp" line="49"/>
         <source>Undo Delete</source>
         <translation>Deshacer el borrado</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="47"/>
+        <location filename="../src/shortcutmanager.cpp" line="50"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="48"/>
+        <location filename="../src/shortcutmanager.cpp" line="51"/>
         <source>Copy OCR Text</source>
         <translation>Copiar texto OCR</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="49"/>
+        <location filename="../src/shortcutmanager.cpp" line="52"/>
         <source>Paste</source>
         <translation>Pegar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="50"/>
+        <location filename="../src/shortcutmanager.cpp" line="53"/>
         <source>Rename</source>
         <translation>Cambiar nombre</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="55"/>
+        <location filename="../src/shortcutmanager.cpp" line="58"/>
         <source>Move to Trash</source>
         <translation>Mover a la papelera</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="56"/>
+        <location filename="../src/shortcutmanager.cpp" line="59"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="57"/>
+        <location filename="../src/shortcutmanager.cpp" line="60"/>
         <source>Delete Permanently</source>
         <translation>Eliminar permanentemente</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="58"/>
+        <location filename="../src/shortcutmanager.cpp" line="61"/>
         <source>First File</source>
         <translation>Primer archivo</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="59"/>
+        <location filename="../src/shortcutmanager.cpp" line="62"/>
         <source>Previous File</source>
         <translation>Archivo anterior</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="60"/>
+        <location filename="../src/shortcutmanager.cpp" line="63"/>
         <source>Next File</source>
         <translation>Archivo siguiente</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="61"/>
+        <location filename="../src/shortcutmanager.cpp" line="64"/>
         <source>Last File</source>
         <translation>Último archivo</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="62"/>
+        <location filename="../src/shortcutmanager.cpp" line="65"/>
         <source>Random File</source>
         <translation>Archivo aleatorio</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="63"/>
+        <location filename="../src/shortcutmanager.cpp" line="66"/>
         <source>Zoom In</source>
         <translation>Ampliar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="68"/>
+        <location filename="../src/shortcutmanager.cpp" line="71"/>
         <source>Zoom Out</source>
         <translation>Reducir</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="69"/>
+        <location filename="../src/shortcutmanager.cpp" line="72"/>
         <source>Set Zoom Level</source>
         <translation>Establecer nivel de zoom</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="70"/>
+        <location filename="../src/shortcutmanager.cpp" line="73"/>
         <source>Original Size</source>
         <translation>Tamaño original</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="71"/>
+        <location filename="../src/shortcutmanager.cpp" line="74"/>
         <source>Zoom to Fit</source>
         <translation>Ajustar a la ventana</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="72"/>
+        <location filename="../src/shortcutmanager.cpp" line="75"/>
         <source>Default Zoom</source>
         <translation>Zoom predeterminado</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="73"/>
+        <location filename="../src/shortcutmanager.cpp" line="76"/>
         <source>Fill Window</source>
         <translation>Rellenar ventana</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="74"/>
+        <location filename="../src/shortcutmanager.cpp" line="77"/>
         <source>Navigation Resets Zoom</source>
         <translation>La navegación restablece el zoom</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="75"/>
+        <location filename="../src/shortcutmanager.cpp" line="78"/>
         <source>Rotate Right</source>
         <translation>Girar a la derecha</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="76"/>
+        <location filename="../src/shortcutmanager.cpp" line="79"/>
         <source>Rotate Left</source>
         <translation>Girar a la izquierda</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="77"/>
+        <location filename="../src/shortcutmanager.cpp" line="80"/>
         <source>Mirror</source>
         <translation>Reflejar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="78"/>
+        <location filename="../src/shortcutmanager.cpp" line="81"/>
         <source>Flip</source>
         <translation>Voltear</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="79"/>
+        <location filename="../src/shortcutmanager.cpp" line="82"/>
         <source>Reset Transformation</source>
         <translation>Restablecer transformación</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="80"/>
+        <location filename="../src/shortcutmanager.cpp" line="83"/>
         <source>Revert Transformation</source>
         <translation>Revertir transformación</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="81"/>
+        <location filename="../src/shortcutmanager.cpp" line="84"/>
         <source>Crop</source>
         <translation>Recortar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="82"/>
+        <location filename="../src/shortcutmanager.cpp" line="85"/>
         <source>90% Size</source>
         <translation>Redimensionar al 90%</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="83"/>
+        <location filename="../src/shortcutmanager.cpp" line="86"/>
         <source>80% Size</source>
         <translation>Redimensionar al 80%</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="84"/>
+        <location filename="../src/shortcutmanager.cpp" line="87"/>
         <source>75% Size</source>
         <translation>Redimensionar al 75%</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="85"/>
+        <location filename="../src/shortcutmanager.cpp" line="88"/>
         <source>50% Size</source>
         <translation>Redimensionar al 50%</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="86"/>
+        <location filename="../src/shortcutmanager.cpp" line="89"/>
         <source>25% Size</source>
         <translation>Redimensionar al 25%</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="87"/>
+        <location filename="../src/shortcutmanager.cpp" line="90"/>
         <source>Scroll Up</source>
         <translation>Desplazar hacia arriba</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="88"/>
+        <location filename="../src/shortcutmanager.cpp" line="91"/>
         <source>Scroll Down</source>
         <translation>Desplazar hacia abajo</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="89"/>
+        <location filename="../src/shortcutmanager.cpp" line="92"/>
         <source>Window On Top</source>
         <translation>Mantener ventana en primer plano</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="90"/>
+        <location filename="../src/shortcutmanager.cpp" line="93"/>
         <source>Toggle Titlebar Hidden</source>
         <translation>Alternar visibilidad de la barra de título</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="91"/>
+        <location filename="../src/shortcutmanager.cpp" line="94"/>
         <source>Full Screen</source>
         <translation>Pantalla completa</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="92"/>
+        <location filename="../src/shortcutmanager.cpp" line="95"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="93"/>
+        <location filename="../src/shortcutmanager.cpp" line="96"/>
         <source>Save Frame As</source>
         <translation>Guardar fotograma como</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="94"/>
+        <location filename="../src/shortcutmanager.cpp" line="97"/>
         <source>Pause</source>
         <translation>Pausar</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="95"/>
+        <location filename="../src/shortcutmanager.cpp" line="98"/>
         <source>Next Frame</source>
         <translation>Fotograma siguiente</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="96"/>
+        <location filename="../src/shortcutmanager.cpp" line="99"/>
         <source>Previous Frame</source>
         <translation>Fotograma anterior</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="97"/>
+        <location filename="../src/shortcutmanager.cpp" line="100"/>
         <source>Decrease Speed</source>
         <translation>Reducir la velocidad</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="98"/>
+        <location filename="../src/shortcutmanager.cpp" line="101"/>
         <source>Reset Speed</source>
         <translation>Restablecer la velocidad</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="99"/>
+        <location filename="../src/shortcutmanager.cpp" line="102"/>
         <source>Increase Speed</source>
         <translation>Aumentar la velocidad</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="100"/>
+        <location filename="../src/shortcutmanager.cpp" line="103"/>
         <source>Toggle Slideshow</source>
         <translation>Activar/desactivar una presentación</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="101"/>
+        <location filename="../src/shortcutmanager.cpp" line="104"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="102"/>
+        <location filename="../src/shortcutmanager.cpp" line="105"/>
         <source>Close Window</source>
         <translation>Cerrar la ventana</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="103"/>
+        <location filename="../src/shortcutmanager.cpp" line="106"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../src/shortcutmanager.cpp" line="105"/>
+        <location filename="../src/shortcutmanager.cpp" line="108"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>

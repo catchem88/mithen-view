@@ -189,6 +189,9 @@ QMenuBar *ActionManager::buildMenuBar(QWidget *parent)
     addCloneOfAction(fileMenu, "openurl");
     fileMenu->addMenu(buildRecentsMenu(fileMenu));
     addCloneOfAction(fileMenu, "reloadfile");
+    addCloneOfAction(fileMenu, "print");
+    addCloneOfAction(fileMenu, "save");
+    addCloneOfAction(fileMenu, "saveas");
     fileMenu->addSeparator();
     fileMenu->addSeparator();
     fileMenu->addMenu(buildOpenWithMenu(fileMenu));
@@ -627,6 +630,12 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
         relevantWindow->pickUrl();
     } else if (key == "reloadfile") {
         relevantWindow->reloadFile();
+    } else if (key == "print") {
+        relevantWindow->print();
+    } else if (key == "save") {
+        relevantWindow->save();
+    } else if (key == "saveas") {
+        relevantWindow->saveAs();
     } else if (key == "opencontainingfolder") {
         relevantWindow->openContainingFolder();
     } else if (key == "showfileinfo") {
@@ -750,6 +759,10 @@ void ActionManager::initializeActionLibrary()
     auto *reloadFileAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Refresh), tr("Re&load File"));
     reloadFileAction->setData({"disable"});
     actionLibrary.insert("reloadfile", reloadFileAction);
+
+    auto *printAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Print), tr("&Print..."));
+    printAction->setData({"disable"});
+    actionLibrary.insert("print", printAction);
 
     auto *closeWindowAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Close), tr("Close Window"));
     actionLibrary.insert("closewindow", closeWindowAction);
@@ -920,6 +933,14 @@ void ActionManager::initializeActionLibrary()
     auto *saveFrameAsAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Save), tr("Save Frame &As..."));
     saveFrameAsAction->setData({"disable"});
     actionLibrary.insert("saveframeas", saveFrameAsAction);
+
+    auto *saveAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Save), tr("&Save"));
+    saveAction->setData({"transformdisable"});
+    actionLibrary.insert("save", saveAction);
+
+    auto *saveAsAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Save), tr("Save &As..."));
+    saveAsAction->setData({"disable"});
+    actionLibrary.insert("saveas", saveAsAction);
 
     auto *pauseAction = new QAction(qvApp->iconFromFont(Qv::MaterialIcon::Pause), tr("Pa&use"));
     pauseAction->setData({"gifdisable"});

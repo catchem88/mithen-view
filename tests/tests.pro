@@ -1,4 +1,4 @@
-QT += core testlib gui network widgets
+QT += core testlib gui network widgets printsupport
 
 VERSION = 1.2.0
 DEFINES += MITHEINVIEW_VERSION=\\\"$$VERSION\\\"

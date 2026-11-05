@@ -39,6 +39,9 @@
 #include <QLabel>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPageLayout>
 
 namespace
 {
@@ -135,12 +138,14 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
         buildWindowTitle();
         if (info->isVisible())
             refreshProperties();
+        disableActions();
     });
     connect(graphicsView, &QVGraphicsView::cropApplied, this, [this]() {
         //Fit the window to the cropped image unless it is maximized/fullscreen
         if(!isMaximized() && !isFullScreen()) {
             setWindowSize(true);
         }
+        disableActions();
     });
     connect(graphicsView, &QVGraphicsView::zoomLevelChanged, this, &MainWindow::zoomLevelChanged);
     connect(graphicsView, &QVGraphicsView::ocrBoxClicked, this, [this](const QString &text) {
@@ -148,7 +153,12 @@ MainWindow::MainWindow(QWidget *parent, const QJsonObject &windowSessionState) :
         graphicsView->showOcrToast(tr("Text copied"));
     });
     connect(graphicsView, &QVGraphicsView::ocrStateChanged, this, &MainWindow::disableActions);
-    connect(graphicsView, &QVGraphicsView::folderInfoUpdated, this, &MainWindow::disableActions);
+    //The folder list is built asynchronously, so the title (image index / count) built by
+    //fileChanged can be stale (e.g. "0/0"); rebuild it once the list has been applied
+    connect(graphicsView, &QVGraphicsView::folderInfoUpdated, this, [this]() {
+        buildWindowTitle();
+        disableActions();
+    });
     connect(graphicsView, &QVGraphicsView::calculatedZoomModeChanged, this, &MainWindow::syncCalculatedZoomMode);
     connect(graphicsView, &QVGraphicsView::navigationResetsZoomChanged, this, &MainWindow::syncNavigationResetsZoom);
     connect(graphicsView, &QVGraphicsView::sortParametersChanged, this, &MainWindow::syncSortParameters);
@@ -542,6 +552,7 @@ bool MainWindow::confirmUnsavedTransform()
         //Throw the transforms away and show the image exactly as it is on disk
         graphicsView->resetTransformation();
         graphicsView->clearImageModified();
+        disableActions();
         const QString path = getCurrentFileDetails().fileInfo.absoluteFilePath();
         if(!path.isEmpty()) {
             graphicsView->loadFile(path);
@@ -575,7 +586,9 @@ bool MainWindow::saveCurrentImage(const bool saveAs)
         const QString defaultSuffix = canWriteSource ? sourceSuffix : QStringLiteral("png");
 
         QFileDialog dialog(this,tr("Save Image As..."));
-        dialog.setDirectory(settings.value("lastFileDialogDir",QDir::homePath()).toString());
+        //Default to the folder of the image being saved, falling back to the last used folder
+        const QString imageDir = sourceFileInfo.absolutePath();
+        dialog.setDirectory(imageDir.isEmpty() ? settings.value("lastFileDialogDir",QDir::homePath()).toString() : imageDir);
         dialog.setNameFilters(qvApp->getNameFilterList());
         if(canWriteSource) {
             dialog.selectFile(sourceFileInfo.fileName());
@@ -611,6 +624,7 @@ bool MainWindow::saveCurrentImage(const bool saveAs)
     //The saved file now contains the transforms, so drop them and show the saved file
     graphicsView->resetTransformation();
     graphicsView->clearImageModified();
+    disableActions();
     qvApp->invalidateFolderListings();
 
     if(graphicsView->getCurrentFileDetails().fileInfo.absoluteFilePath() != fileName) {
@@ -618,6 +632,20 @@ bool MainWindow::saveCurrentImage(const bool saveAs)
         cancelSlideshow();
     }
     return true;
+}
+
+void MainWindow::save()
+{
+    //Save only makes sense for a transformed image; the action is disabled otherwise
+    if(!graphicsView->hasUnsavedTransform()) {
+        return;
+    }
+    saveCurrentImage(false);
+}
+
+void MainWindow::saveAs()
+{
+    saveCurrentImage(true);
 }
 
 void MainWindow::settingsUpdated()
@@ -764,6 +792,10 @@ void MainWindow::disableActions()
                 else if (cloneData.last() == "folderdisable")
                 {
                     clone->setEnabled(!getCurrentFileDetails().folderFileInfoList.isEmpty());
+                }
+                else if (cloneData.last() == "transformdisable")
+                {
+                    clone->setEnabled(graphicsView->hasUnsavedTransform());
                 }
                 else if (cloneData.last() == "windowdisable")
                 {
@@ -1612,6 +1644,7 @@ void MainWindow::cropImage()
 void MainWindow::resizeImage(const qreal factor)
 {
     graphicsView->resizeImage(factor);
+    disableActions();
 
     //Fit the window to the new image size, but leave maximized/fullscreen windows alone
     if(!isMaximized() && !isFullScreen()) {
@@ -1761,6 +1794,60 @@ void MainWindow::lastFile()
 void MainWindow::randomFile()
 {
     graphicsView->goToFile(Qv::GoToFileMode::Random);
+}
+
+void MainWindow::print()
+{
+    //Print what the user sees: crop/resize are already baked in and any pending
+    //rotate/mirror/flip transform is applied by getCurrentTransformedImage()
+    const QImage image = graphicsView->getCurrentTransformedImage();
+    if(image.isNull()) {
+        return;
+    }
+
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setDocName(getCurrentFileDetails().fileInfo.fileName());
+    printer.setPageOrientation(image.width() > image.height() ? QPageLayout::Landscape : QPageLayout::Portrait);
+
+    //The Windows 11 unified print dialog can only preview pages supplied through the
+    //WinUI printing model, which a Win32 app cannot provide, so it just says "This app
+    //doesn't support print preview". Ask Windows for the classic dialog while ours is
+    //open, then put the user's own preference back.
+    QSettings unifiedPrintDialog(QStringLiteral(R"(HKEY_CURRENT_USER\Software\Microsoft\Print\UnifiedPrintDialog)"), QSettings::NativeFormat);
+    const bool hadLegacyPreference = unifiedPrintDialog.contains("PreferLegacyPrintDialog");
+    const QVariant previousLegacyPreference = unifiedPrintDialog.value("PreferLegacyPrintDialog");
+    unifiedPrintDialog.setValue("PreferLegacyPrintDialog", 1);
+    unifiedPrintDialog.sync();
+
+    QPrintDialog dialog(&printer, this);
+    const int printResult = dialog.exec();
+
+    if(hadLegacyPreference) {
+        unifiedPrintDialog.setValue("PreferLegacyPrintDialog", previousLegacyPreference);
+    }
+    else {
+        unifiedPrintDialog.remove("PreferLegacyPrintDialog");
+    }
+    unifiedPrintDialog.sync();
+
+    if(printResult != QDialog::Accepted) {
+        return;
+    }
+
+    QPainter painter;
+    if(!painter.begin(&printer)) {
+        return;
+    }
+
+    //Scale to fit the printable area while keeping the aspect ratio, centered on the page
+    const QRectF pageRect = printer.pageLayout().paintRectPixels(printer.resolution());
+    const QSizeF targetSize = QSizeF(image.size()).scaled(pageRect.size(), Qt::KeepAspectRatio);
+    QRectF target(pageRect.topLeft(), targetSize);
+    target.moveCenter(pageRect.center());
+
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    painter.drawImage(target, image);
+    painter.end();
 }
 
 void MainWindow::saveFrameAs()

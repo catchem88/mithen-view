@@ -76,6 +76,8 @@ public:
 
     void reloadFile();
 
+    void print();
+
     void openContainingFolder();
 
     void openWith(const OpenWith::OpenWithItem &exec);
@@ -141,6 +143,10 @@ public:
     void randomFile();
 
     void saveFrameAs();
+
+    void save();
+
+    void saveAs();
 
     void ocr();
 
