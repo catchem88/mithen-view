@@ -384,7 +384,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="477"/>
         <source>Error occurred opening
 %3
 %2 (Error %1)</source>
@@ -392,44 +392,44 @@
 %2 时发生错误（错误 %1）</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="487"/>
+        <location filename="../src/mainwindow.cpp" line="492"/>
         <source>Exit F&amp;ull Screen</source>
         <translation>退出全屏</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="487"/>
+        <location filename="../src/mainwindow.cpp" line="492"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>进入全屏</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="516"/>
         <source>Res&amp;ume</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="516"/>
         <source>Pa&amp;use</source>
         <translation>暂停</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1058"/>
         <source>Show Title&amp;bar</source>
         <translation>显示标题栏</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1058"/>
         <source>Hide Title&amp;bar</source>
         <translation>隐藏标题栏</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613"/>
-        <location filename="../src/mainwindow.cpp" line="1294"/>
-        <location filename="../src/mainwindow.cpp" line="1320"/>
-        <location filename="../src/mainwindow.cpp" line="1343"/>
-        <location filename="../src/mainwindow.cpp" line="1425"/>
-        <location filename="../src/mainwindow.cpp" line="1490"/>
-        <location filename="../src/mainwindow.cpp" line="1524"/>
-        <location filename="../src/mainwindow.cpp" line="1532"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
+        <location filename="../src/mainwindow.cpp" line="1311"/>
+        <location filename="../src/mainwindow.cpp" line="1337"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
+        <location filename="../src/mainwindow.cpp" line="1442"/>
+        <location filename="../src/mainwindow.cpp" line="1507"/>
+        <location filename="../src/mainwindow.cpp" line="1541"/>
+        <location filename="../src/mainwindow.cpp" line="1549"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -439,173 +439,173 @@
         <translation>已复制文本</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="534"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Unsaved Transform</source>
         <translation>未保存的变换</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="535"/>
+        <location filename="../src/mainwindow.cpp" line="540"/>
         <source>Do you want to save this transformation?</source>
         <translation>是否保存此变换？</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="536"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Save As...</source>
         <translation>另存为...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="539"/>
+        <location filename="../src/mainwindow.cpp" line="544"/>
         <source>Overwrite</source>
         <translation>覆盖</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="541"/>
+        <location filename="../src/mainwindow.cpp" line="546"/>
         <source>Discard</source>
         <translation>放弃</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="583"/>
+        <location filename="../src/mainwindow.cpp" line="588"/>
         <source>Save Image As...</source>
         <translation>图片另存为...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
         <source>Failed to save the image.</source>
         <translation>无法保存图片。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1294"/>
+        <location filename="../src/mainwindow.cpp" line="1311"/>
         <source>Error: URL is invalid</source>
         <translation>错误：URL无效</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1300"/>
+        <location filename="../src/mainwindow.cpp" line="1317"/>
         <source>Downloading image...</source>
         <translation>下载图像...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1300"/>
+        <location filename="../src/mainwindow.cpp" line="1317"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1304"/>
-        <location filename="../src/mainwindow.cpp" line="1359"/>
+        <location filename="../src/mainwindow.cpp" line="1321"/>
+        <location filename="../src/mainwindow.cpp" line="1376"/>
         <source>Open URL...</source>
         <translation>打开URL...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1320"/>
+        <location filename="../src/mainwindow.cpp" line="1337"/>
         <source>Error </source>
         <translation>错误 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1343"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
         <source>Error: Invalid image</source>
         <translation>错误：无效的文件</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1360"/>
+        <location filename="../src/mainwindow.cpp" line="1377"/>
         <source>URL of a supported image file:</source>
         <translation>受支持的图像文件URL:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1425"/>
+        <location filename="../src/mainwindow.cpp" line="1442"/>
         <source>Can&apos;t delete %1:
 No write permission or file is read-only.</source>
         <translation>无法删除：
 没有权限更改或文件只读。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1432"/>
+        <location filename="../src/mainwindow.cpp" line="1449"/>
         <source>Are you sure you want to permanently delete %1? This can&apos;t be undone.</source>
         <translation>您确定要永久删除 %1 吗？此操作无法撤销。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1437"/>
+        <location filename="../src/mainwindow.cpp" line="1454"/>
         <source>Are you sure you want to move %1 to the Recycle Bin?</source>
         <translation>确定移至回收站？</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1439"/>
+        <location filename="../src/mainwindow.cpp" line="1456"/>
         <source>Are you sure you want to move %1 to the Trash?</source>
         <translation>确定移至废纸篓？</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1443"/>
+        <location filename="../src/mainwindow.cpp" line="1460"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1446"/>
+        <location filename="../src/mainwindow.cpp" line="1463"/>
         <source>Do not ask again</source>
         <translation>不再提醒</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1490"/>
+        <location filename="../src/mainwindow.cpp" line="1507"/>
         <source>Can&apos;t delete %1.</source>
         <translation>无法删除。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1524"/>
+        <location filename="../src/mainwindow.cpp" line="1541"/>
         <source>Can&apos;t undo deletion of %1:
 No write permission or file is read-only.</source>
         <translation>无法撤销删除：
 没有写入权限或文件只读。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1532"/>
+        <location filename="../src/mainwindow.cpp" line="1549"/>
         <source>Failed undoing deletion of %1.</source>
         <translation>撤销删除失败。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="1622"/>
         <source>Set Zoom Level</source>
         <translation>设置缩放级别</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="1622"/>
         <source>Zoom Level (%):</source>
         <translation>缩放级别（%）：</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725"/>
-        <location filename="../src/mainwindow.cpp" line="1735"/>
+        <location filename="../src/mainwindow.cpp" line="1754"/>
+        <location filename="../src/mainwindow.cpp" line="1764"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1736"/>
+        <location filename="../src/mainwindow.cpp" line="1765"/>
         <source>No OCR language is available. Add a language with OCR support in the Windows language settings.</source>
         <translation>没有可用的 OCR 语言。请在 Windows 语言设置中添加支持 OCR 的语言。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725"/>
+        <location filename="../src/mainwindow.cpp" line="1754"/>
         <source>Text recognition failed.</source>
         <translation>文本识别失败。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1739"/>
+        <location filename="../src/mainwindow.cpp" line="1768"/>
         <source>OCR cannot find any text in this image</source>
         <translation>OCR 在此图片中未找到任何文本</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1759"/>
+        <location filename="../src/mainwindow.cpp" line="1788"/>
         <source>Copied all text</source>
         <translation>已复制所有文本</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1863"/>
+        <location filename="../src/mainwindow.cpp" line="1892"/>
         <source>Save Frame As...</source>
         <translation>保存帧为...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1909"/>
+        <location filename="../src/mainwindow.cpp" line="1938"/>
         <source>Stop S&amp;lideshow</source>
         <translation>停止幻灯播放</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1909"/>
+        <location filename="../src/mainwindow.cpp" line="1938"/>
         <source>Start S&amp;lideshow</source>
         <translation>开始幻灯播放</translation>
     </message>
@@ -682,12 +682,22 @@ No write permission or file is read-only.</source>
 <context>
     <name>QVGraphicsView</name>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1488"/>
+        <location filename="../src/qvgraphicsview.cpp" line="963"/>
+        <source>Unsupported Format</source>
+        <translation>不支持的格式</translation>
+    </message>
+    <message>
+        <location filename="../src/qvgraphicsview.cpp" line="963"/>
+        <source>This file format is disabled in the Formats settings.</source>
+        <translation>此文件格式已在格式设置中禁用。</translation>
+    </message>
+    <message>
+        <location filename="../src/qvgraphicsview.cpp" line="1539"/>
         <source>Press Enter to apply the crop, Esc to cancel</source>
         <translation>按 Enter 应用裁剪，按 Esc 取消</translation>
     </message>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1514"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1565"/>
         <source>Click to copy text, or CTRL+C to copy all text. Esc or right-click to close</source>
         <translation>点击可复制文本，或按 Ctrl+C 复制全部文本。按 Esc 或右键关闭</translation>
     </message>

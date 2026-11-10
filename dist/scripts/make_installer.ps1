@@ -9,8 +9,10 @@
         powershell -File dist/scripts/make_installer.ps1 [-WithPlugins]
 #>
 param (
-    # Also download the optional codec plugins (needs network access)
-    [switch]$WithPlugins
+    # Kept for compatibility: the codec plugins are now deployed by default
+    [switch]$WithPlugins,
+    # Skip the codec plugins (offline/dev builds)
+    [switch]$NoCodecPlugins
 )
 
 $ErrorActionPreference = "Stop"
@@ -57,15 +59,15 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-if ($WithPlugins) {
-    Write-Host "`n[3/4] Downloading optional codec plugins..." -ForegroundColor Yellow
+if ($NoCodecPlugins) {
+    Write-Host "`n[3/4] Skipping codec plugins (-NoCodecPlugins)" -ForegroundColor Yellow
+} else {
+    Write-Host "`n[3/4] Deploying codec plugins (AVIF, RAW, HEIF, JPEG XL, EXR, HDR, JXR, APNG)..." -ForegroundColor Yellow
     dist/scripts/download-plugins.ps1
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Codec plugin download failed"
         exit 1
     }
-} else {
-    Write-Host "`n[3/4] Skipping optional codec plugins (pass -WithPlugins to include them)" -ForegroundColor Yellow
 }
 
 Write-Host "`n[4/4] Building the installer..." -ForegroundColor Yellow

@@ -93,6 +93,9 @@ signals:
     //Emitted when a folder list built on a worker thread has been applied
     void folderInfoUpdated();
 
+    //Emitted when a file load starts/finishes (drives the loading indicator)
+    void loadingChanged(bool isLoading);
+
 protected:
     void loadPixmap(const ReadData &readData);
     void loadEmptyPixmap();

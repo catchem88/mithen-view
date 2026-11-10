@@ -58,7 +58,7 @@ public:
 
     void setTitlebarHidden(const bool shouldHide);
 
-    void setWindowSize(const bool isReapplying = false, const bool isExplicitRequest = false);
+    void setWindowSize(const bool isReapplying = false, const bool isExplicitRequest = false, const bool preserveZoom = false);
 
     void setJustLaunchedWithImage(bool value);
 

@@ -259,10 +259,6 @@ void QVApplication::defineFilterLists()
     {
         const auto fileExtension = "." + QString::fromUtf8(byteArray);
 
-        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in MithenView
-        if (fileExtension == ".pdf")
-            continue;
-
         addExtension(fileExtension);
 
         // Register additional file extensions that decoders support but don't advertise
@@ -287,15 +283,19 @@ void QVApplication::defineFilterLists()
         }
     }
 
+    //Document/editor formats are listed in Settings > Formats (disabled by default) and only
+    //become navigable once the user checks them there
+    const QStringList editorExtensions = { ".pdf", ".psd", ".psb", ".psdt", ".kra", ".ora", ".xcf" };
+    for (const QString &editorExtension : editorExtensions)
+    {
+        addExtension(editorExtension);
+    }
+
     // Build mime type list
     const auto &byteArrayMimeTypes = QImageReader::supportedMimeTypes();
     for (const auto &byteArray : byteArrayMimeTypes)
     {
         const QString mimeType = QString::fromUtf8(byteArray);
-
-        // Qt 5.15 seems to have added pdf support for QImageReader but it is super broken in MithenView
-        if (mimeType == "application/pdf")
-            continue;
 
         mimeTypeNameSet << mimeType;
     }

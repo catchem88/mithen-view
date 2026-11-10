@@ -334,7 +334,7 @@ void SettingsManager::initializeSettingsLibrary()
     settingsLibrary.insert("allowmimecontentdetection", {false, {}});
     settingsLibrary.insert("skiphidden", {true, {}});
     // Formats
-    settingsLibrary.insert("disabledfileextensions", {"", {}});
+    settingsLibrary.insert("disabledfileextensions", {".pdf;.psd;.psb;.psdt;.kra;.ora;.xcf", {}});
     // Mouse
     settingsLibrary.insert("navigationregionsenabled", {false, {}});
     settingsLibrary.insert("viewportdoubleclickaction", {static_cast<int>(Qv::ViewportClickAction::OriginalSize), {}});

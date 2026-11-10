@@ -33,6 +33,7 @@ QVImageCore::QVImageCore(QObject *parent) : QObject(parent)
             pendingLoadRequestId = 0;
             loadInProgress = false;
             pendingLoadDebouncesPreloading = false;
+            emit loadingChanged(false);
             loadPixmap(readData);
 
             // A fileChanged handler may have synchronously requested another image.
@@ -134,6 +135,7 @@ void QVImageCore::loadFile(const QString &fileName, const bool isReloading, cons
     fileOrLoadPending = true;
     preloadDebounceTimer.stop();
     loadInProgress = true;
+    emit loadingChanged(true);
     pendingLoadDebouncesPreloading = debouncePreloading;
     pendingLoadRequestId = imageLoader.requestImage(absolutePath, isReloading, initialFrameNumber);
 }
@@ -221,6 +223,7 @@ void QVImageCore::closeImage(const bool stayInDir)
     loadInProgress = false;
     pendingLoadDebouncesPreloading = false;
     fileOrLoadPending = false;
+    emit loadingChanged(false);
 
     emit fileChanging();
     FileDetails emptyDetails;

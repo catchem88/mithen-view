@@ -66,6 +66,35 @@ QVGraphicsView::QVGraphicsView(QWidget *parent) : QGraphicsView(parent)
         viewport()->update();
     });
 
+    //Loading indicator: shown only when a load takes long enough to be noticeable
+    loadingIndicatorTimer = new QTimer(this);
+    loadingIndicatorTimer->setSingleShot(true);
+    loadingIndicatorTimer->setInterval(200);
+    connect(loadingIndicatorTimer, &QTimer::timeout, this, [this]{
+        if (loadingIndicator == nullptr)
+        {
+            loadingIndicator = new QProgressBar(viewport());
+            loadingIndicator->setRange(0,0);
+            loadingIndicator->setTextVisible(false);
+            loadingIndicator->setFixedSize(220,14);
+            loadingIndicator->setAttribute(Qt::WA_TransparentForMouseEvents);
+        }
+        updateLoadingIndicator();
+        loadingIndicator->show();
+    });
+    connect(&imageCore, &QVImageCore::loadingChanged, this, [this](const bool isLoading){
+        if (isLoading)
+        {
+            loadingIndicatorTimer->start();
+        }
+        else
+        {
+            loadingIndicatorTimer->stop();
+            if (loadingIndicator != nullptr)
+                loadingIndicator->hide();
+        }
+    });
+
     loadedPixmapItem = new QGraphicsPixmapItem();
     scene->addItem(loadedPixmapItem);
 
@@ -92,6 +121,7 @@ void QVGraphicsView::resizeEvent(QResizeEvent *event)
     }
 
     updateOcrBusyIndicator();
+    updateLoadingIndicator();
 }
 
 void QVGraphicsView::paintEvent(QPaintEvent *event)
@@ -925,6 +955,15 @@ void QVGraphicsView::loadMimeData(const QMimeData *mimeData)
 
 void QVGraphicsView::loadFile(const QString &fileName, const QString &baseDir, const std::optional<int> initialFrameNumber)
 {
+    //Formats disabled in Settings > Formats are not navigable and are not decoded when
+    //opened explicitly (the user can enable them there)
+    const QString suffix = "." + QFileInfo(fileName).suffix().toLower();
+    if (qvApp->getDisabledFileExtensions().contains(suffix))
+    {
+        QMessageBox::warning(this, tr("Unsupported Format"), tr("This file format is disabled in the Formats settings."));
+        return;
+    }
+
     //Always refresh the folder listing on an external open (even when reusing a window)
     imageCore.loadFile(fileName, false, !baseDir.isEmpty() ? baseDir : QFileInfo(fileName).path(), false, initialFrameNumber);
 }
@@ -1313,6 +1352,18 @@ void QVGraphicsView::updateOcrBusyIndicator()
         viewportRect.center().y() - ocrBusyIndicator->height() / 2);
 }
 
+void QVGraphicsView::updateLoadingIndicator()
+{
+    if (loadingIndicator == nullptr)
+    {
+        return;
+    }
+
+    const QRect viewportRect = viewport()->rect();
+    loadingIndicator->move(viewportRect.center().x() - loadingIndicator->width() / 2,
+        viewportRect.center().y() - loadingIndicator->height() / 2);
+}
+
 //Maps a box from the recognized (transformed) image back to viewport coordinates
 QRect QVGraphicsView::getOcrBoxViewportRect(const QRect &imageRect) const
 {
@@ -1523,14 +1574,36 @@ void QVGraphicsView::drawOverlayToast(QPainter *painter,const QString &text) con
 {
     painter->setFont(font());
     const QFontMetrics metrics(painter->font());
-    const QRect textRect = metrics.boundingRect(text).adjusted(-10,-6,10,6);
-    const QRect toastRect = textRect.translated(viewport()->rect().center().x() - textRect.width() / 2,
-                                                viewport()->rect().bottom() - textRect.height() - 20);
+
+    const int horizontalPadding = 10;
+    const int verticalPadding = 6;
+    const int viewportMargin = 12;
+    const QRect viewportRect = viewport()->rect();
+
+    //Wrap to the viewport width and clamp inside it, so long hints are never clipped on
+    //small images/windows (the toast is drawn over the whole viewport, not just the image)
+    const int maxTextWidth = qMax(40, viewportRect.width() - 2 * (viewportMargin + horizontalPadding));
+    const QRect textBounds = metrics.boundingRect(QRect(0,0,maxTextWidth,viewportRect.height()),
+        Qt::TextWordWrap, text);
+    const QSize toastSize(qMin(textBounds.width() + 2 * horizontalPadding, viewportRect.width() - 2 * viewportMargin),
+        textBounds.height() + 2 * verticalPadding);
+
+    const int minX = viewportRect.left() + viewportMargin;
+    const int maxX = viewportRect.right() - viewportMargin - toastSize.width();
+    const int minY = viewportRect.top() + viewportMargin;
+    const int maxY = viewportRect.bottom() - viewportMargin - toastSize.height();
+    int toastX = viewportRect.center().x() - toastSize.width() / 2;
+    int toastY = viewportRect.bottom() - toastSize.height() - 20;
+    toastX = (maxX < minX) ? minX : qBound(minX, toastX, maxX);
+    toastY = (maxY < minY) ? minY : qBound(minY, toastY, maxY);
+
+    const QRect toastRect(toastX, toastY, toastSize.width(), toastSize.height());
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(0,0,0,180));
     painter->drawRoundedRect(toastRect,4,4);
     painter->setPen(QColorConstants::White);
-    painter->drawText(toastRect,Qt::AlignCenter,text);
+    painter->drawText(toastRect.adjusted(horizontalPadding, verticalPadding, -horizontalPadding, -verticalPadding),
+        Qt::AlignCenter | Qt::TextWordWrap, text);
 }
 
 void QVGraphicsView::imageChanged()

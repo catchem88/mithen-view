@@ -10,10 +10,14 @@ MithenView is a lightweight image viewer, with basic editing feature & OCR for W
 
 ## Additional features in this fork
 * Windows focused features and configuration
-* Follows Windows explorer sorting
+* Follows Windows Explorer sorting (name, date modified/created, size, type - including its direction)
 * Basic editing functions (Rotate, Mirror, Flip, Crop, Quick Resize)
 * OCR - Using native OcrEngine Class (Windows.Media.Ocr - WinRT Build 10240)
 * QR code scanning - built in to the OCR feature
+* Adds Print (`Ctrl+P`, Windows print dialog), plus Save and Save As (`Ctrl+S`; Save is enabled only when the image has pending edits)
+* Ships a codec pack for AVIF, HEIF/HEIC, JPEG XL, OpenEXR, HDR, camera RAW (DNG/CR2/NEF/...), JPEG XR and APNG; editor formats (PSD/PSB/KRA/ORA/XCF/PDF) are listed in Settings > Formats and disabled by default
+* Shows a centered loading indicator while a large image is being decoded
+* Keeps the window matched to the image after rotating (maximizes when it no longer fits the screen)
 * Support Windows thumbnails (workaround for pesky Google Drive blocks PNG thumbnails on windows explorer)
 * Adds window size modes: `Auto` (default), `Maximize`, or `Fullscreen`.
 * Adds window positioning modes: `Centered` (default) or `Remember last position`, with multi-monitor and per-monitor DPI awareness.

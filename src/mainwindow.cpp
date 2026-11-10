@@ -893,8 +893,16 @@ void MainWindow::buildWindowTitle()
         const bool hasError = fileDetails.errorData.has_value();
         auto getFileName = [&]() { return fileDetails.fileInfo.fileName() + (graphicsView->hasUnsavedTransform() ? "*" : ""); };
         auto getZoomLevel = [&]() { return QString::number((hasError ? 1.0 : graphicsView->getZoomLevel()) * 100.0, 'f', 1) + "%"; };
-        auto getImageIndex = [&]() { return QString::number(fileDetails.loadedIndexInFolder + 1); };
-        auto getImageCount = [&]() { return QString::number(fileDetails.folderFileInfoList.count()); };
+        auto getImageIndex = [&]() {
+            //Not in the navigable list: no position is shown at all
+            return fileDetails.loadedIndexInFolder < 0 ? QString() : QString::number(fileDetails.loadedIndexInFolder + 1);
+        };
+        auto getImageCount = [&]() {
+            return fileDetails.loadedIndexInFolder < 0 ? QString() : QString::number(fileDetails.folderFileInfoList.count());
+        };
+        auto getImagePosition = [&]() {
+            return getImageIndex().isEmpty() ? QString() : getImageIndex() + "/" + getImageCount();
+        };
         auto getImageWidth = [&]() { return QString::number(hasError ? 0 : graphicsView->getCurrentImageSize().width()); };
         auto getImageHeight = [&]() { return QString::number(hasError ? 0 : graphicsView->getCurrentImageSize().height()); };
         auto getFileSize = [&]() { return QVInfoDialog::formatBytes(hasError ? 0 : fileDetails.fileInfo.size()); };
@@ -906,12 +914,14 @@ void MainWindow::buildWindowTitle()
         }
         case Qv::TitleBarText::Practical:
         {
-            newString = getZoomLevel() + " - " + getImageIndex() + "/" + getImageCount() + " - " + getFileName();
+            const QString position = getImagePosition();
+            newString = getZoomLevel() + " - " + (position.isEmpty() ? QString() : position + " - ") + getFileName();
             break;
         }
         case Qv::TitleBarText::Verbose:
         {
-            newString = getZoomLevel() + " - " + getImageIndex() + "/" + getImageCount() + " - " + getFileName() + " - " +
+            const QString position = getImagePosition();
+            newString = getZoomLevel() + " - " + (position.isEmpty() ? QString() : position + " - ") + getFileName() + " - " +
                         getImageWidth() + "x" + getImageHeight() + " - " + getFileSize() + " - MithenView";
             break;
         }
@@ -1055,7 +1065,7 @@ void MainWindow::setTitlebarHidden(const bool shouldHide)
     graphicsView->fitOrConstrainImage();
 }
 
-void MainWindow::setWindowSize(const bool isReapplying,const bool isExplicitRequest) {
+void MainWindow::setWindowSize(const bool isReapplying,const bool isExplicitRequest,const bool preserveZoom) {
     Q_UNUSED(isReapplying)
     if(!getIsPixmapLoaded()) {
         return;
@@ -1172,7 +1182,7 @@ void MainWindow::setWindowSize(const bool isReapplying,const bool isExplicitRequ
 
     //Only force original size when navigation is allowed to reset the zoom, so a preserved
     //zoom level survives navigating to an image smaller than the window
-    if(graphicsView->getNavigationResetsZoom()) {
+    if(!preserveZoom && graphicsView->getNavigationResetsZoom()) {
         graphicsView->setCalculatedZoomMode(Qv::CalculatedZoomMode::OriginalSize);
         graphicsView->setSmallImageMode(true);
     }
@@ -1662,6 +1672,11 @@ void MainWindow::revertTransform()
 
     //Reverting keeps the current zoom level
     graphicsView->revertTransform();
+
+    //Restore the window shape when reverting a rotation (windowed mode only)
+    if(!isMaximized() && !isFullScreen()) {
+        setWindowSize(true, false, true);
+    }
 }
 
 void MainWindow::defaultZoom()
@@ -1676,12 +1691,19 @@ void MainWindow::defaultZoom()
 void MainWindow::rotateRight()
 {
     graphicsView->rotateImage(90);
+    //Follow the window sizing logic for the new orientation without changing the zoom
+    if(!isMaximized() && !isFullScreen()) {
+        setWindowSize(true, false, true);
+    }
     graphicsView->fitOrConstrainImage();
 }
 
 void MainWindow::rotateLeft()
 {
     graphicsView->rotateImage(-90);
+    if(!isMaximized() && !isFullScreen()) {
+        setWindowSize(true, false, true);
+    }
     graphicsView->fitOrConstrainImage();
 }
 

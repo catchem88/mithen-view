@@ -384,7 +384,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="477"/>
         <source>Error occurred opening
 %3
 %2 (Error %1)</source>
@@ -393,44 +393,44 @@
 %2 (오류 %1)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="487"/>
+        <location filename="../src/mainwindow.cpp" line="492"/>
         <source>Exit F&amp;ull Screen</source>
         <translation>전체 화면 종료</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="487"/>
+        <location filename="../src/mainwindow.cpp" line="492"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>전체 화면 시작</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="516"/>
         <source>Res&amp;ume</source>
         <translation>재시작</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="516"/>
         <source>Pa&amp;use</source>
         <translation>일시중지</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1058"/>
         <source>Show Title&amp;bar</source>
         <translation>제목 표시줄 보이기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1058"/>
         <source>Hide Title&amp;bar</source>
         <translation>제목 표시줄 숨기기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613"/>
-        <location filename="../src/mainwindow.cpp" line="1294"/>
-        <location filename="../src/mainwindow.cpp" line="1320"/>
-        <location filename="../src/mainwindow.cpp" line="1343"/>
-        <location filename="../src/mainwindow.cpp" line="1425"/>
-        <location filename="../src/mainwindow.cpp" line="1490"/>
-        <location filename="../src/mainwindow.cpp" line="1524"/>
-        <location filename="../src/mainwindow.cpp" line="1532"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
+        <location filename="../src/mainwindow.cpp" line="1311"/>
+        <location filename="../src/mainwindow.cpp" line="1337"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
+        <location filename="../src/mainwindow.cpp" line="1442"/>
+        <location filename="../src/mainwindow.cpp" line="1507"/>
+        <location filename="../src/mainwindow.cpp" line="1541"/>
+        <location filename="../src/mainwindow.cpp" line="1549"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
@@ -440,173 +440,173 @@
         <translation>텍스트를 복사했습니다</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="534"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Unsaved Transform</source>
         <translation>저장되지 않은 변형</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="535"/>
+        <location filename="../src/mainwindow.cpp" line="540"/>
         <source>Do you want to save this transformation?</source>
         <translation>이 변형을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="536"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Save As...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="539"/>
+        <location filename="../src/mainwindow.cpp" line="544"/>
         <source>Overwrite</source>
         <translation>덮어쓰기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="541"/>
+        <location filename="../src/mainwindow.cpp" line="546"/>
         <source>Discard</source>
         <translation>버리기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="583"/>
+        <location filename="../src/mainwindow.cpp" line="588"/>
         <source>Save Image As...</source>
         <translation>이미지를 다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
         <source>Failed to save the image.</source>
         <translation>이미지를 저장하지 못했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1294"/>
+        <location filename="../src/mainwindow.cpp" line="1311"/>
         <source>Error: URL is invalid</source>
         <translation>오류: 유효하지 않은 URL</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1300"/>
+        <location filename="../src/mainwindow.cpp" line="1317"/>
         <source>Downloading image...</source>
         <translation>이미지를 내려받는 중...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1300"/>
+        <location filename="../src/mainwindow.cpp" line="1317"/>
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1304"/>
-        <location filename="../src/mainwindow.cpp" line="1359"/>
+        <location filename="../src/mainwindow.cpp" line="1321"/>
+        <location filename="../src/mainwindow.cpp" line="1376"/>
         <source>Open URL...</source>
         <translation>URL 열기...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1320"/>
+        <location filename="../src/mainwindow.cpp" line="1337"/>
         <source>Error </source>
         <translation>오류 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1343"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
         <source>Error: Invalid image</source>
         <translation>오류: 유효하지 않은 이미지</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1360"/>
+        <location filename="../src/mainwindow.cpp" line="1377"/>
         <source>URL of a supported image file:</source>
         <translation>지원되는 이미지 파일의 URL:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1425"/>
+        <location filename="../src/mainwindow.cpp" line="1442"/>
         <source>Can&apos;t delete %1:
 No write permission or file is read-only.</source>
         <translation>%1 삭제 불가:
 권한이 없거나 읽기 전용 파일입니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1432"/>
+        <location filename="../src/mainwindow.cpp" line="1449"/>
         <source>Are you sure you want to permanently delete %1? This can&apos;t be undone.</source>
         <translation>%1을(를) 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1437"/>
+        <location filename="../src/mainwindow.cpp" line="1454"/>
         <source>Are you sure you want to move %1 to the Recycle Bin?</source>
         <translation>%1 파일을 휴지통으로 이동하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1439"/>
+        <location filename="../src/mainwindow.cpp" line="1456"/>
         <source>Are you sure you want to move %1 to the Trash?</source>
         <translation>%1 파일을 휴지통으로 이동하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1443"/>
+        <location filename="../src/mainwindow.cpp" line="1460"/>
         <source>Delete</source>
         <translation>삭제</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1446"/>
+        <location filename="../src/mainwindow.cpp" line="1463"/>
         <source>Do not ask again</source>
         <translation>더이상 묻지 않기</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1490"/>
+        <location filename="../src/mainwindow.cpp" line="1507"/>
         <source>Can&apos;t delete %1.</source>
         <translation>%1 삭제 불가.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1524"/>
+        <location filename="../src/mainwindow.cpp" line="1541"/>
         <source>Can&apos;t undo deletion of %1:
 No write permission or file is read-only.</source>
         <translation>%1 파일 삭제를 되돌릴 수 없음:
 권한이 없거나 읽기 전용 파일입니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1532"/>
+        <location filename="../src/mainwindow.cpp" line="1549"/>
         <source>Failed undoing deletion of %1.</source>
         <translation>%1 파일의 복구에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="1622"/>
         <source>Set Zoom Level</source>
         <translation>확대/축소 수준 설정</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="1622"/>
         <source>Zoom Level (%):</source>
         <translation>확대/축소 수준 (%):</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725"/>
-        <location filename="../src/mainwindow.cpp" line="1735"/>
+        <location filename="../src/mainwindow.cpp" line="1754"/>
+        <location filename="../src/mainwindow.cpp" line="1764"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1736"/>
+        <location filename="../src/mainwindow.cpp" line="1765"/>
         <source>No OCR language is available. Add a language with OCR support in the Windows language settings.</source>
         <translation>사용 가능한 OCR 언어가 없습니다. Windows 언어 설정에서 OCR을 지원하는 언어를 추가하세요.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725"/>
+        <location filename="../src/mainwindow.cpp" line="1754"/>
         <source>Text recognition failed.</source>
         <translation>텍스트 인식에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1739"/>
+        <location filename="../src/mainwindow.cpp" line="1768"/>
         <source>OCR cannot find any text in this image</source>
         <translation>이 이미지에서 OCR로 인식할 수 있는 텍스트를 찾지 못했습니다</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1759"/>
+        <location filename="../src/mainwindow.cpp" line="1788"/>
         <source>Copied all text</source>
         <translation>모든 텍스트를 복사했습니다</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1863"/>
+        <location filename="../src/mainwindow.cpp" line="1892"/>
         <source>Save Frame As...</source>
         <translation>프레임을 다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1909"/>
+        <location filename="../src/mainwindow.cpp" line="1938"/>
         <source>Stop S&amp;lideshow</source>
         <translation>슬라이드 쇼 중지</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1909"/>
+        <location filename="../src/mainwindow.cpp" line="1938"/>
         <source>Start S&amp;lideshow</source>
         <translation>슬라이드쇼 시작</translation>
     </message>
@@ -683,12 +683,22 @@ No write permission or file is read-only.</source>
 <context>
     <name>QVGraphicsView</name>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1488"/>
+        <location filename="../src/qvgraphicsview.cpp" line="963"/>
+        <source>Unsupported Format</source>
+        <translation>지원되지 않는 형식</translation>
+    </message>
+    <message>
+        <location filename="../src/qvgraphicsview.cpp" line="963"/>
+        <source>This file format is disabled in the Formats settings.</source>
+        <translation>이 파일 형식은 형식 설정에서 비활성화되어 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="../src/qvgraphicsview.cpp" line="1539"/>
         <source>Press Enter to apply the crop, Esc to cancel</source>
         <translation>Enter 키로 자르기 적용, Esc 키로 취소</translation>
     </message>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1514"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1565"/>
         <source>Click to copy text, or CTRL+C to copy all text. Esc or right-click to close</source>
         <translation>클릭하면 텍스트 복사, Ctrl+C로 전체 복사. Esc 또는 마우스 오른쪽 클릭으로 닫기</translation>
     </message>

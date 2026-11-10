@@ -290,6 +290,7 @@ private:
     QRect getOcrBoxViewportRect(const QRect &imageRect) const;
     int getOcrBoxAt(const QPoint &pos) const;
     void updateOcrBusyIndicator();
+    void updateLoadingIndicator();
     void drawOverlayToast(QPainter *painter,const QString &text) const;
 
     bool isOcrRunning {false};
@@ -299,6 +300,8 @@ private:
     QString ocrToastMessage;
     QTimer *ocrToastTimer {nullptr};
     QProgressBar *ocrBusyIndicator {nullptr};
+    QProgressBar *loadingIndicator {nullptr};
+    QTimer *loadingIndicatorTimer {nullptr};
     Qv::ViewportClickAction doubleClickAction {Qv::ViewportClickAction::None};
     Qv::ViewportClickAction altDoubleClickAction {Qv::ViewportClickAction::None};
     Qv::ViewportDragAction dragAction {Qv::ViewportDragAction::None};

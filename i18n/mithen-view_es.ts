@@ -384,7 +384,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="472"/>
+        <location filename="../src/mainwindow.cpp" line="477"/>
         <source>Error occurred opening
 %3
 %2 (Error %1)</source>
@@ -393,44 +393,44 @@
 %2 (Error %1)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="487"/>
+        <location filename="../src/mainwindow.cpp" line="492"/>
         <source>Exit F&amp;ull Screen</source>
         <translation>Salir de pantalla completa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="487"/>
+        <location filename="../src/mainwindow.cpp" line="492"/>
         <source>Enter F&amp;ull Screen</source>
         <translation>Entrar en pantalla completa</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="516"/>
         <source>Res&amp;ume</source>
         <translation>Continuar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="516"/>
         <source>Pa&amp;use</source>
         <translation>Pausar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1058"/>
         <source>Show Title&amp;bar</source>
         <translation>Mostrar barra de título</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1058"/>
         <source>Hide Title&amp;bar</source>
         <translation>Ocultar barra de título</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613"/>
-        <location filename="../src/mainwindow.cpp" line="1294"/>
-        <location filename="../src/mainwindow.cpp" line="1320"/>
-        <location filename="../src/mainwindow.cpp" line="1343"/>
-        <location filename="../src/mainwindow.cpp" line="1425"/>
-        <location filename="../src/mainwindow.cpp" line="1490"/>
-        <location filename="../src/mainwindow.cpp" line="1524"/>
-        <location filename="../src/mainwindow.cpp" line="1532"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
+        <location filename="../src/mainwindow.cpp" line="1311"/>
+        <location filename="../src/mainwindow.cpp" line="1337"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
+        <location filename="../src/mainwindow.cpp" line="1442"/>
+        <location filename="../src/mainwindow.cpp" line="1507"/>
+        <location filename="../src/mainwindow.cpp" line="1541"/>
+        <location filename="../src/mainwindow.cpp" line="1549"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -440,173 +440,173 @@
         <translation>Texto copiado</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="534"/>
+        <location filename="../src/mainwindow.cpp" line="539"/>
         <source>Unsaved Transform</source>
         <translation>Transformación sin guardar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="535"/>
+        <location filename="../src/mainwindow.cpp" line="540"/>
         <source>Do you want to save this transformation?</source>
         <translation>¿Quieres guardar esta transformación?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="536"/>
+        <location filename="../src/mainwindow.cpp" line="541"/>
         <source>Save As...</source>
         <translation>Guardar como...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="539"/>
+        <location filename="../src/mainwindow.cpp" line="544"/>
         <source>Overwrite</source>
         <translation>Sobrescribir</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="541"/>
+        <location filename="../src/mainwindow.cpp" line="546"/>
         <source>Discard</source>
         <translation>Descartar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="583"/>
+        <location filename="../src/mainwindow.cpp" line="588"/>
         <source>Save Image As...</source>
         <translation>Guardar imagen como...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
         <source>Failed to save the image.</source>
         <translation>No se pudo guardar la imagen.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1294"/>
+        <location filename="../src/mainwindow.cpp" line="1311"/>
         <source>Error: URL is invalid</source>
         <translation>Error: URL no válido</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1300"/>
+        <location filename="../src/mainwindow.cpp" line="1317"/>
         <source>Downloading image...</source>
         <translation>Descargando la imagen...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1300"/>
+        <location filename="../src/mainwindow.cpp" line="1317"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1304"/>
-        <location filename="../src/mainwindow.cpp" line="1359"/>
+        <location filename="../src/mainwindow.cpp" line="1321"/>
+        <location filename="../src/mainwindow.cpp" line="1376"/>
         <source>Open URL...</source>
         <translation>Abrir un URL...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1320"/>
+        <location filename="../src/mainwindow.cpp" line="1337"/>
         <source>Error </source>
         <translation>Error </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1343"/>
+        <location filename="../src/mainwindow.cpp" line="1360"/>
         <source>Error: Invalid image</source>
         <translation>Error: Imagen no válida</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1360"/>
+        <location filename="../src/mainwindow.cpp" line="1377"/>
         <source>URL of a supported image file:</source>
         <translation>URL de un archivo de imagen compatible:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1425"/>
+        <location filename="../src/mainwindow.cpp" line="1442"/>
         <source>Can&apos;t delete %1:
 No write permission or file is read-only.</source>
         <translation>No se puede borrar %1:
 No se tiene permiso de escritura o el archivo es de solo lectura.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1432"/>
+        <location filename="../src/mainwindow.cpp" line="1449"/>
         <source>Are you sure you want to permanently delete %1? This can&apos;t be undone.</source>
         <translation>¿Seguro que quieres eliminar %1 permanentemente? Esta acción no se puede deshacer.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1437"/>
+        <location filename="../src/mainwindow.cpp" line="1454"/>
         <source>Are you sure you want to move %1 to the Recycle Bin?</source>
         <translation>¿Seguro que quiere mover %1 a la papelera de reciclaje?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1439"/>
+        <location filename="../src/mainwindow.cpp" line="1456"/>
         <source>Are you sure you want to move %1 to the Trash?</source>
         <translation>¿Seguro que quiere mover %1 a la papelera?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1443"/>
+        <location filename="../src/mainwindow.cpp" line="1460"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1446"/>
+        <location filename="../src/mainwindow.cpp" line="1463"/>
         <source>Do not ask again</source>
         <translation>No volver a preguntar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1490"/>
+        <location filename="../src/mainwindow.cpp" line="1507"/>
         <source>Can&apos;t delete %1.</source>
         <translation>No se puede borrar %1.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1524"/>
+        <location filename="../src/mainwindow.cpp" line="1541"/>
         <source>Can&apos;t undo deletion of %1:
 No write permission or file is read-only.</source>
         <translation>No se puede deshacer el borrado de %1:
 No tiene permiso de escritura o el archivo es de solo lectura.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1532"/>
+        <location filename="../src/mainwindow.cpp" line="1549"/>
         <source>Failed undoing deletion of %1.</source>
         <translation>Error al deshacer el borrado de %1.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="1622"/>
         <source>Set Zoom Level</source>
         <translation>Establecer nivel de zoom</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1605"/>
+        <location filename="../src/mainwindow.cpp" line="1622"/>
         <source>Zoom Level (%):</source>
         <translation>Nivel de zoom (%):</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725"/>
-        <location filename="../src/mainwindow.cpp" line="1735"/>
+        <location filename="../src/mainwindow.cpp" line="1754"/>
+        <location filename="../src/mainwindow.cpp" line="1764"/>
         <source>OCR</source>
         <translation>OCR</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1736"/>
+        <location filename="../src/mainwindow.cpp" line="1765"/>
         <source>No OCR language is available. Add a language with OCR support in the Windows language settings.</source>
         <translation>No hay ningún idioma de OCR disponible. Añade un idioma con compatibilidad con OCR en la configuración de idioma de Windows.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725"/>
+        <location filename="../src/mainwindow.cpp" line="1754"/>
         <source>Text recognition failed.</source>
         <translation>No se pudo reconocer el texto.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1739"/>
+        <location filename="../src/mainwindow.cpp" line="1768"/>
         <source>OCR cannot find any text in this image</source>
         <translation>El OCR no ha encontrado ningún texto en esta imagen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1759"/>
+        <location filename="../src/mainwindow.cpp" line="1788"/>
         <source>Copied all text</source>
         <translation>Todo el texto copiado</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1863"/>
+        <location filename="../src/mainwindow.cpp" line="1892"/>
         <source>Save Frame As...</source>
         <translation>Guardar fotograma como...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1909"/>
+        <location filename="../src/mainwindow.cpp" line="1938"/>
         <source>Stop S&amp;lideshow</source>
         <translation>Detener la presentación</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1909"/>
+        <location filename="../src/mainwindow.cpp" line="1938"/>
         <source>Start S&amp;lideshow</source>
         <translation>Iniciar la presentación</translation>
     </message>
@@ -683,12 +683,22 @@ No tiene permiso de escritura o el archivo es de solo lectura.</translation>
 <context>
     <name>QVGraphicsView</name>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1488"/>
+        <location filename="../src/qvgraphicsview.cpp" line="963"/>
+        <source>Unsupported Format</source>
+        <translation>Formato no compatible</translation>
+    </message>
+    <message>
+        <location filename="../src/qvgraphicsview.cpp" line="963"/>
+        <source>This file format is disabled in the Formats settings.</source>
+        <translation>Este formato de archivo está desactivado en la configuración de formatos.</translation>
+    </message>
+    <message>
+        <location filename="../src/qvgraphicsview.cpp" line="1539"/>
         <source>Press Enter to apply the crop, Esc to cancel</source>
         <translation>Pulsa Intro para aplicar el recorte, Esc para cancelar</translation>
     </message>
     <message>
-        <location filename="../src/qvgraphicsview.cpp" line="1514"/>
+        <location filename="../src/qvgraphicsview.cpp" line="1565"/>
         <source>Click to copy text, or CTRL+C to copy all text. Esc or right-click to close</source>
         <translation>Haz clic para copiar el texto, o Ctrl+C para copiar todo el texto. Esc o clic derecho para cerrar</translation>
     </message>
