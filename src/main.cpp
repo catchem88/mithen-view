@@ -61,19 +61,32 @@ int main(int argc, char *argv[])
     QLocalSocket instanceSocket;
     instanceSocket.connectToServer(serverName);
 
+    bool forwarded = false;
     if(instanceSocket.waitForConnected(500)) {
-        //Another instance is running - send file path(s) to it and exit
+        //Another instance is running - send file path(s) to it
         const QStringList &files = parser.positionalArguments();
         if(!files.isEmpty()) {
             instanceSocket.write(files.join('\n').toUtf8());
             instanceSocket.flush();
             instanceSocket.waitForBytesWritten(1000);
+            //Wait for the running instance to acknowledge. A closing or hung instance accepts
+            //the connection but never processes it, so start our own instance when it does
+            //not answer instead of silently exiting without showing the image.
+            forwarded = instanceSocket.waitForReadyRead(1500) && instanceSocket.readAll().contains('1');
+            if(!forwarded)
+                instanceSocket.abort();
         }
-        instanceSocket.disconnectFromServer();
+        else {
+            //Nothing to forward (plain launch while another instance runs): keep the old behavior
+            forwarded = true;
+        }
 #ifdef Q_OS_WIN
         AllowSetForegroundWindow(ASFW_ANY);
 #endif
-        return 0;
+        if(forwarded) {
+            instanceSocket.disconnectFromServer();
+            return 0;
+        }
     }
 
     //We are the first instance - start the local server to receive file paths from new instances
@@ -81,11 +94,22 @@ int main(int argc, char *argv[])
     QLocalServer *instanceServer = new QLocalServer(&app);
     instanceServer->listen(serverName);
 
+    //Stop accepting forwarded paths as soon as the app starts closing: the event loop no
+    //longer handles them during shutdown, so a quick relaunch that connected to a dying
+    //instance would be swallowed and the image would never open.
+    const auto closeInstanceServer = [instanceServer]{ instanceServer->close(); };
+    QObject::connect(&app, &QGuiApplication::lastWindowClosed, instanceServer, closeInstanceServer);
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, instanceServer, closeInstanceServer);
+
     QObject::connect(instanceServer,&QLocalServer::newConnection,[instanceServer]() {
         QLocalSocket *clientConnection = instanceServer->nextPendingConnection();
         if(clientConnection) {
             QObject::connect(clientConnection,&QLocalSocket::readyRead,[clientConnection]() {
                 const QString data = QString::fromUtf8(clientConnection->readAll());
+                //Acknowledge right away so the launching instance knows the paths were
+                //accepted and does not start a second instance
+                clientConnection->write("1");
+                clientConnection->flush();
                 const QStringList files = data.split('\n',Qt::SkipEmptyParts);
                 MainWindow *targetWindow = nullptr;
                 for(const QString &file : files) {
