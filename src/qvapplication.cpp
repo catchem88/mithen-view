@@ -449,6 +449,8 @@ void QVApplication::onAboutToQuit()
         }
     }
 
-    // Delay destroying application until thread pool threads have finished
-    QThreadPool::globalInstance()->waitForDone();
+    // Delay destroying application until thread pool threads have finished, but never block
+    // shutdown forever: a stuck decode/COM task would otherwise leave a windowless process
+    // that still holds the single-instance server, so every new launch forwards to it and exits
+    QThreadPool::globalInstance()->waitForDone(3000);
 }
