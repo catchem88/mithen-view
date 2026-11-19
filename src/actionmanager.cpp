@@ -11,6 +11,9 @@
 #include <QUrl>
 #include <QFileIconProvider>
 #include <QKeyEvent>
+#include <QJsonObject>
+#include <QScreen>
+#include <QTimer>
 
 ActionManager::ActionManager(QObject *parent) : QObject(parent)
 {
@@ -185,6 +188,7 @@ QMenuBar *ActionManager::buildMenuBar(QWidget *parent)
     // Beginning of file menu
     auto *fileMenu = new QVMenu(tr("&File"), menuBar);
 
+    addCloneOfAction(fileMenu, "newwindow");
     addCloneOfAction(fileMenu, "open");
     addCloneOfAction(fileMenu, "openurl");
     fileMenu->addMenu(buildRecentsMenu(fileMenu));
@@ -563,7 +567,7 @@ void ActionManager::actionTriggered(QAction *triggeredAction)
     auto key = triggeredAction->data().toStringList().first();
 
     // For some actions, do not look for a relevant window
-    QStringList windowlessActions = {"newwindow", "quit", "clearrecents", "open", "about", "options"};
+    QStringList windowlessActions = {"quit", "clearrecents", "open", "about", "options"};
     for (const auto &actionName : std::as_const(windowlessActions))
     {
         if (key == actionName)
@@ -591,7 +595,33 @@ void ActionManager::actionTriggered(QAction *triggeredAction, MainWindow *releva
     if (key == "quit") {
         QCoreApplication::quit();
     } else if (key == "newwindow") {
-        qvApp->newWindow();
+        //Duplicate the current window (including the open image) in a new window, regardless
+        //of the "Allow multiple window open" setting
+        MainWindow *duplicate = qvApp->newWindow(relevantWindow ? relevantWindow->getSessionState() : QJsonObject());
+
+        //Nudge the duplicate down-right so it does not sit exactly on top of the original
+        if (duplicate)
+        {
+            QTimer::singleShot(0, duplicate, [duplicate]{
+                if (duplicate->isMaximized() || duplicate->isFullScreen())
+                    return;
+
+                QPoint target = duplicate->pos() + QPoint(40, 40);
+                QScreen *screen = QGuiApplication::screenAt(duplicate->frameGeometry().center());
+                if (!screen)
+                    screen = QGuiApplication::primaryScreen();
+                if (screen)
+                {
+                    //Keep the whole window inside the usable screen area
+                    const QRect available = screen->availableGeometry();
+                    const int maxX = qMax(available.left(), available.right() - duplicate->width());
+                    const int maxY = qMax(available.top(), available.bottom() - duplicate->height());
+                    target.setX(qBound(available.left(), target.x(), maxX));
+                    target.setY(qBound(available.top(), target.y(), maxY));
+                }
+                duplicate->move(target);
+            });
+        }
     } else if (key == "open") {
         qvApp->pickFile(relevantWindow);
     } else if (key == "open") {
